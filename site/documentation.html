@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<title>OTel Studio — Documentation</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7;font-size:15px}
+.top-bar{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;z-index:10}
+.top-bar .logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--heading)}
+.top-bar .mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800}
+.top-bar .name{font-size:15px;font-weight:600}
+.top-bar .name b{color:var(--accent)}
+.top-bar .sep{color:var(--border);margin:0 4px}
+.top-bar .doc-label{font-size:13px;color:var(--muted)}
+.top-bar .back{margin-left:auto;font-size:12px;color:var(--accent);text-decoration:none;font-weight:600}
+.top-bar .back:hover{text-decoration:underline}
+.xd-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 9px;border:1px solid var(--border);border-radius:20px;margin-left:8px}
+.xd-badge img{height:12px;width:auto}
+.xd-badge:hover{color:var(--text);border-color:var(--muted)}
+.layout{display:flex;max-width:1100px;margin:0 auto;min-height:calc(100vh - 53px)}
+.sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--border);padding:24px 16px;position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto}
+.sidebar a{display:block;font-size:12px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:5px;margin-bottom:2px;transition:all .15s}
+.sidebar a:hover{color:var(--text);background:var(--code-bg)}
+.sidebar a.active{color:var(--accent);font-weight:600}
+.sidebar .group{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);padding:12px 10px 4px;margin-top:8px}
+.sidebar .group:first-child{margin-top:0}
+.content{flex:1;padding:32px 40px 80px;max-width:800px;min-width:0}
+h1{font-size:28px;font-weight:700;color:var(--heading);margin-bottom:8px;letter-spacing:-.01em}
+h2{font-size:20px;font-weight:700;color:var(--heading);margin-top:48px;margin-bottom:16px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+h3{font-size:15px;font-weight:700;color:var(--heading);margin-top:28px;margin-bottom:8px}
+p{margin-bottom:16px}
+code{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;color:var(--accent-dark)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px 20px;overflow-x:auto;margin:16px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;color:var(--text)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
+th{text-align:left;font-weight:600;padding:8px 12px;border-bottom:2px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border:none}
+.tag{display:inline-block;font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;font-family:'IBM Plex Mono',monospace}
+.tag-get{background:#dbeafe;color:#1e40af}
+.tag-post{background:#dcfce7;color:#166534}
+.tag-put{background:#fef3c7;color:#92400e}
+.tag-del{background:#fee2e2;color:#991b1b}
+.subtitle{font-size:15px;color:var(--muted);margin-bottom:32px}
+.arch{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:24px;margin:20px 0;text-align:center}
+.arch-flow{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:600}
+.arch-box{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:10px 16px;min-width:120px}
+.arch-box.primary{background:var(--accent);color:#1a0800;border-color:var(--accent-dark)}
+.arch-arrow{color:var(--muted);font-size:18px}
+.nav-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.nav-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:14px 16px}
+.nav-card b{display:block;color:var(--heading);margin-bottom:4px;font-size:13px}
+.nav-card span{font-size:12px;color:var(--muted)}
+.note{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;padding:10px 14px;margin:16px 0;font-size:13px;color:var(--text)}
+@media(max-width:768px){
+  .sidebar{display:none}
+  .content{padding:20px 16px 60px}
+  .nav-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="top-bar">
+  <a href="index.html" class="logo"><div class="mark">O</div><span class="name">OTel <b>Studio</b></span></a>
+  <span class="sep">/</span>
+  <span class="doc-label">Documentation</span>
+  <a href="https://xplurdata.com" target="_blank" rel="noopener" class="xd-badge"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true"> by XplurData</a>
+  <a href="index.html" class="back">← Back to home</a>
+</div>
+<div class="layout">
+<nav class="sidebar">
+  <div class="group">Getting Started</div>
+  <a href="#quickstart">Quick Start</a>
+  <a href="#navigation">Navigating the App</a>
+  <a href="#architecture">Architecture</a>
+  <a href="#docker">Docker Configuration</a>
+  <div class="group">Features</div>
+  <a href="#scenarios">25 Scenarios</a>
+  <a href="#signals">Signal Types</a>
+  <a href="#advanced">Advanced Scenario Controls</a>
+  <a href="#anomaly">Anomaly Injection</a>
+  <a href="#sequential">Sequential Mode</a>
+  <a href="#quota">Time Limit / Quota</a>
+  <a href="#endpoints">Multi-Endpoint Fanout</a>
+  <a href="#tls">TLS / mTLS</a>
+  <a href="#presets">Stack Presets</a>
+  <a href="#webhook">Webhook on Quota Expire</a>
+  <a href="#realdata">Real System Data</a>
+  <a href="#export">Import / Export</a>
+  <div class="group">Reference</div>
+  <a href="#env">Environment Variables</a>
+</nav>
+<main class="content">
+
+<h1>OTel Studio</h1>
+<p class="subtitle">Generate realistic OpenTelemetry data for any observability stack</p>
+
+<p>OTel Studio is a Docker-deployable telemetry data generator that produces correlated traces, logs and metrics using realistic service topologies. Point it at any OTel-compatible backend and get production-like data flowing in 60 seconds.</p>
+
+<h2 id="quickstart">Quick Start</h2>
+
+<pre>docker run -d --name otel-studio -p 3002:3002 \
+  -e OTEL_ENDPOINT="http://your-collector:4317" \
+  -e OTEL_PROTOCOL="grpc" \
+  -e ADMIN_PASS="your-password" \
+  otel-studio:latest</pre>
+
+<p>Open <code>http://localhost:3002</code>, log in with <code>admin</code> / your password, enable a scenario and click Start.</p>
+
+<h2 id="navigation">Navigating the App</h2>
+
+<p>OTel Studio uses a slim icon rail on the left to switch between five pages. Each gets the full window width — nothing is squeezed into a sidebar.</p>
+
+<div class="nav-grid">
+  <div class="nav-card"><b>Dashboard</b><span>Live stat cards (traces/logs/metrics/errors) and the real-time activity feed. Default landing page. Shows which scenarios are currently running.</span></div>
+  <div class="nav-card"><b>Scenarios</b><span>All 25 scenario cards, grouped by category, with rate/batch/error controls and the Advanced Settings panel per scenario.</span></div>
+  <div class="nav-card"><b>Real Data</b><span>Configure real log file tailing and Docker container log/metric collection, alongside the simulated traffic.</span></div>
+  <div class="nav-card"><b>Endpoints</b><span>Add, edit, and multi-select active endpoints for fanout. Stack presets, TLS/mTLS, geo mode, webhook, and config import/export all live here.</span></div>
+  <div class="nav-card"><b>Stats</b><span>Aggregate totals and a per-scenario breakdown of traces, logs, and errors sent since the last reset.</span></div>
+</div>
+
+<p>The top control bar (Real System Data / Simulation toggles, signal switches, quota timer, Inject Anomaly, global rate multiplier, Start/Stop/Reset) stays visible on every page — these are global controls, not scoped to any one page.</p>
+
+<h2 id="architecture">Architecture</h2>
+
+<div class="arch">
+  <div class="arch-flow">
+    <div class="arch-box primary">OTel Studio</div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box">OTLP gRPC / HTTP</div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box">OTel Collector</div>
+    <div class="arch-arrow">→</div>
+    <div class="arch-box">Your Backend</div>
+  </div>
+  <p style="margin-top:16px;font-size:12px;color:var(--muted)">Traces, logs and metrics are sent via standard OTLP protocol — works with any OTel-compatible backend</p>
+</div>
+
+<p>OTel Studio uses the official OpenTelemetry JS SDK. Each scenario creates a <code>BasicTracerProvider</code> per service name, with one <code>BatchSpanProcessor</code> per active endpoint. Logs use <code>LoggerProvider</code> with one <code>BatchLogRecordProcessor</code> per active endpoint. Metrics use a shared <code>MeterProvider</code> with one <code>PeriodicExportingMetricReader</code> per active endpoint — this is what makes multi-endpoint fanout work for all three signal types, not just traces.</p>
+
+<p>All three signals are correlated — logs emitted during a trace span inherit the span's trace ID and span ID via OpenTelemetry context propagation. This means you can search for a trace ID in your backend and see the matching logs and metrics.</p>
+
+<h2 id="docker">Docker Configuration</h2>
+
+<pre>docker run -d --name otel-studio -p 3002:3002 \
+  -e OTEL_ENDPOINT="http://otelcol:4317" \
+  -e OTEL_PROTOCOL="grpc" \
+  -e SERVICE_NAME="otel-agent" \
+  -e ENVIRONMENT="production" \
+  -e ADMIN_PASS="secure-password" \
+  -e MODE_REAL="true" \
+  -e MODE_SIM="true" \
+  -v /var/log:/var/log:ro \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v otel-data:/data \
+  --memory=256m \
+  otel-studio:latest</pre>
+
+<div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
+
+<h2 id="scenarios">25 Scenarios</h2>
+
+<p>Each scenario simulates a realistic service topology with parent-child span relationships, correlated log records per service, and matching metric instrument recordings.</p>
+
+<h3>Web App</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>E-Commerce</td><td>frontend → cart → inventory → payment → search → recommendations</td><td>Full shopping flow with checkout, search and product recommendations</td></tr>
+<tr><td>SaaS Platform</td><td>api-gateway → auth → user → billing → feature-flags → payment-gateway</td><td>Multi-tenant SaaS with auth, billing, subscription management</td></tr>
+<tr><td>Media Streaming</td><td>cdn-edge → origin → transcoder → queue-worker → storage</td><td>Video streaming with CDN cache, transcoding pipeline</td></tr>
+<tr><td>Banking / FinTech</td><td>web-portal → fraud-detection → risk-engine → payment → ledger → audit</td><td>Financial transactions with fraud scoring and audit trail</td></tr>
+<tr><td>Social Network</td><td>feed → graph → ranking → media → notification-fanout → cache</td><td>Social feed generation with friend graph traversal</td></tr>
+</table>
+
+<h3>Infrastructure</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>Linux Syslog</td><td>kernel, sshd, systemd, cron, nginx, postgresql, dockerd</td><td>System-level log generation (OOM kills, SSH, service failures)</td></tr>
+<tr><td>Kubernetes</td><td>kube-apiserver → scheduler → kubelet → containerd → coredns → etcd</td><td>K8s control plane operations (pod scheduling, image pulls, OOM)</td></tr>
+<tr><td>Database Cluster</td><td>query-router → primary-db → replica-db → wal-archiver → read-cache</td><td>Database with replication, slow queries, deadlocks</td></tr>
+<tr><td>Message Queue</td><td>producer → kafka-broker → consumer-group → processor → dead-letter</td><td>Kafka pipeline with consumer lag and DLQ routing</td></tr>
+<tr><td>CI/CD Pipeline</td><td>webhook-trigger → build-agent → test-runner → deploy-agent → health-checker</td><td>Build/test/deploy with rollback triggers</td></tr>
+</table>
+
+<h3>APM</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>Java / JVM</td><td>java-backend → node-api → python-worker → go-proxy → ruby-app</td><td>Polyglot APM with GC pauses, heap pressure</td></tr>
+<tr><td>Node.js Services</td><td>express-gateway → auth-middleware → product → mongoose → redis → elastic</td><td>Express.js stack with MongoDB, Redis, Elasticsearch</td></tr>
+<tr><td>Python ML Pipeline</td><td>api-server → feature-store → model-server → vector-db → result-cache</td><td>ML inference with CUDA OOM, feature lag</td></tr>
+<tr><td>Go Services</td><td>http-proxy → grpc-service → worker-pool → object-store</td><td>Go microservices with goroutine monitoring</td></tr>
+<tr><td>.NET Platform</td><td>aspnet-gateway → identity → order → data-service → token-store → cache</td><td>ASP.NET with SQL Server connection pooling</td></tr>
+</table>
+
+<h3>Cloud Native</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>IoT / Edge</td><td>sensor-hub → edge-gateway → stream-processor → timeseries-db → anomaly-detector</td><td>IoT telemetry with edge buffering, anomaly detection</td></tr>
+<tr><td>Serverless / FaaS</td><td>api-gateway → lambda-auth → lambda-process → dynamodb → s3 → sns</td><td>Lambda functions with cold starts, timeouts</td></tr>
+<tr><td>Service Mesh</td><td>istio-ingressgateway → envoy-sidecar → service-a → service-b</td><td>Istio/Envoy with circuit breakers, mTLS errors</td></tr>
+<tr><td>Security / SIEM</td><td>firewall → ids-engine → siem → alert-manager → notification</td><td>Security event pipeline with CVE detection, SOC alerts</td></tr>
+<tr><td>Mobile Backend</td><td>mobile-api → auth → feed-aggregator → content → analytics → event-store</td><td>Mobile app backend with biometric auth, push notifications</td></tr>
+</table>
+
+<h3>Chaos / Stress</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>Error Storm</td><td>frontend → cart → payment → inventory</td><td>80% forced error rate — tests error alerting</td></tr>
+<tr><td>Cardinality Burst</td><td>api-gateway → data-service</td><td>Random user IDs per request — tests high cardinality handling</td></tr>
+<tr><td>Latency Spike</td><td>frontend → product → payment → slow-db</td><td>30% of spans get 2-8 second latency injection</td></tr>
+<tr><td>Traffic Surge</td><td>gateway → order → inventory → billing → shipping</td><td>10× batch multiplier — tests ingestion throughput</td></tr>
+<tr><td>Cascading Failure</td><td>gateway → order → billing → cache</td><td>75% errors with circuit breaker fallback patterns</td></tr>
+</table>
+
+<h2 id="signals">Signal Types & Ratios</h2>
+
+<p>Per the OpenTelemetry specification, the three signal types have different volume characteristics:</p>
+
+<table>
+<tr><th>Signal</th><th>Volume</th><th>How OTel Studio generates it</th></tr>
+<tr><td><strong>Logs</strong></td><td>Highest</td><td>One log record per service visited in each trace chain. A 5-service chain produces 5 logs per trace.</td></tr>
+<tr><td><strong>Traces</strong></td><td>Middle</td><td>One trace chain per batch item, containing 10-15 spans with parent-child relationships.</td></tr>
+<tr><td><strong>Metrics</strong></td><td>Lowest</td><td>Aggregated per export cycle (10s interval). Each cycle exports one data point per unique instrument, regardless of request volume.</td></tr>
+</table>
+
+<p>Each of Traces, Logs, and Metrics can be toggled independently in the top control bar — turning a signal off stops it from being generated across every active scenario at once.</p>
+
+<h2 id="advanced">Advanced Scenario Controls</h2>
+
+<p>Every scenario card has an <strong>Advanced Settings</strong> panel with telemetrygen-style controls for testing specific pipeline behaviors:</p>
+
+<h3>Geo / IP Simulation</h3>
+<p>Tags the root span and logs of each generated request with a <code>client.address</code> and GeoIP-resolvable attributes (<code>geo.country.iso_code</code>, <code>geo.city.name</code>, <code>geo.location.lat/lon</code>, <code>cloud.region</code>), so requests appear to originate from realistic global locations. Two modes, set globally on the Endpoints page:</p>
+<table>
+<tr><th>Mode</th><th>Behavior</th></tr>
+<tr><td>Realistic</td><td>Real regional cloud IP ranges — resolves to an actual city/country in your backend's GeoIP lookup</td></tr>
+<tr><td>Safe / TEST-NET</td><td>RFC 5737 non-routable ranges (192.0.2.0/24, 198.51.100.0/24, 203.0.113.0/24) — guaranteed to never collide with real infrastructure, at the cost of not resolving to a real location</td></tr>
+</table>
+
+<h3>Synthetic PII</h3>
+<p>Tags the root span and logs with a synthetic <code>user.id</code>, <code>user.name</code>, and <code>user.email</code>, generated from a fixed name pool and RFC 2606-reserved domains (<code>example.com</code>/<code>.org</code>/<code>.net</code>) — never real people's data. Every synthetic record is marked with <code>pii.synthetic: true</code> so a downstream redaction/DLP pipeline being tested can positively identify it. Recommended for scenarios like Banking, Social Network, and E-Commerce where testing PII handling is relevant.</p>
+
+<h3>Custom Attributes</h3>
+<p>Arbitrary <code>key=value</code> pairs, comma-separated, added to the root span and logs of every request in that scenario — useful for tagging generated data with a team name, region, or any attribute your dashboards filter on.</p>
+
+<h3>Span Duration Override</h3>
+<p>Set a min/max range in milliseconds to override the scenario's natural randomized timing. Leave blank to use built-in realistic chain timing.</p>
+
+<h3>Status Code Weights</h3>
+<p><code>code:weight</code> pairs, comma-separated (e.g. <code>200:90,404:5,500:5</code>) — controls the distribution of HTTP status codes on generated spans. When set, this overrides the scenario's plain error-rate slider.</p>
+
+<h2 id="anomaly">Anomaly Injection</h2>
+
+<p>Click <strong>⚡ Inject Anomaly</strong> to trigger a burst across all active scenarios. For 30 seconds (or until you click Stop Anomaly):</p>
+<table>
+<tr><td>Traffic</td><td>10× normal batch count</td></tr>
+<tr><td>Error rate</td><td>Forced to 80% regardless of slider</td></tr>
+<tr><td>Latency</td><td>30% of spans get 2-8 second duration spikes</td></tr>
+</table>
+<p>Anomaly state is tracked server-side and stays in sync with the main Start/Stop control — stopping the simulation (manually or via quota expiry) also clears an in-progress anomaly, and the button/timer reflect this on any connected browser tab, not just the one that triggered it.</p>
+
+<h2 id="sequential">Sequential Mode</h2>
+
+<p>Enable Sequential Mode in the Scenarios panel to run one scenario at a time, rotating through all enabled scenarios on a configurable timer (default 30 seconds each). Useful for sequential load testing — each scenario runs in isolation before rotating to the next.</p>
+
+<h2 id="quota">Time Limit / Quota</h2>
+
+<p>Set a time limit (1m / 5m / 10m / 30m / 1h / no limit) before clicking Start. The top bar shows a live countdown; when it reaches zero, sending stops automatically across all signals — including metrics, which export on their own periodic schedule independent of the trace/log generation loop.</p>
+
+<h2 id="endpoints">Multi-Endpoint Fanout</h2>
+
+<p>OTel Studio can send telemetry to multiple collectors simultaneously. On the Endpoints page, each endpoint has its own toggle — check any combination to activate them together; at least one must stay active. The SDK creates one <code>BatchSpanProcessor</code>, one <code>BatchLogRecordProcessor</code>, and one metric reader per active endpoint, so traces, logs, and metrics all fan out identically. Use this to compare two o11y backends side-by-side or to send to both production and staging collectors at once.</p>
+
+<h2 id="tls">TLS / mTLS</h2>
+
+<p>Each endpoint supports an optional TLS/mTLS configuration, expandable in the Add/Edit Endpoint form: a CA certificate, a client certificate, a client private key (all PEM format), and an "insecure" toggle to skip certificate verification for testing against self-signed backends.</p>
+
+<h2 id="presets">Stack Presets</h2>
+
+<p>One-click endpoint configuration for 12 popular observability backends:</p>
+<table>
+<tr><th>Backend</th><th>Protocol</th><th>Default URL</th></tr>
+<tr><td>Grafana Alloy</td><td>gRPC / HTTP</td><td>http://alloy:4317 or :4318</td></tr>
+<tr><td>OpenTelemetry Collector</td><td>gRPC</td><td>http://otelcol:4317</td></tr>
+<tr><td>Elastic APM</td><td>HTTP</td><td>http://apm-server:8200</td></tr>
+<tr><td>Honeycomb</td><td>HTTP</td><td>https://api.honeycomb.io</td></tr>
+<tr><td>Jaeger</td><td>gRPC</td><td>http://jaeger:4317</td></tr>
+<tr><td>SigNoz</td><td>gRPC</td><td>http://otel-collector:4317</td></tr>
+<tr><td>OpenObserve</td><td>HTTP</td><td>http://openobserve:5080</td></tr>
+<tr><td>Datadog Agent</td><td>HTTP</td><td>http://datadog-agent:4318</td></tr>
+<tr><td>New Relic</td><td>HTTP</td><td>https://otlp.nr-data.net</td></tr>
+<tr><td>Dynatrace</td><td>HTTP</td><td>https://ENV.live.dynatrace.com/api/v2/otlp</td></tr>
+<tr><td>Lightstep / ServiceNow</td><td>HTTP</td><td>https://ingest.lightstep.com</td></tr>
+</table>
+
+<h2 id="webhook">Webhook on Quota Expire</h2>
+
+<p>Set an HTTP endpoint (Slack incoming webhook or any URL) on the Endpoints page. When the time-limit quota expires and sending stops automatically, OTel Studio fires a POST with <code>{event: "quota_expired", ts: "&lt;ISO timestamp&gt;"}</code> — useful for notifying a team channel when an automated test run finishes.</p>
+
+<h2 id="realdata">Real System Data</h2>
+
+<p>Alongside simulated scenarios, OTel Studio can collect real telemetry from the host it's running on, on the Real Data page:</p>
+<table>
+<tr><td>Log file tailing</td><td>Tail any log files on disk (mount them via <code>-v /var/log:/var/log:ro</code>) and stream new lines as real OTel log records</td></tr>
+<tr><td>Docker container logs</td><td>Poll logs from other containers on the host (requires mounting <code>/var/run/docker.sock</code>)</td></tr>
+<tr><td>Docker container metrics</td><td>CPU/memory usage per container</td></tr>
+<tr><td>System metrics</td><td>Host CPU, memory, load average, and network interface stats</td></tr>
+</table>
+<p>Real System Data and Simulation are independent toggles — run either alone or both together.</p>
+
+<h2 id="export">Import / Export</h2>
+
+<p>Export your scenario configuration as JSON to share setups with your team. Import a config file to restore a saved setup. Export the activity stream as CSV for offline analysis.</p>
+
+<h2 id="env">Environment Variables</h2>
+
+<table>
+<tr><th>Variable</th><th>Default</th><th>Description</th></tr>
+<tr><td><code>PORT</code></td><td>3002</td><td>HTTP server port</td></tr>
+<tr><td><code>OTEL_ENDPOINT</code></td><td>http://localhost:4318</td><td>Default OTel collector endpoint</td></tr>
+<tr><td><code>OTEL_PROTOCOL</code></td><td>http</td><td>Protocol: <code>grpc</code> or <code>http</code></td></tr>
+<tr><td><code>SERVICE_NAME</code></td><td>otel-agent</td><td>Service name in telemetry resource attributes</td></tr>
+<tr><td><code>ENVIRONMENT</code></td><td>production</td><td>Deployment environment attribute</td></tr>
+<tr><td><code>ADMIN_USER</code></td><td>admin</td><td>Initial admin username</td></tr>
+<tr><td><code>ADMIN_PASS</code></td><td>admin123</td><td>Initial admin password — change this for any deployment reachable outside your own machine</td></tr>
+<tr><td><code>JWT_SECRET</code></td><td><em>(auto-generated)</em></td><td>Secret for signing auth tokens. If not set, a random one is generated on first boot and persisted in the <code>/data</code> volume — stable across restarts, unique per deployment</td></tr>
+<tr><td><code>DB_PATH</code></td><td>/data/otel-simulator.db</td><td>SQLite database path</td></tr>
+<tr><td><code>MODE_REAL</code></td><td>false</td><td>Enable real system data collection</td></tr>
+<tr><td><code>MODE_SIM</code></td><td>true</td><td>Enable simulated telemetry</td></tr>
+<tr><td><code>SCENARIO</code></td><td>ecommerce</td><td>Legacy single-scenario default — the app now primarily uses per-scenario config set from the UI (see Advanced Scenario Controls); this only affects the very first boot before any config is saved</td></tr>
+<tr><td><code>RATE_MS</code></td><td>1000</td><td>Legacy default rate for <code>SCENARIO</code> on first boot</td></tr>
+<tr><td><code>BATCH_SIZE</code></td><td>1</td><td>Legacy default batch size for <code>SCENARIO</code> on first boot</td></tr>
+<tr><td><code>ERROR_RATE</code></td><td>0.05</td><td>Legacy default error rate for <code>SCENARIO</code> on first boot</td></tr>
+<tr><td><code>LOG_FILES</code></td><td><em>(empty)</em></td><td>Comma-separated paths to tail for real logs</td></tr>
+<tr><td><code>DOCKER_LOGS</code></td><td>true</td><td>Tail Docker container logs</td></tr>
+<tr><td><code>DOCKER_METRICS</code></td><td>true</td><td>Collect Docker container metrics</td></tr>
+<tr><td><code>METRICS_INTERVAL</code></td><td>5000</td><td>System metrics collection interval (ms)</td></tr>
+</table>
+
+<p style="margin-top:48px;font-size:12px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">OTel Studio v2.0 — Built by <a href="https://xplurdata.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);text-decoration:none;font-weight:600"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true" style="height:13px;width:auto">XplurData</a></p>
+
+</main>
+</div>
+
+<script>
+// Highlight active sidebar link on scroll
+const links = document.querySelectorAll('.sidebar a');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      links.forEach(l => l.classList.remove('active'));
+      const active = document.querySelector('.sidebar a[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-20% 0px -60% 0px' });
+document.querySelectorAll('h2[id]').forEach(h => observer.observe(h));
+</script>
+</body>
+</html>
