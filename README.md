@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="assets/favicon.svg" alt="OTel Studio" width="64">
+  <img src="site/assets/favicon.svg" alt="OTel Studio" width="64">
 </p>
 
 <h1 align="center">OTel Studio</h1>
