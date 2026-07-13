@@ -35,7 +35,11 @@ h2{font-size:20px;font-weight:700;color:var(--heading);margin-top:48px;margin-bo
 h3{font-size:15px;font-weight:700;color:var(--heading);margin-top:28px;margin-bottom:8px}
 p{margin-bottom:16px}
 code{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;color:var(--accent-dark)}
-pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px 20px;overflow-x:auto;margin:16px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;color:var(--text)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px 20px;overflow-x:auto;margin:16px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;color:var(--text);position:relative}
+.code-wrap{position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
+.copy-btn:hover{color:var(--text);border-color:var(--muted)}
+.copy-btn.copied{color:var(--accent-dark);border-color:var(--accent)}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
 th{text-align:left;font-weight:600;padding:8px 12px;border-bottom:2px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
@@ -103,11 +107,14 @@ tr:last-child td{border:none}
 
 <h2 id="quickstart">Quick Start</h2>
 
+<div class="code-wrap">
+<button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
   -e ADMIN_PASS="your-password" \
   otel-studio:latest</pre>
+</div>
 
 <p>Open <code>http://localhost:3002</code>, log in with <code>admin</code> / your password, enable a scenario and click Start.</p>
 
@@ -146,6 +153,8 @@ tr:last-child td{border:none}
 
 <h2 id="docker">Docker Configuration</h2>
 
+<div class="code-wrap">
+<button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://otelcol:4317" \
   -e OTEL_PROTOCOL="grpc" \
@@ -159,6 +168,7 @@ tr:last-child td{border:none}
   -v otel-data:/data \
   --memory=256m \
   otel-studio:latest</pre>
+</div>
 
 <div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
 
@@ -347,6 +357,33 @@ tr:last-child td{border:none}
 </div>
 
 <script>
+// Copy-to-clipboard for code blocks
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  const text = pre.textContent;
+  const done = () => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  document.body.removeChild(ta);
+}
+
 // Highlight active sidebar link on scroll
 const links = document.querySelectorAll('.sidebar a');
 const observer = new IntersectionObserver(entries => {
