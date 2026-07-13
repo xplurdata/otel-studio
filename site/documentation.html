@@ -11,17 +11,18 @@
 :root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
 body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.7;font-size:15px}
 .top-bar{position:sticky;top:0;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 24px;display:flex;align-items:center;gap:12px;z-index:10}
-.top-bar .logo{display:flex;align-items:center;gap:8px;text-decoration:none;color:var(--heading)}
-.top-bar .mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800}
+.top-bar .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.top-bar .mark{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.top-bar .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
 .top-bar .name{font-size:15px;font-weight:600}
 .top-bar .name b{color:var(--accent)}
+.top-bar .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.top-bar .logo-sub img{height:9px;width:auto}
+.top-bar .logo-sub b{color:var(--accent-dark);font-weight:700}
 .top-bar .sep{color:var(--border);margin:0 4px}
 .top-bar .doc-label{font-size:13px;color:var(--muted)}
 .top-bar .back{margin-left:auto;font-size:12px;color:var(--accent);text-decoration:none;font-weight:600}
 .top-bar .back:hover{text-decoration:underline}
-.xd-badge{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);text-decoration:none;padding:3px 9px;border:1px solid var(--border);border-radius:20px;margin-left:8px}
-.xd-badge img{height:12px;width:auto}
-.xd-badge:hover{color:var(--text);border-color:var(--muted)}
 .layout{display:flex;max-width:1100px;margin:0 auto;min-height:calc(100vh - 53px)}
 .sidebar{width:220px;flex-shrink:0;border-right:1px solid var(--border);padding:24px 16px;position:sticky;top:53px;height:calc(100vh - 53px);overflow-y:auto}
 .sidebar a{display:block;font-size:12px;color:var(--muted);text-decoration:none;padding:5px 10px;border-radius:5px;margin-bottom:2px;transition:all .15s}
@@ -71,10 +72,15 @@ tr:last-child td{border:none}
 </head>
 <body>
 <div class="top-bar">
-  <a href="index.html" class="logo"><div class="mark">O</div><span class="name">OTel <b>Studio</b></span></a>
+  <a href="index.html" class="logo">
+    <div class="mark">O</div>
+    <span class="logo-text">
+      <span class="name">OTel <b>Studio</b></span>
+      <span class="logo-sub"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></span>
+    </span>
+  </a>
   <span class="sep">/</span>
   <span class="doc-label">Documentation</span>
-  <a href="https://xplurdata.com" target="_blank" rel="noopener" class="xd-badge"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true"> by XplurData</a>
   <a href="index.html" class="back">← Back to home</a>
 </div>
 <div class="layout">
