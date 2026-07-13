@@ -19,6 +19,8 @@
   <img alt="License" src="https://img.shields.io/badge/license-MIT-blue.svg">
   <img alt="Docker" src="https://img.shields.io/badge/docker-ready-2496ED.svg?logo=docker&logoColor=white">
   <img alt="OpenTelemetry" src="https://img.shields.io/badge/OpenTelemetry-native-f5a800.svg">
+  <a href="https://github.com/xplurdata/otel-studio/pkgs/container/otel-studio"><img alt="GHCR" src="https://img.shields.io/badge/ghcr.io-xplurdata%2Fotel--studio-2496ED?logo=docker&logoColor=white"></a>
+  <a href="https://github.com/xplurdata/otel-studio/actions/workflows/security-scan.yml"><img alt="Security Scan" src="https://github.com/xplurdata/otel-studio/actions/workflows/security-scan.yml/badge.svg"></a>
 </p>
 
 ---
@@ -62,6 +64,9 @@ Open `http://localhost:3002`, log in, pick a scenario, hit Start.
 
 Full setup, environment variables, and every feature documented at **[otel-studio.xplurdata.com/documentation.html](https://otel-studio.xplurdata.com/documentation.html)**.
 
+## Security
+
+Every published image is scanned weekly (and on demand) for critical and high-severity vulnerabilities — see the badge above, which links to the actual scan history, not just a claim.
 
 ## License
 
