@@ -1,8 +1,0 @@
-blank_issues_enabled: false
-contact_links:
-  - name: Documentation
-    url: https://otel-studio.xplurdata.com/documentation.html
-    about: Check the docs before filing — many questions are answered there.
-  - name: XplurData
-    url: https://xplurdata.com
-    about: General questions about XplurData products.
