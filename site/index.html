@@ -58,11 +58,13 @@ h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
 .btn-outline{border:1px solid var(--border);color:var(--text)}
 .btn-outline:hover{border-color:var(--muted)}
 .quickstart{max-width:700px;margin:0 auto 80px;padding:0 24px}
-pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text);position:relative}
-.code-wrap{position:relative}
-.copy-btn{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
-.copy-btn:hover{color:var(--text);border-color:var(--muted)}
-.copy-btn.copied{color:var(--accent-dark);border-color:var(--accent)}
+.code-wrap{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.code-lang{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.copy-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0}
+.copy-btn:hover{color:var(--text)}
+.copy-btn.copied{color:var(--accent-dark)}
+pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text);margin:0}
 .section{max-width:1000px;margin:0 auto;padding:60px 24px}
 .section:nth-of-type(even){background:var(--code-bg);border-radius:24px;max-width:1048px}
 .section h2{font-size:28px;font-weight:700;color:var(--heading);text-align:center;margin-bottom:12px;letter-spacing:-.01em;position:relative;padding-top:16px}
@@ -125,9 +127,13 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
 </section>
 
 <div class="quickstart">
+  <p style="text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:10px">Quick Start</p>
   <div class="code-wrap">
-  <button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
-  <pre>docker run -d --name otel-studio -p 3002:3002 \
+    <div class="code-head">
+      <span class="code-lang">bash</span>
+      <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+    </div>
+    <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
   -e SERVICE_NAME="otel-agent" \
@@ -138,8 +144,9 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
   -v /var/log:/var/log:ro \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v otel-data:/data \
-  otel-studio:latest</pre>
+  ghcr.io/xplurdata/otel-studio:latest</pre>
   </div>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px">If your collector runs in Docker too, add <code>--network &lt;your-network&gt;</code> so the hostname in <code>OTEL_ENDPOINT</code> resolves — see <a href="documentation.html#docker">Docker Configuration</a> for details.</p>
 </div>
 
 <section class="section">
@@ -218,13 +225,14 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
 <script>
 // Copy-to-clipboard for code blocks
 function copyCode(btn) {
-  const pre = btn.nextElementSibling;
+  const pre = btn.closest('.code-wrap').querySelector('pre');
   const text = pre.textContent;
   const done = () => {
-    const original = btn.textContent;
-    btn.textContent = 'Copied!';
+    const label = btn.querySelector('.copy-label');
+    const original = label.textContent;
+    label.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+    setTimeout(() => { label.textContent = original; btn.classList.remove('copied'); }, 1500);
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
