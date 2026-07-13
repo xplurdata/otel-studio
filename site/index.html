@@ -58,7 +58,11 @@ h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
 .btn-outline{border:1px solid var(--border);color:var(--text)}
 .btn-outline:hover{border-color:var(--muted)}
 .quickstart{max-width:700px;margin:0 auto 80px;padding:0 24px}
-pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text)}
+pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;padding:20px 24px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text);position:relative}
+.code-wrap{position:relative}
+.copy-btn{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
+.copy-btn:hover{color:var(--text);border-color:var(--muted)}
+.copy-btn.copied{color:var(--accent-dark);border-color:var(--accent)}
 .section{max-width:1000px;margin:0 auto;padding:60px 24px}
 .section:nth-of-type(even){background:var(--code-bg);border-radius:24px;max-width:1048px}
 .section h2{font-size:28px;font-weight:700;color:var(--heading);text-align:center;margin-bottom:12px;letter-spacing:-.01em;position:relative;padding-top:16px}
@@ -121,11 +125,21 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
 </section>
 
 <div class="quickstart">
+  <div class="code-wrap">
+  <button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
   <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
+  -e SERVICE_NAME="otel-agent" \
+  -e ENVIRONMENT="production" \
   -e ADMIN_PASS="your-password" \
+  -e MODE_REAL="true" \
+  -e MODE_SIM="true" \
+  -v /var/log:/var/log:ro \
+  -v /var/run/docker.sock:/var/run/docker.sock \
+  -v otel-data:/data \
   otel-studio:latest</pre>
+  </div>
 </div>
 
 <section class="section">
@@ -202,6 +216,32 @@ pre{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;
 </footer>
 
 <script>
+// Copy-to-clipboard for code blocks
+function copyCode(btn) {
+  const pre = btn.nextElementSibling;
+  const text = pre.textContent;
+  const done = () => {
+    const original = btn.textContent;
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+  } else {
+    fallbackCopy(text, done);
+  }
+}
+function fallbackCopy(text, done) {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.select();
+  try { document.execCommand('copy'); done(); } catch (e) {}
+  document.body.removeChild(ta);
+}
 // GitHub Stars + latest Release - live from the public API, no backend needed
 fetch('https://api.github.com/repos/xplurdata/otel-studio')
   .then(r => r.ok ? r.json() : null)
