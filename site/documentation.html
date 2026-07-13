@@ -35,11 +35,13 @@ h2{font-size:20px;font-weight:700;color:var(--heading);margin-top:48px;margin-bo
 h3{font-size:15px;font-weight:700;color:var(--heading);margin-top:28px;margin-bottom:8px}
 p{margin-bottom:16px}
 code{font-family:'IBM Plex Mono',monospace;font-size:13px;background:var(--code-bg);padding:2px 6px;border-radius:4px;color:var(--accent-dark)}
-pre{background:var(--code-bg);border:1px solid var(--border);border-radius:8px;padding:16px 20px;overflow-x:auto;margin:16px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;color:var(--text);position:relative}
-.code-wrap{position:relative}
-.copy-btn{position:absolute;top:10px;right:10px;font-size:11px;font-weight:600;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:5px 10px;cursor:pointer;display:flex;align-items:center;gap:5px;font-family:'Inter',sans-serif}
-.copy-btn:hover{color:var(--text);border-color:var(--muted)}
-.copy-btn.copied{color:var(--accent-dark);border-color:var(--accent)}
+.code-wrap{background:var(--code-bg);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:16px 0}
+.code-head{display:flex;align-items:center;justify-content:space-between;padding:10px 16px;background:var(--surface);border-bottom:1px solid var(--border)}
+.code-lang{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:600}
+.copy-btn{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--muted);background:none;border:none;cursor:pointer;font-family:'Inter',sans-serif;padding:0}
+.copy-btn:hover{color:var(--text)}
+.copy-btn.copied{color:var(--accent-dark)}
+pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6;color:var(--text);margin:0}
 table{width:100%;border-collapse:collapse;margin:16px 0;font-size:13px}
 th{text-align:left;font-weight:600;padding:8px 12px;border-bottom:2px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 td{padding:8px 12px;border-bottom:1px solid var(--border);vertical-align:top}
@@ -107,14 +109,21 @@ tr:last-child td{border:none}
 
 <h2 id="quickstart">Quick Start</h2>
 
+<p>The minimal command to get running — good for a first try. See <a href="#docker">Docker Configuration</a> below for the full production setup (persistent storage, real system data, resource limits).</p>
+
 <div class="code-wrap">
-<button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
   -e ADMIN_PASS="your-password" \
-  otel-studio:latest</pre>
+  ghcr.io/xplurdata/otel-studio:latest</pre>
 </div>
+
+<p>If your collector runs in Docker too, add <code>--network &lt;your-network&gt;</code> so <code>your-collector</code> above actually resolves — Docker only resolves container names between containers sharing the same network. See the full example below for a working reference.</p>
 
 <p>Open <code>http://localhost:3002</code>, log in with <code>admin</code> / your password, enable a scenario and click Start.</p>
 
@@ -153,8 +162,13 @@ tr:last-child td{border:none}
 
 <h2 id="docker">Docker Configuration</h2>
 
+<p>The full setup used in production — persistent SQLite storage, real system data collection, and a memory limit, on top of everything in the quick start above.</p>
+
 <div class="code-wrap">
-<button type="button" class="copy-btn" onclick="copyCode(this)">Copy</button>
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://otelcol:4317" \
   -e OTEL_PROTOCOL="grpc" \
@@ -166,9 +180,12 @@ tr:last-child td{border:none}
   -v /var/log:/var/log:ro \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v otel-data:/data \
+  --network otel-net \
   --memory=256m \
-  otel-studio:latest</pre>
+  ghcr.io/xplurdata/otel-studio:latest</pre>
 </div>
+
+<div class="note"><code>--network otel-net</code> puts OTel Studio on the same Docker network as your collector — replace <code>otel-net</code> with whatever network your collector is actually on (check with <code>docker network ls</code>), and update <code>OTEL_ENDPOINT</code> to use the collector's container name rather than <code>localhost</code>.</div>
 
 <div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
 
@@ -359,13 +376,14 @@ tr:last-child td{border:none}
 <script>
 // Copy-to-clipboard for code blocks
 function copyCode(btn) {
-  const pre = btn.nextElementSibling;
+  const pre = btn.closest('.code-wrap').querySelector('pre');
   const text = pre.textContent;
   const done = () => {
-    const original = btn.textContent;
-    btn.textContent = 'Copied!';
+    const label = btn.querySelector('.copy-label');
+    const original = label.textContent;
+    label.textContent = 'Copied!';
     btn.classList.add('copied');
-    setTimeout(() => { btn.textContent = original; btn.classList.remove('copied'); }, 1500);
+    setTimeout(() => { label.textContent = original; btn.classList.remove('copied'); }, 1500);
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
