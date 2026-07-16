@@ -33,7 +33,11 @@ h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
 .nav .links a:hover{color:var(--text)}
 .nav .cta{background:var(--accent);color:#1a0800;padding:7px 16px;border-radius:20px;font-weight:700}
 .nav .cta:hover{background:var(--accent-dark);color:#1a0800}
-.hero{max-width:900px;margin:0 auto;padding:80px 24px 60px;text-align:center}
+.hero{max-width:1140px;margin:0 auto;padding:70px 24px 60px;display:grid;grid-template-columns:1.05fr 1fr;gap:56px;align-items:center;text-align:left}
+.hero-text .tagline{margin-left:0}
+.hero-ctas{justify-content:flex-start}
+.hero-text .stat-bar{justify-content:flex-start;margin-top:20px}
+.hero-media .hero-video{max-width:100%;margin:0}
 .hero h1{font-size:34px;line-height:1.3;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin-bottom:18px;max-width:680px;margin-left:auto;margin-right:auto}
 .hero h1 span{color:var(--accent)}
 .tagline{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:6px 14px;margin-bottom:24px}
@@ -66,6 +70,11 @@ h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
 .copy-btn.copied{color:var(--accent-dark)}
 pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.7;color:var(--text);margin:0}
 .section{max-width:1000px;margin:0 auto;padding:60px 24px}
+.split-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:48px;align-items:center;text-align:left}
+.split-grid h2{text-align:left}
+.split-grid h2::before{left:0;transform:none}
+.split-grid .screenshot-frame{margin:0}
+@media(max-width:800px){.split-grid{grid-template-columns:1fr;text-align:center}.split-grid h2{text-align:center}.split-grid h2::before{left:50%;transform:translateX(-50%)}}
 .section:nth-of-type(even){background:var(--code-bg);border-radius:24px;max-width:1048px}
 .section h2{font-size:28px;font-weight:700;color:var(--heading);text-align:center;margin-bottom:12px;letter-spacing:-.01em;position:relative;padding-top:16px}
 .section h2::before{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;background:var(--accent);border-radius:2px}
@@ -86,6 +95,10 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
 .footer-brand{display:flex;align-items:center;gap:6px}
 .footer-brand img{height:13px;width:auto}
 .footer-brand a{color:var(--accent);text-decoration:none;font-weight:600}
+@media(max-width:800px){
+  .hero{grid-template-columns:1fr;text-align:center;gap:32px}
+  .hero-ctas,.hero-text .stat-bar{justify-content:center}
+}
 @media(max-width:640px){
   .nav .links a:not(.cta){display:none}
   .hero h1{font-size:32px}
@@ -104,6 +117,7 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
   </a>
   <div class="links">
     <a href="documentation.html">Docs</a>
+    <a href="guides/index.html">Guides</a>
     <a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener" class="gh-link">GitHub <span id="ghStars" class="gh-stars">★ —</span></a>
     <a id="ghRelease" href="https://github.com/xplurdata/otel-studio/releases" target="_blank" rel="noopener" class="gh-release">latest</a>
     <a href="documentation.html#quickstart" class="cta">Get Started</a>
@@ -111,23 +125,27 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
 </nav>
 
 <section class="hero">
-  <p class="tagline">A telemetry data generator, by <b>XplurData</b></p>
-  <h1>You built the dashboards. You wrote the alerts.<br>But there's no real traffic yet to know if any of it works.</h1>
-  <p>OTel Studio generates that traffic for you — realistic, correlated traces, logs, and metrics across 25 service topologies, sent to any OTel-compatible backend in 60 seconds. No code, no app to deploy.</p>
-  <div class="hero-ctas">
-    <a href="documentation.html#quickstart" class="btn btn-primary">Quick Start →</a>
-    <a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
+  <div class="hero-text">
+    <p class="tagline">A telemetry data generator, by <b>XplurData</b></p>
+    <h1>You built the dashboards. You wrote the alerts.<br>But there's no real traffic yet to know if any of it works.</h1>
+    <p>OTel Studio generates that traffic for you — realistic, correlated traces, logs, and metrics across 25 service topologies, sent to any OTel-compatible backend in 60 seconds. No code, no app to deploy.</p>
+    <div class="hero-ctas">
+      <a href="documentation.html#quickstart" class="btn btn-primary">Quick Start →</a>
+      <a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
+    </div>
+    <div class="stat-bar">
+      <span><b>25</b> Scenarios</span><span class="dot">·</span>
+      <span><b>12</b> Stack Presets</span><span class="dot">·</span>
+      <span><b>3</b> Correlated Signals</span><span class="dot">·</span>
+      <span>MIT Licensed</span>
+    </div>
   </div>
-  <div class="hero-video">
-    <video autoplay muted loop playsinline poster="assets/hero-poster.jpg">
-      <source src="assets/hero-demo.mp4" type="video/mp4">
-    </video>
-  </div>
-  <div class="stat-bar">
-    <span><b>25</b> Scenarios</span><span class="dot">·</span>
-    <span><b>12</b> Stack Presets</span><span class="dot">·</span>
-    <span><b>3</b> Correlated Signals</span><span class="dot">·</span>
-    <span>MIT Licensed</span>
+  <div class="hero-media">
+    <div class="hero-video">
+      <video autoplay muted loop playsinline poster="assets/hero-poster.jpg">
+        <source src="assets/hero-demo.mp4" type="video/mp4">
+      </video>
+    </div>
   </div>
 </section>
 
@@ -195,10 +213,14 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
 </section>
 
 <section class="section">
-  <h2>Real depth, not just a demo toggle</h2>
-  <p class="lead">Every scenario has an Advanced panel — geo/IP simulation, synthetic PII, custom attributes, span duration overrides, weighted status codes.</p>
-  <div class="screenshot-frame">
-    <img src="assets/scenarios-advanced.jpg" alt="OTel Studio Advanced Settings panel showing Geo/IP simulation, Synthetic PII, and custom attribute controls">
+  <div class="split-grid">
+    <div>
+      <h2>Real depth, not just a demo toggle</h2>
+      <p class="lead">Every scenario has an Advanced panel — geo/IP simulation, synthetic PII, custom attributes, span duration overrides, weighted status codes.</p>
+    </div>
+    <div class="screenshot-frame">
+      <img src="assets/scenarios-advanced.jpg" alt="OTel Studio Advanced Settings panel showing Geo/IP simulation, Synthetic PII, and custom attribute controls">
+    </div>
   </div>
 </section>
 
@@ -211,6 +233,55 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
     <div class="card"><h3>Open Source Projects</h3><p>Tools like SigNoz, OpenObserve, and Coroot needing a test data generator for their own CI/testing.</p></div>
   </div>
 </section>
+
+<section class="section">
+  <h2>Frequently asked questions</h2>
+  <div style="max-width:700px;margin:0 auto">
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Does OTel Studio require any changes to my application code?</summary>
+      <p style="margin-top:10px;color:var(--muted)">No. OTel Studio generates telemetry independently — it doesn't instrument or touch your actual application at all. It sends realistic OTLP traces, logs, and metrics directly to your collector or backend, so you can validate dashboards, alerts, and pipeline configuration without deploying anything to your real services.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Can this replace testing with real production traffic?</summary>
+      <p style="margin-top:10px;color:var(--muted)">No, and it isn't meant to. Real traffic will always surface things synthetic data can't. What OTel Studio is for is everything <em>before</em> that — validating that your collector config, dashboards, and alert rules actually work at all, before you have real traffic to test against, or when you need controllable, repeatable error/latency conditions that real traffic won't reliably give you on demand.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Does it work with self-hosted and on-premise observability stacks?</summary>
+      <p style="margin-top:10px;color:var(--muted)">Yes — OTel Studio speaks standard OTLP (gRPC or HTTP) to any compatible endpoint, self-hosted or cloud. The one-click stack presets cover 12 popular backends, but any OTLP receiver works, including a self-hosted OpenTelemetry Collector, Grafana stack, Jaeger, or your own custom pipeline.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">How is this different from telemetrygen or hand-written test scripts?</summary>
+      <p style="margin-top:10px;color:var(--muted)">Those tools are great for sending a single, precise OTLP payload to test one specific rule. OTel Studio is built for the opposite case — realistic, correlated traffic across many simulated services at once, with logs that share trace IDs with the spans that produced them, controllable error rates and latency spikes, and a UI so you can adjust scenarios live instead of editing a script and re-running it.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Is the generated data actually realistic, or just random noise?</summary>
+      <p style="margin-top:10px;color:var(--muted)">Each of the 25 scenarios models a genuine service topology — real parent-child span chains, realistic log messages per service (JVM GC pauses, Kubernetes OOMKills, gRPC deadline errors, and similar), and natural signal ratios where logs outnumber traces the way they do in real systems. It's synthetic, but built to resemble what an actual distributed system produces, not randomized filler.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Can I send data to more than one backend at the same time?</summary>
+      <p style="margin-top:10px;color:var(--muted)">Yes — multi-endpoint fanout is built in, with independent TLS/mTLS configuration per endpoint. Useful for comparing two backends side by side, or validating a migration before cutting traffic over entirely.</p>
+    </details>
+    <details style="padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">What's the licensing?</summary>
+      <p style="margin-top:10px;color:var(--muted)">See the <a href="https://github.com/xplurdata/otel-studio/blob/main/LICENSE" target="_blank" rel="noopener">LICENSE file</a> in the repository for the current terms.</p>
+    </details>
+  </div>
+</section>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {"@type": "Question", "name": "Does OTel Studio require any changes to my application code?", "acceptedAnswer": {"@type": "Answer", "text": "No. OTel Studio generates telemetry independently and sends realistic OTLP traces, logs, and metrics directly to your collector or backend, without instrumenting or touching your actual application."}},
+    {"@type": "Question", "name": "Can this replace testing with real production traffic?", "acceptedAnswer": {"@type": "Answer", "text": "No. It validates collector configuration, dashboards, and alert rules before real traffic exists, or provides controllable, repeatable error and latency conditions on demand."}},
+    {"@type": "Question", "name": "Does it work with self-hosted and on-premise observability stacks?", "acceptedAnswer": {"@type": "Answer", "text": "Yes. OTel Studio speaks standard OTLP over gRPC or HTTP to any compatible endpoint, self-hosted or cloud, including a self-hosted OpenTelemetry Collector, Grafana stack, or Jaeger."}},
+    {"@type": "Question", "name": "How is this different from telemetrygen or hand-written test scripts?", "acceptedAnswer": {"@type": "Answer", "text": "OTel Studio generates realistic, correlated traffic across many simulated services at once with a live UI, rather than sending a single precise payload from a script."}},
+    {"@type": "Question", "name": "Is the generated data actually realistic, or just random noise?", "acceptedAnswer": {"@type": "Answer", "text": "Each scenario models a genuine service topology with realistic span chains, service-specific log messages, and natural signal ratios resembling real distributed systems."}},
+    {"@type": "Question", "name": "Can I send data to more than one backend at the same time?", "acceptedAnswer": {"@type": "Answer", "text": "Yes, multi-endpoint fanout is built in with independent TLS/mTLS configuration per endpoint."}}
+  ]
+}
+</script>
 
 <section class="section" style="text-align:center">
   <h2>Ready to try it?</h2>
