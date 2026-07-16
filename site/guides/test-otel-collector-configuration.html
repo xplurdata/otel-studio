@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Test Your OpenTelemetry Collector Configuration Before Production — OTel Studio</title>
+<meta name="description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors, and exporters before a real workload depends on them.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:24px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:13px;color:var(--muted);margin-bottom:40px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:40px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="../index.html" class="logo">
+    <div class="mark">O</div>
+    <span class="logo-text">
+      <span class="name">OTel <b>Studio</b></span>
+      <span class="logo-sub"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></span>
+    </span>
+  </a>
+  <div class="links">
+    <a href="../documentation.html">Docs</a>
+    <a href="index.html">Guides</a>
+    <a href="../documentation.html#quickstart" class="cta">Get Started</a>
+  </div>
+</nav>
+
+<article>
+  <span class="tag">Testing</span>
+  <h1>How to Test Your OpenTelemetry Collector Configuration Before Production</h1>
+  <p class="meta">A practical checklist for validating receivers, processors, and exporters before a real workload depends on them.</p>
+
+  <p>A misconfigured OpenTelemetry Collector rarely fails loudly. It fails quietly — a processor silently drops spans that don't match its expected shape, an exporter retries into a void because of a typo'd endpoint, a sampling rule filters out exactly the traces you needed during an incident. By the time anyone notices, it's usually because they went looking for data that should have been there and wasn't.</p>
+
+  <p>Testing a collector config properly means checking each stage of the pipeline independently, then checking that the whole chain works together — not just sending one test span and calling it done.</p>
+
+  <h2>1. Test the receiver first, in isolation</h2>
+  <p>Before anything else, confirm the collector is actually listening where you think it is. This catches the most common early mistake: a receiver bound to the wrong port, protocol, or interface.</p>
+  <ul>
+    <li>Check the collector's own logs on startup — it will log which receivers started and on which address.</li>
+    <li>For gRPC receivers, a plain TCP connection test is often more useful than trying to send real telemetry — if the port refuses connections, nothing downstream matters yet.</li>
+    <li>For HTTP receivers, confirm the exact path (<code>/v1/traces</code>, <code>/v1/logs</code>, <code>/v1/metrics</code>) — a receiver can be "up" while still rejecting every request because of a path mismatch.</li>
+  </ul>
+
+  <h2>2. Test processors with data that actually varies</h2>
+  <p>This is where most configs get under-tested. A single hand-crafted test span rarely exercises the processors that matter most:</p>
+  <ul>
+    <li><strong>Batch processors</strong> — do they actually batch, or is every span going out individually because the batch size/timeout never gets hit under low test volume?</li>
+    <li><strong>Sampling processors</strong> — test with both a normal-looking trace and an explicitly error-tagged one. Tail-based sampling in particular needs traces with varying attributes to prove it's making the right keep/drop decisions.</li>
+    <li><strong>Attribute processors</strong> — confirm renamed or redacted fields actually show up correctly (or don't show up, if you're testing PII scrubbing) on the far side, not just in the collector's own debug output.</li>
+  </ul>
+
+  <div class="callout"><strong>Why single test spans aren't enough:</strong> a processor rule that filters on <code>http.status_code &gt;= 500</code> will pass a manual test with a 200 response and never reveal itself as broken — you only find out the rule was inverted when a real error trace goes missing during an actual incident.</div>
+
+  <h2>3. Test exporters against the real backend, not just "it connected"</h2>
+  <p>A successful TCP handshake to your backend doesn't mean data is actually being accepted. Confirm:</p>
+  <ul>
+    <li>Auth headers are correct — many backends accept the connection but silently reject unauthenticated payloads</li>
+    <li>TLS/mTLS certs are valid for the actual hostname being used, not just present</li>
+    <li>Data genuinely appears in the backend's UI or query interface, searchable by something specific (a trace ID, a distinctive attribute) — not just "the export count went up"</li>
+  </ul>
+
+  <h2>4. Test the whole chain together — with correlation intact</h2>
+  <p>The most common gap: each stage tests fine independently, but trace-log correlation breaks somewhere in the pipeline. A log processor that strips <code>trace_id</code> during redaction, or a batch that separates related signals across export cycles, can silently disconnect logs from the traces that produced them — without any error, warning, or dropped-data metric to flag it.</p>
+  <p>The only reliable way to catch this: generate a trace and its correlated logs together, then confirm in your backend that searching by that trace ID actually surfaces both. This has to be an explicit check — collector metrics alone won't tell you correlation broke.</p>
+
+  <h2>Generating the test data itself</h2>
+  <p>You have a few real options here, each with a different tradeoff:</p>
+  <ul>
+    <li><strong>Manual OTLP payloads</strong> (hand-crafted JSON, or tools like <code>telemetrygen</code>) — fast, precise, good for testing one specific rule in isolation. Weak for realistic volume or multi-signal correlation testing.</li>
+    <li><strong>Full demo applications</strong> (e.g., the OpenTelemetry Astronomy Shop) — realistic, but heavy to deploy just to validate a collector config change.</li>
+    <li><strong>A dedicated generator</strong> — something that produces realistic, correlated traces/logs/metrics across many simulated services at once, so you're testing against traffic that actually resembles production rather than one clean example.</li>
+  </ul>
+  <p>This is the exact gap <a href="../index.html">OTel Studio</a> is built for — generating correlated, multi-service telemetry against your actual collector config, so you can run through this whole checklist against realistic traffic patterns rather than a single synthetic span.</p>
+
+  <h2>A minimal pre-production checklist</h2>
+  <ol>
+    <li>Receiver reachable on the expected protocol/port/path</li>
+    <li>Batch processor actually batching under realistic volume</li>
+    <li>Sampling rules tested against both normal and error-flagged traces</li>
+    <li>Attribute redaction/renaming verified on the exported side, not just collector debug logs</li>
+    <li>Exporter auth/TLS confirmed against the real backend, not just a TCP check</li>
+    <li>Trace-log correlation confirmed by searching a specific trace ID in your backend and finding both signal types</li>
+  </ol>
+
+  <p>None of this replaces real production traffic eventually finding the gaps you missed. But catching the obvious ones — a wrong path, an inverted sampling rule, redaction that doesn't redact — before that traffic arrives is the difference between a quiet config change and a 2am page.</p>
+</article>
+
+<footer>
+  Built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>
+</footer>
+
+</body>
+</html>
