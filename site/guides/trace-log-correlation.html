@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Understanding Trace-Log Correlation in Distributed Systems — OTel Studio</title>
+<meta name="description" content="How trace-log correlation actually works under the hood, why it silently breaks, and how to verify it's working in your own pipeline.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:24px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:13px;color:var(--muted);margin-bottom:40px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:40px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="logo">
+    <div class="mark">O</div>
+    <span class="logo-text"><span class="name">OTel <b>Studio</b></span><span class="logo-sub"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></span></span>
+  </a>
+  <div class="links">
+    <a href="../documentation.html">Docs</a>
+    <a href="index.html">Guides</a>
+    <a href="../documentation.html#quickstart" class="cta">Get Started</a>
+  </div>
+</nav>
+
+<article>
+  <span class="tag">Concepts</span>
+  <h1>Understanding Trace-Log Correlation in Distributed Systems</h1>
+  <p class="meta">How it actually works, why it silently breaks, and how to verify it's genuinely working in your own pipeline.</p>
+
+  <p>"Trace-log correlation" gets mentioned constantly in observability marketing and rarely explained precisely. The mechanism is simple once you see it, but that simplicity is exactly why it's easy to silently break without any error, warning, or dropped-data metric telling you it happened.</p>
+
+  <h2>What's actually happening under the hood</h2>
+  <p>When a span starts, OpenTelemetry generates a <code>trace_id</code> and <code>span_id</code> and stores them in the current execution context. That context is a specific, addressable piece of state — not just metadata floating nearby. Any log statement emitted <em>while that context is active</em> can read those same IDs and attach them to the log record.</p>
+  <p>That's the entire mechanism. There's no special "linking" step, no separate correlation database, no matching logic on the backend. A log either had the right context active when it was written, or it didn't — and if it didn't, there's nothing downstream that can retroactively fix it.</p>
+
+  <h2>Why it breaks silently, specifically</h2>
+  <p>This is the part that catches people off guard: a pipeline with broken correlation looks completely healthy by every normal metric. Traces export fine. Logs export fine. Volume looks normal. Nothing errors. The only symptom is that searching for a trace ID in your logs backend returns nothing — and you usually only discover that during an actual incident, when you need it most.</p>
+  <p>Three specific, common causes:</p>
+  <ul>
+    <li><strong>No context manager registered.</strong> In Node.js specifically, if <code>AsyncHooksContextManager</code> (or an equivalent) was never explicitly registered, the SDK has nothing that reliably tracks "what context is active" across asynchronous boundaries. Spans still get created fine — they're built with an explicit parent reference — but logs emitted afterward have nothing correct to read from.</li>
+    <li><strong>Logging happens outside the span's lifetime.</strong> If a log statement fires after a span has already ended, or in a callback that executes outside the original request's async context, it silently has no trace context available at all.</li>
+    <li><strong>A processor strips the fields.</strong> A redaction or attribute-scrubbing rule in your collector that isn't scoped carefully can remove <code>trace_id</code>/<code>span_id</code> along with whatever it was actually meant to redact.</li>
+  </ul>
+
+  <div class="callout"><strong>A real example of cause #1:</strong> a Node.js service correctly exported traces and logs separately, with logs even showing up correctly in the application's own internal UI — because that UI generated its own display-layer trace ID reference, unrelated to what actually got attached to the exported OTLP log record. The two looked identical in testing. Only checking the raw log record in the actual backend revealed <code>trace_id</code> was empty. The fix was one missing SDK registration call, but finding it required checking the actual exported data, not a UI that happened to display something plausible-looking.</div>
+
+  <h2>How to actually verify it — not just assume it</h2>
+  <p>Because this breaks silently, "traces work and logs work" tells you nothing about whether they're correlated. The only real test:</p>
+  <ol>
+    <li>Generate a request that produces both a trace and at least one log</li>
+    <li>Copy the exact trace ID from the trace</li>
+    <li>Search your logs backend for that specific ID</li>
+    <li>Confirm the log record's raw fields — not a UI summary — actually contain a populated <code>trace_id</code></li>
+  </ol>
+  <p>Step 4 matters specifically because some tools display a trace reference in their own UI even when the underlying exported data doesn't actually carry it — the display and the data are not always the same thing. Check the raw record, not just what a dashboard renders.</p>
+
+  <p>This is also why testing correlation needs realistic, multi-service traffic rather than one hand-crafted example — see our guide on <a href="test-otel-collector-configuration.html">testing your collector configuration</a> for the full pre-production checklist, including this exact check.</p>
+</article>
+
+<footer>
+  Built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>
+</footer>
+</body>
+</html>

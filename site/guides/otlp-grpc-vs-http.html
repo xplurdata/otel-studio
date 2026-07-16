@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OTLP gRPC vs HTTP: Which Should You Use — OTel Studio</title>
+<meta name="description" content="A practical comparison of OTLP over gRPC vs HTTP for OpenTelemetry — performance, firewall/proxy behavior, and how to choose for your actual setup.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:24px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:13px;color:var(--muted);margin-bottom:40px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:40px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table{width:100%;border-collapse:collapse;margin:20px 0;font-size:14px}
+th{text-align:left;font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);padding:8px 12px;border-bottom:2px solid var(--border)}
+td{padding:10px 12px;border-bottom:1px solid var(--border)}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="logo">
+    <div class="mark">O</div>
+    <span class="logo-text"><span class="name">OTel <b>Studio</b></span><span class="logo-sub"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></span></span>
+  </a>
+  <div class="links">
+    <a href="../documentation.html">Docs</a>
+    <a href="index.html">Guides</a>
+    <a href="../documentation.html#quickstart" class="cta">Get Started</a>
+  </div>
+</nav>
+
+<article>
+  <span class="tag">Protocols</span>
+  <h1>OTLP gRPC vs HTTP: Which Should You Use</h1>
+  <p class="meta">A practical comparison for choosing between the two OTLP transport options in a real deployment.</p>
+
+  <p>OpenTelemetry's wire protocol, OTLP, ships in two transport flavors: gRPC and HTTP (with either protobuf or JSON encoding). Most getting-started guides default to gRPC without much explanation, which leaves people who hit a firewall, proxy, or debugging wall wondering whether they picked wrong. Usually they didn't — they just hit one of the real, specific tradeoffs between the two.</p>
+
+  <h2>The core difference that actually matters</h2>
+  <p>gRPC uses HTTP/2 with a persistent, multiplexed binary connection. HTTP uses standard request/response semantics, either as binary protobuf or (less commonly) plain JSON. That one difference cascades into almost everything else below.</p>
+
+  <table>
+    <tr><th>Factor</th><th>gRPC</th><th>HTTP</th></tr>
+    <tr><td>Default port</td><td>4317</td><td>4318</td></tr>
+    <tr><td>Connection model</td><td>Persistent, multiplexed</td><td>Per-request (or HTTP keep-alive)</td></tr>
+    <tr><td>Proxy/firewall friendliness</td><td>Can require HTTP/2-aware infrastructure</td><td>Works through almost any standard HTTP proxy</td></tr>
+    <tr><td>Payload inspection</td><td>Binary — hard to read raw</td><td>JSON variant is human-readable</td></tr>
+    <tr><td>Typical overhead</td><td>Lower, especially at high volume</td><td>Slightly higher per-request overhead</td></tr>
+  </table>
+
+  <h2>When gRPC is the right call</h2>
+  <ul>
+    <li><strong>High-volume production traffic.</strong> The persistent multiplexed connection genuinely reduces overhead when you're sending thousands of spans per second — you're not paying connection setup cost per batch.</li>
+    <li><strong>Your infrastructure already speaks gRPC.</strong> If your collector, service mesh, and internal tooling are already gRPC-native, staying consistent avoids adding a second protocol to reason about.</li>
+    <li><strong>You control the network path end-to-end.</strong> Internal, same-cluster traffic where you're not fighting a corporate proxy or an old load balancer that only understands HTTP/1.1.</li>
+  </ul>
+
+  <h2>When HTTP is the right call</h2>
+  <ul>
+    <li><strong>You're going through infrastructure you don't fully control.</strong> Corporate proxies, some API gateways, and older load balancers can mishandle or outright block HTTP/2-based gRPC traffic. Plain HTTP rarely has this problem.</li>
+    <li><strong>You need to debug what's actually being sent.</strong> The JSON-encoded HTTP variant is directly readable in a packet capture or a simple <code>curl</code> test — gRPC's binary framing isn't something you can eyeball.</li>
+    <li><strong>You're doing local development or testing.</strong> One less thing to get wrong when you're just trying to confirm a collector receives anything at all.</li>
+  </ul>
+
+  <div class="callout"><strong>A specific, common failure mode:</strong> a gRPC exporter reports "connection established" while telemetry silently fails to arrive — this is often an HTTP/1.1-only proxy sitting in the path, silently mangling the HTTP/2 framing gRPC depends on. If exports look "connected but empty," HTTP is a fast way to rule out whether the transport itself is the problem before debugging anything else. See our guide on <a href="test-otel-collector-configuration.html">testing your collector configuration</a> for the full check.</div>
+
+  <h2>Testing both before committing</h2>
+  <p>Since this is fundamentally an infrastructure compatibility question, not just a preference, it's worth testing both transports against your actual network path before locking one in — especially if any part of the route involves infrastructure you don't fully control. OTel Studio supports both protocols per endpoint, including sending to two endpoints on different transports simultaneously, so you can directly compare delivery reliability rather than guessing.</p>
+
+  <p>Neither is universally "better" — gRPC is more efficient when nothing's in the way, HTTP is more forgiving when something is. Test against your actual network path rather than defaulting to whichever the docs mentioned first.</p>
+</article>
+
+<footer>
+  Built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>
+</footer>
+</body>
+</html>

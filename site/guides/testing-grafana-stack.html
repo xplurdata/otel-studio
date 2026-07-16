@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Testing Your Grafana Stack With Synthetic Telemetry — OTel Studio</title>
+<meta name="description" content="A practical walkthrough for validating Grafana, Tempo, Loki, and Mimir dashboards and alerts before real production traffic arrives.">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:24px}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:13px;color:var(--muted);margin-bottom:40px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:40px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <a href="../index.html" class="logo">
+    <div class="mark">O</div>
+    <span class="logo-text"><span class="name">OTel <b>Studio</b></span><span class="logo-sub"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></span></span>
+  </a>
+  <div class="links">
+    <a href="../documentation.html">Docs</a>
+    <a href="index.html">Guides</a>
+    <a href="../documentation.html#quickstart" class="cta">Get Started</a>
+  </div>
+</nav>
+
+<article>
+  <span class="tag">Guide</span>
+  <h1>Testing Your Grafana Stack With Synthetic Telemetry</h1>
+  <p class="meta">A practical walkthrough for validating Tempo, Loki, and Mimir dashboards and alerts before real traffic arrives.</p>
+
+  <p>Standing up Grafana with Tempo (traces), Loki (logs), and Mimir (metrics) is the easy part — most of the actual setup guides stop there. The harder, less-documented part is knowing whether it actually <em>works</em> before you're relying on it during an incident. This walks through validating each piece specifically, using OTel Studio to generate realistic traffic against your stack.</p>
+
+  <h2>1. Point OTel Studio at your Grafana stack</h2>
+  <p>Grafana Alloy is the modern recommended OTLP receiver for the Grafana stack, replacing the older Grafana Agent. OTel Studio has a one-click preset for it:</p>
+  <ul>
+    <li>Endpoints page → Stack Presets → <strong>Grafana Alloy</strong></li>
+    <li>Pick gRPC (port 4317) or HTTP (port 4318) depending on your network path — see our <a href="otlp-grpc-vs-http.html">OTLP gRPC vs HTTP guide</a> if you're unsure which fits your setup</li>
+    <li>If Alloy is running in Docker alongside OTel Studio, remember both containers need to share a Docker network for the hostname to resolve</li>
+  </ul>
+
+  <h2>2. Validate Tempo (traces) specifically</h2>
+  <p>Start a scenario, then in Grafana's Explore view, switch to the Tempo data source and search by service name. What to actually check, not just "did anything show up":</p>
+  <ul>
+    <li>Does the trace waterfall show the correct parent-child span structure, or does it look flattened/disconnected?</li>
+    <li>Are span durations reasonable, or is everything showing 0ms (a common sign of a timestamp/clock issue between the generator and collector)?</li>
+    <li>Click into a span's attributes — are they actually populated, or empty despite the span existing?</li>
+  </ul>
+
+  <h2>3. Validate Loki (logs) — and the correlation specifically</h2>
+  <p>This is the step most setups skip, and the one most likely to be silently broken. Copy a trace ID from a Tempo trace, then search Loki directly for that same ID (not through Grafana's "correlated logs" panel — search Loki's raw query interface directly, so you're testing the actual data, not a UI feature that might mask missing correlation). If nothing comes back, correlation is broken somewhere in the pipeline — see our <a href="trace-log-correlation.html">trace-log correlation guide</a> for exactly why this happens and how to find the specific cause.</p>
+
+  <h2>4. Validate Mimir (metrics) and actually test your alert rules</h2>
+  <p>Metrics validation is often reduced to "did the counter go up," which misses the real point — you're not just checking that metrics arrive, you're checking that your <em>alert rules fire correctly</em> against them. OTel Studio's Anomaly Injection is built for exactly this: a 30-second burst of 10× traffic and 80% error rate, controllable on demand, so you can watch your actual alert rules trigger against realistic conditions rather than trusting they're configured correctly without ever seeing them fire.</p>
+
+  <div class="callout"><strong>A specific thing worth testing deliberately:</strong> error-budget and SLO burn-rate alerts are usually the least-tested part of a new observability setup, precisely because they need sustained abnormal conditions to trigger — conditions real traffic rarely provides on a predictable schedule during setup. A controllable synthetic burst is the practical way to confirm the alert rule's math is actually correct before you're depending on it.</div>
+
+  <h2>A minimal validation checklist</h2>
+  <ol>
+    <li>Traces appear in Tempo with correct span hierarchy and non-zero durations</li>
+    <li>Log records in Loki are searchable by the exact trace ID from a Tempo trace</li>
+    <li>Metrics in Mimir reflect the actual scenario configuration (rate, error percentage)</li>
+    <li>At least one alert rule has been deliberately triggered and confirmed to fire</li>
+    <li>Dashboards render correctly across a range of traffic patterns — not just the default "everything healthy" case</li>
+  </ol>
+
+  <p>None of this replaces validating against real production traffic eventually. But confirming the stack actually works — correlation intact, alerts firing correctly — before that traffic exists is what turns "we think it's configured right" into something you've actually verified.</p>
+</article>
+
+<footer>
+  Built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>
+</footer>
+</body>
+</html>
