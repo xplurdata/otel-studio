@@ -40,7 +40,7 @@ OTel Studio sits between "too simple" and "too heavy": drop in a Docker image, p
 
 ## Features
 
-- **25 realistic service topologies** — actual parent-child request chains across Web App, Infrastructure, APM, Cloud Native, and Chaos/Stress categories, not random noise
+- **30 realistic service topologies** — actual parent-child request chains across Web App, Infrastructure, APM, Cloud Native, Chaos/Stress and GenAI categories, not random noise
 - **Correlated signals** — logs share trace IDs with the spans that produced them
 - **Chaos scenarios** — dedicated error-storm, cardinality-burst, and latency-spike modes for testing alerting and dashboards
 - **Multi-endpoint fanout** — send to two or more OTel backends (e.g. Grafana + Elastic) simultaneously, with independent TLS/mTLS per endpoint
@@ -48,7 +48,9 @@ OTel Studio sits between "too simple" and "too heavy": drop in a Docker image, p
 - **Synthetic PII** — opt-in, per-scenario synthetic user data (RFC 2606 reserved domains only) for testing redaction/DLP pipelines
 - **Advanced scenario controls** — custom attributes, span duration overrides, weighted status codes
 - **Real system data** — optionally tail real log files and Docker container logs/metrics alongside simulated traffic
-- **One-click stack presets** — Grafana Alloy, OpenTelemetry Collector, Elastic APM, Honeycomb, Jaeger, SigNoz, OpenObserve, Datadog, New Relic, Dynatrace, Lightstep
+- **Bearer token and request headers** per endpoint, stored encrypted and never shown again; OTLP over gRPC, HTTP protobuf or HTTP JSON
+- **Command-line mode and Job API** — run headless in CI or start and stop runs from another application; standard `OTEL_EXPORTER_OTLP_*` variables are read
+- **One-click stack presets** — Grafana Alloy, OpenTelemetry Collector, Elastic APM, Honeycomb, Jaeger, SigNoz, OpenObserve, Datadog, New Relic and Dynatrace
 
 ## Quick Start
 
@@ -57,12 +59,21 @@ docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
   -e ADMIN_PASS="change-me" \
-  otel-studio:latest
+  ghcr.io/xplurdata/otel-studio:latest
 ```
 
 Open `http://localhost:3002`, log in, pick a scenario, hit Start.
 
 Full setup, environment variables, and every feature documented at **[otel-studio.xplurdata.com/documentation.html](https://otel-studio.xplurdata.com/documentation.html)**.
+
+## Images
+
+Both images are published for `linux/amd64` and `linux/arm64`.
+
+| Tag | Contents |
+|---|---|
+| `latest`, `2.0.0` | OTel Studio only (about 290 MB). Use this one. |
+| `latest-browser`, `2.0.0-browser` | The same plus Chromium (about 1.1 GB), for real-browser RUM only. |
 
 ## Security
 

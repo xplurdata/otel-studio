@@ -88,24 +88,45 @@ tr:last-child td{border:none}
 <nav class="sidebar">
   <div class="group">Getting Started</div>
   <a href="#quickstart">Quick Start</a>
+  <a href="#images">Image Variants</a>
   <a href="#navigation">Navigating the App</a>
   <a href="#architecture">Architecture</a>
   <a href="#docker">Docker Configuration</a>
-  <div class="group">Features</div>
-  <a href="#scenarios">25 Scenarios</a>
+  <div class="group">Scenarios</div>
+  <a href="#scenarios">30 Scenarios</a>
   <a href="#signals">Signal Types</a>
   <a href="#advanced">Advanced Scenario Controls</a>
   <a href="#anomaly">Anomaly Injection</a>
   <a href="#sequential">Sequential Mode</a>
+  <a href="#incident">Inject Incident</a>
   <a href="#quota">Time Limit / Quota</a>
+  <div class="group">Simulators</div>
+  <a href="#infrastructure">Infrastructure</a>
+  <a href="#containers">Containers</a>
+  <a href="#kubernetes">Kubernetes</a>
+  <a href="#synthetics">Synthetics</a>
+  <a href="#rum">RUM (Real User Monitoring)</a>
+  <a href="#browser-rum">Real-browser RUM</a>
+  <a href="#aiobs">AI Observability</a>
+  <a href="#simulator-scheduling">Per-Simulator Start/Stop</a>
+  <a href="#simulator-identity">Cross-Simulator Identity</a>
+  <a href="#synthetic-marking">Synthetic Marking</a>
+  <div class="group">Endpoints & Data</div>
   <a href="#endpoints">Multi-Endpoint Fanout</a>
+  <a href="#endpoint-auth">URL, Token &amp; Headers</a>
+  <a href="#backend-presets">Backend Presets</a>
   <a href="#tls">TLS / mTLS</a>
-  <a href="#presets">Stack Presets</a>
   <a href="#webhook">Webhook on Quota Expire</a>
   <a href="#realdata">Real System Data</a>
+  <a href="#stats">Stats</a>
   <a href="#export">Import / Export</a>
+  <a href="#users">Settings, Users &amp; Tour</a>
+  <div class="group">CI / Automation</div>
+  <a href="#headless">Command-line Mode</a>
+  <a href="#job-api">Job API</a>
   <div class="group">Reference</div>
   <a href="#env">Environment Variables</a>
+  <a href="#security">Security</a>
 </nav>
 <main class="content">
 
@@ -116,8 +137,6 @@ tr:last-child td{border:none}
 
 <h2 id="quickstart">Quick Start</h2>
 
-<p>The minimal command to get running — good for a first try. See <a href="#docker">Docker Configuration</a> below for the full production setup (persistent storage, real system data, resource limits).</p>
-
 <div class="code-wrap">
 <div class="code-head">
   <span class="code-lang">bash</span>
@@ -126,27 +145,40 @@ tr:last-child td{border:none}
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://your-collector:4317" \
   -e OTEL_PROTOCOL="grpc" \
-  -e ADMIN_PASS="your-password" \
   ghcr.io/xplurdata/otel-studio:latest</pre>
 </div>
 
-<p>If your collector runs in Docker too, add <code>--network &lt;your-network&gt;</code> so <code>your-collector</code> above actually resolves — Docker only resolves container names between containers sharing the same network. See the full example below for a working reference.</p>
+<p>Open <code>http://localhost:3002</code> and log in as <code>admin</code>. <code>ADMIN_PASS</code> is optional — if you don't set it, a random password is generated on first boot and printed once in the container logs (<code>docker logs otel-studio</code>). Set <code>ADMIN_PASS</code> explicitly if you want to choose your own instead.</p>
 
-<p>Open <code>http://localhost:3002</code>, log in with <code>admin</code> / your password, enable a scenario and click Start.</p>
+<p>You can also start the container <strong>without</strong> <code>OTEL_ENDPOINT</code>: OTel Studio has no built-in destination, so nothing is sent until you add your OTLP backend or collector on the <strong>Endpoints</strong> page (the Dashboard reminds you, and Start asks for an endpoint first).</p>
+
+<h2 id="images">Image Variants</h2>
+
+<table>
+<tr><th>Tag</th><th>Contents</th><th>Use it for</th></tr>
+<tr><td><code>latest</code>, <code>2.0.0</code></td><td>OTel Studio only — about 290 MB, <code>linux/amd64</code> and <code>linux/arm64</code></td><td>Everything in this documentation <em>except</em> real-browser RUM. This is the one to use.</td></tr>
+<tr><td><code>latest-browser</code>, <code>2.0.0-browser</code></td><td>The same, plus Chromium — about 1.1 GB</td><td>Real-browser RUM, which drives a headless browser against your own instrumented site (see <a href="#browser-rum">Real-browser RUM</a>).</td></tr>
+</table>
 
 <h2 id="navigation">Navigating the App</h2>
 
-<p>OTel Studio uses a slim icon rail on the left to switch between five pages. Each gets the full window width — nothing is squeezed into a sidebar.</p>
+<p>OTel Studio uses a slim icon rail on the left to switch between eleven pages. Each gets the full window width — nothing is squeezed into a sidebar.</p>
 
 <div class="nav-grid">
-  <div class="nav-card"><b>Dashboard</b><span>Live stat cards (traces/logs/metrics/errors) and the real-time activity feed. Default landing page. Shows which scenarios are currently running.</span></div>
-  <div class="nav-card"><b>Scenarios</b><span>All 25 scenario cards, grouped by category, with rate/batch/error controls and the Advanced Settings panel per scenario.</span></div>
+  <div class="nav-card"><b>Dashboard</b><span>Live stat cards (traces/logs/metrics/errors), Pillar Status strip showing all six simulators at a glance, and the real-time activity feed. Default landing page.</span></div>
+  <div class="nav-card"><b>Scenarios</b><span>All 30 scenario cards, grouped by category (including a GenAI group), with rate/batch/error controls and the Advanced Settings panel per scenario.</span></div>
   <div class="nav-card"><b>Real Data</b><span>Configure real log file tailing and Docker container log/metric collection, alongside the simulated traffic.</span></div>
-  <div class="nav-card"><b>Endpoints</b><span>Add, edit, and multi-select active endpoints for fanout. Stack presets, TLS/mTLS, geo mode, webhook, and config import/export all live here.</span></div>
-  <div class="nav-card"><b>Stats</b><span>Aggregate totals and a per-scenario breakdown of traces, logs, and errors sent since the last reset.</span></div>
+  <div class="nav-card"><b>Infrastructure</b><span>Simulated host fleet with real cloud/OS distributions, fleet churn, and live CPU/mem/swap/iowait metrics per host. Scenario services, Containers, and Kubernetes all correlate to this same fleet — not separate identities.</span></div>
+  <div class="nav-card"><b>Containers</b><span>Container fleet correlated to real Infrastructure hosts, lifecycle events (OOM/crash/restart), real CPU throttling detection, and memory tracked as %-to-limit.</span></div>
+  <div class="nav-card"><b>Kubernetes</b><span>Clusters (with control-plane/API-server + etcd health), nodes (with real health conditions), pods (with resource requests/limits and QoS class), deployments with real HPA-formula autoscaling and rolling updates, plus a real Events feed matching actual K8s reason strings.</span></div>
+  <div class="nav-card"><b>Synthetics</b><span>Single- and multi-step HTTP checks against your own URLs — status, body-content, and response-time-threshold assertions, retry-before-fail logic, and SSL expiry warnings.</span></div>
+  <div class="nav-card"><b>RUM</b><span>Concurrent simulated browser sessions with Core Web Vitals and rage/dead-click detection, genuinely correlated to backend traces via shared trace IDs. Includes JS error fingerprinting/grouping and named business-milestone conversion funnels.</span></div>
+  <div class="nav-card"><b>AI Observability</b><span>Simulated LLM calls across 8 models spanning 5 major providers, with real token/cost/latency metrics, quality and safety scoring, and RAG/agent-specific signals.</span></div>
+  <div class="nav-card"><b>Endpoints</b><span>Add, edit, and multi-select active endpoints for fanout. Backend presets, TLS/mTLS, geo mode, webhook, and config import/export all live here.</span></div>
+  <div class="nav-card"><b>Stats</b><span>Totals and per-minute rates since the last reset, and an estimated cardinality and data volume (with a per-simulator breakdown) based on the simulators you have enabled.</span></div>
 </div>
 
-<p>The top control bar (Real System Data / Simulation toggles, signal switches, quota timer, Inject Anomaly, global rate multiplier, Start/Stop/Reset) stays visible on every page — these are global controls, not scoped to any one page.</p>
+<p>The top control bar (Real System Data / Simulation toggles, signal switches, quota timer, Inject Anomaly, Inject Incident, global rate multiplier, Start/Stop/Reset) stays visible on every page — these are global controls, not scoped to any one page. Each of the six simulators (Infrastructure, Containers, Kubernetes, Synthetics, RUM, AI Observability) also has its own independent Start/Stop with an optional duration, separate from this global control — see <a href="#simulator-scheduling">Per-Simulator Start/Stop</a>.</p>
 
 <h2 id="architecture">Architecture</h2>
 
@@ -169,8 +201,6 @@ tr:last-child td{border:none}
 
 <h2 id="docker">Docker Configuration</h2>
 
-<p>The full setup used in production — persistent SQLite storage, real system data collection, and a memory limit, on top of everything in the quick start above.</p>
-
 <div class="code-wrap">
 <div class="code-head">
   <span class="code-lang">bash</span>
@@ -179,26 +209,29 @@ tr:last-child td{border:none}
 <pre>docker run -d --name otel-studio -p 3002:3002 \
   -e OTEL_ENDPOINT="http://otelcol:4317" \
   -e OTEL_PROTOCOL="grpc" \
-  -e SERVICE_NAME="otel-agent" \
+  -e SERVICE_NAME="otel-studio" \
   -e ENVIRONMENT="production" \
   -e ADMIN_PASS="secure-password" \
   -e MODE_REAL="true" \
   -e MODE_SIM="true" \
+  --group-add "$(stat -c %g /var/run/docker.sock)" \
   -v /var/log:/var/log:ro \
   -v /var/run/docker.sock:/var/run/docker.sock \
   -v otel-data:/data \
-  --network otel-net \
   --memory=256m \
   ghcr.io/xplurdata/otel-studio:latest</pre>
 </div>
 
-<div class="note"><code>--network otel-net</code> puts OTel Studio on the same Docker network as your collector — replace <code>otel-net</code> with whatever network your collector is actually on (check with <code>docker network ls</code>), and update <code>OTEL_ENDPOINT</code> to use the collector's container name rather than <code>localhost</code>.</div>
-
 <div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
 
-<h2 id="scenarios">25 Scenarios</h2>
+<div class="note"><strong>Runs as a non-root user.</strong> The container runs as the unprivileged user <code>node</code> (uid 1000), and <code>/data</code> is the only place it writes. A named volume works as is; a bind mount must be writable by uid 1000 (<code>chown 1000:1000</code>). For Real System Data, the Docker socket needs the <code>--group-add</code> line shown above, and the log files you mount must be readable by uid 1000 — if they are not, run with <code>--user root</code> instead. In the image the process is started by <code>tini</code>, so <code>docker stop</code> flushes pending telemetry and exits within a second or two.</div>
+
+<h2 id="scenarios">30 Scenarios</h2>
 
 <p>Each scenario simulates a realistic service topology with parent-child span relationships, correlated log records per service, and matching metric instrument recordings.</p>
+
+<h3>Quick Start Templates</h3>
+<p>At the top of the Scenarios page, four templates set up a scenario mix and an infrastructure profile in one click: <strong>Startup</strong> (one core scenario, a small mostly-Linux fleet), <strong>Mid-size SaaS</strong> (several product surfaces, still Linux-dominant), <strong>Enterprise</strong> (broad coverage across web, infrastructure and APM, with a large fleet) and <strong>Regulated Finance</strong> (banking-focused traffic with legacy Unix presence). Adjust anything afterwards. Each group has a Select all / Deselect all link, and the Sequential mode checkbox rotates through the enabled scenarios.</p>
 
 <h3>Web App</h3>
 <table>
@@ -214,7 +247,7 @@ tr:last-child td{border:none}
 <table>
 <tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
 <tr><td>Linux Syslog</td><td>kernel, sshd, systemd, cron, nginx, postgresql, dockerd</td><td>System-level log generation (OOM kills, SSH, service failures)</td></tr>
-<tr><td>Kubernetes</td><td>kube-apiserver → scheduler → kubelet → containerd → coredns → etcd</td><td>K8s control plane operations (pod scheduling, image pulls, OOM)</td></tr>
+<tr><td>K8s Control Plane</td><td>kube-apiserver → scheduler → kubelet → containerd → coredns → etcd</td><td>K8s control plane operations (pod scheduling, image pulls, OOM)</td></tr>
 <tr><td>Database Cluster</td><td>query-router → primary-db → replica-db → wal-archiver → read-cache</td><td>Database with replication, slow queries, deadlocks</td></tr>
 <tr><td>Message Queue</td><td>producer → kafka-broker → consumer-group → processor → dead-letter</td><td>Kafka pipeline with consumer lag and DLQ routing</td></tr>
 <tr><td>CI/CD Pipeline</td><td>webhook-trigger → build-agent → test-runner → deploy-agent → health-checker</td><td>Build/test/deploy with rollback triggers</td></tr>
@@ -248,6 +281,16 @@ tr:last-child td{border:none}
 <tr><td>Latency Spike</td><td>frontend → product → payment → slow-db</td><td>30% of spans get 2-8 second latency injection</td></tr>
 <tr><td>Traffic Surge</td><td>gateway → order → inventory → billing → shipping</td><td>10× batch multiplier — tests ingestion throughput</td></tr>
 <tr><td>Cascading Failure</td><td>gateway → order → billing → cache</td><td>75% errors with circuit breaker fallback patterns</td></tr>
+</table>
+
+<h3>GenAI</h3>
+<table>
+<tr><th>Scenario</th><th>Services</th><th>Description</th></tr>
+<tr><td>RAG Chatbot</td><td>llm-orchestrator (gen_ai spans)</td><td>Retrieval-augmented chat with real gen_ai.* trace attributes (model, token usage, finish reason)</td></tr>
+<tr><td>Agent Workflow</td><td>planner (invoke_agent → chat span hierarchy)</td><td>Multi-step agent planning matching the real OTel GenAI agent span pattern</td></tr>
+<tr><td>Content Pipeline</td><td>content-generator (gen_ai spans)</td><td>Content generation with real per-call token/model attributes</td></tr>
+<tr><td>Code Assistant</td><td>code-model (gen_ai spans)</td><td>Code generation calls with real gen_ai.* conventions</td></tr>
+<tr><td>Model Routing</td><td>primary-provider → fallback-provider</td><td>Multi-provider routing/fallback with distinct gen_ai.request.model per branch</td></tr>
 </table>
 
 <h2 id="signals">Signal Types & Ratios</h2>
@@ -301,9 +344,113 @@ tr:last-child td{border:none}
 
 <p>Enable Sequential Mode in the Scenarios panel to run one scenario at a time, rotating through all enabled scenarios on a configurable timer (default 30 seconds each). Useful for sequential load testing — each scenario runs in isolation before rotating to the next.</p>
 
+<h2 id="incident">Inject Incident</h2>
+
+<p>Click <strong>🔥 Inject Incident</strong> to degrade one host for 60 seconds. OTel Studio picks a host at random from the simulated Infrastructure fleet and finds the services and pods running on it, so the incident is one coherent story rather than unrelated random changes: the host's CPU, memory and disk metrics turn bad, and the services placed on it show matching errors and latency in their traces and logs. An entry marked <code>[INCIDENT]</code> names the host and the affected services in the Activity Stream. Click <strong>Stop Incident</strong> to end it early.</p>
+<div class="note">Inject Incident needs <strong>Infrastructure Simulation</strong> to be enabled, because there is no host fleet to target otherwise.</div>
+
 <h2 id="quota">Time Limit / Quota</h2>
 
 <p>Set a time limit (1m / 5m / 10m / 30m / 1h / no limit) before clicking Start. The top bar shows a live countdown; when it reaches zero, sending stops automatically across all signals — including metrics, which export on their own periodic schedule independent of the trace/log generation loop.</p>
+
+<h2 id="infrastructure">Infrastructure</h2>
+
+<p>Generates a fixed pool of simulated hosts with realistic cloud provider, region, and OS distributions. This isn't cosmetic — it's the identity source every other simulator correlates to. When enabled, every scenario's service gets assigned a real host from this same pool via <code>host.name</code>, <code>cloud.provider</code>, and <code>cloud.region</code> resource attributes. Each host also independently emits its own CPU/memory/disk/network metrics and OS-level logs, raising LOGS and METRICS in the top bar even with no scenario running.</p>
+
+<p>Quick Start presets (Small Team / Mid-size Company / Enterprise) set a realistic host count and OS mix in one click. Advanced Settings expose cloud placement (provider/region selection), exact CPU/memory tier allocation per OS, fleet churn (periodic host replacement simulating real auto-scaling), and a configurable host-role pool — leave any of these empty to use sensible built-in defaults.</p>
+
+<p>Beyond CPU/memory/disk/network, each host also reports swap/paging utilization (<code>system.paging.utilization</code>) and CPU iowait, both genuinely correlated to that host's actual memory and disk pressure rather than independent random values — a host under real memory pressure shows real swap activity, not a coincidentally-elevated number.</p>
+
+<h2 id="containers">Containers</h2>
+
+<p>Generates a container fleet, each container correlated to a real host from the Infrastructure fleet — not a separate, disconnected identity. Requires Infrastructure also enabled. Compose Service grouping lets you filter the container table by service and see a live per-service count breakdown, matching a real <code>docker-compose.yml</code>'s "services:" section. The image pool (which container images appear) is fully configurable in Advanced Settings, falling back to a built-in default library (nginx, postgres, redis, etc.) when left empty.</p>
+
+<p>Each container has a real lifecycle: normal running, restarting, OOM-killed, or crashed, with a matching event timeline (create → start → oom → die with the real exitCode=137 OOMKilled signature, etc.) grounded in Docker's own documented event vocabulary. A small realistic minority of containers also show genuine CPU throttling (<code>container.cpu.throttling_data.throttled_periods</code>/<code>throttled_time</code> — real Docker Stats receiver metrics), and memory is tracked as percent-of-limit, not just raw usage — the signal that actually predicts an OOM kill.</p>
+
+<h2 id="kubernetes">Kubernetes</h2>
+
+<p>The deepest correlation chain in the app: Pod → Node → real Infrastructure Host. Every pod is placed on a real node, and every node is placed on a real Infrastructure host — verified directly against generated data, not assumed. Requires Infrastructure also enabled.</p>
+
+<p>Pod phases (Running/Pending/Succeeded/Failed) and failure reasons (OOMKilled, CrashLoopBackOff, ImagePullBackOff, Evicted, Unschedulable) match the real Kubernetes API vocabulary exactly — not invented values. The Events feed (both a cluster-wide view and per-pod in the drill-down modal) uses real event reason strings and message formats sourced directly from the Kubernetes source code (<code>pkg/kubelet/events/event.go</code>), so a pod's event timeline genuinely tells a coherent story: <code>Scheduled → Pulling → Pulled → Created → Started</code> for a healthy pod, or that same sequence ending in a <code>Warning: Killing</code> event for one that got OOMKilled.</p>
+
+<p>Every pod also carries real resource requests/limits and a genuine QoS class (Guaranteed, Burstable, BestEffort) computed by the actual Kubernetes algorithm — Guaranteed pods have requests exactly equal to limits, Burstable have limits set higher, BestEffort have neither. Deployments support real HPA-formula autoscaling (<code>desiredReplicas = ceil(current × currentCPU/targetCPU)</code>, including the real ±10% tolerance band) and rolling-deployment simulation with genuine availableReplicas dips during rollout. Each cluster also reports control-plane health — API server and etcd latency/error-rate, since an overloaded API server is a real, commonly-unmonitored failure mode that can block scaling or deployments entirely.</p>
+
+<h2 id="synthetics">Synthetics</h2>
+
+<p>Runs HTTP checks against your own URLs from multiple simulated locations, independent of any scenario — modeled on the OTel Collector's real <code>http_check</code> receiver, using the same <code>httpcheck.*</code> metric names. Each check has a configurable interval, HTTP method, and expected status code — the pass/fail result is a genuine comparison against what that specific check expects, not a fixed random rate. SSL certificate expiry is computed per check and surfaced directly on the main table (not buried in a drill-down), color-coded when expiry is under 30 days.</p>
+
+<p>Beyond status codes, checks can assert on response body content (matching real synthetic-monitoring tools that verify payloads, not just status) and a maximum response-time threshold — either can independently fail a check even when the status code itself looks healthy. Multi-Step Checks chain requests together with the same variable-extraction/reuse pattern real tools like Datadog use (e.g. a login step's token feeding into a later authenticated request), and a failing step genuinely halts the rest of the chain rather than continuing regardless. Failed checks also get retried (matching the real retry-before-alert pattern most synthetic monitoring tools use, since many failures are transient blips, not genuine outages) — the drill-down shows whether a result recovered after a retry or genuinely failed.</p>
+
+<p>Add your own check targets in "Check Targets" — once you add at least one, your custom targets fully replace the built-in defaults.</p>
+
+<h2 id="rum">RUM (Real User Monitoring)</h2>
+
+<p>Periodically starts simulated browser sessions (one page-load span carrying Core Web Vitals — LCP, INP, CLS, TTFB, FCP — plus browser/OS/viewport/connection-type attributes), with configurable concurrency so multiple sessions can genuinely be active at once, matching real traffic with many simultaneous users. For a window afterward, a subset of Web App group scenario traces (ecommerce, saas, media, banking, social) get linked to a randomly-chosen active session as their root parent via real OpenTelemetry context propagation — the resulting trace genuinely shares the same trace ID from the simulated page load through the backend service chain, not just a similar timestamp.</p>
+
+<p>Sessions also generate rage/dead-click frustration signals, and JS errors are recorded with a real stack trace, source file/line, and a fingerprint hash so recurring errors group together with an affected-session count — matching how real error-tracking tools deduplicate rather than showing every occurrence as an unrelated line. Named business milestones ("Checkout Complete", "Signup Complete", etc.) are tracked per page with a genuine, probabilistic completion rate, surfacing real conversion-funnel-style data rather than every session completing every milestone.</p>
+
+<p>Application Name sets the <code>service.name</code> resource attribute on every session span — set this to match your real app's name so the simulated RUM data groups correctly alongside anything else your backend already receives. Browser Pool and Device Types (Advanced) let you restrict sessions to specific browsers or device categories, useful for testing how a dashboard looks under mobile-only or Safari-only traffic.</p>
+
+<h2 id="browser-rum">Real-browser RUM (browser image)</h2>
+
+<p>Besides the simulated RUM sessions above, OTel Studio can drive a <strong>real headless Chromium</strong> against a website of yours that already has a RUM or OpenTelemetry browser SDK installed, so the browser itself produces the real session data (page loads, clicks, JavaScript errors) from different countries. This needs the <code>-browser</code> image; the default image has no browser and refuses to start it with a clear message. It is configured through the API, not the UI.</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>docker run -d --name otel-studio -p 3002:3002 \
+  -e RUM_TARGET_URL="https://your-site.example" \
+  -v $(pwd)/rum-paths.json:/config/rum-paths.json:ro \
+  ghcr.io/xplurdata/otel-studio:latest-browser</pre>
+</div>
+
+<p><code>rum-paths.json</code> lists the pages to visit, relative to <code>RUM_TARGET_URL</code>: <code>{"paths": ["/", "/pricing", "/checkout"]}</code>. With a session cookie from <code>POST /api/login</code>, turn it on:</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>curl -b cookies.txt -X POST http://localhost:3002/api/control -H "Content-Type: application/json" \
+  -d '{"rumBrowser": {"enabled": true, "pathsFile": "/config/rum-paths.json", "visitsPerTick": 3, "intervalSec": 45}}'
+curl -b cookies.txt -X POST http://localhost:3002/api/control/pillar -H "Content-Type: application/json" \
+  -d '{"pillar": "rumBrowser", "action": "start"}'</pre>
+</div>
+
+<table>
+<tr><th>Setting</th><th>Default</th><th>Meaning</th></tr>
+<tr><td><code>baseUrl</code></td><td><code>RUM_TARGET_URL</code></td><td>Site to visit</td></tr>
+<tr><td><code>pathsFile</code></td><td><code>RUM_DEMO_PATHS_FILE</code></td><td>JSON file with the pages to visit</td></tr>
+<tr><td><code>intervalSec</code></td><td>45</td><td>Seconds between batches (at least 12)</td></tr>
+<tr><td><code>visitsPerTick</code></td><td>3</td><td>Parallel browser sessions per batch</td></tr>
+<tr><td><code>dwellMs</code>, <code>sessionMs</code></td><td>8000, 35000</td><td>Time on each page, and the most time one session may take</td></tr>
+<tr><td><code>simulateClicks</code></td><td>true</td><td>Click around the page</td></tr>
+<tr><td><code>errorRate</code></td><td>0.14</td><td>Share of sessions that raise a JavaScript error</td></tr>
+<tr><td><code>geoBalanced</code></td><td>true</td><td>Spread sessions across countries</td></tr>
+</table>
+<div class="note">Only point this at sites you own or have permission to test. Chromium is started inside the container with its sandbox disabled, as is usual in Docker; the container runs as a non-root user.</div>
+
+<h2 id="aiobs">AI Observability</h2>
+
+<p>Simulates LLM API calls across 8 models spanning 5 major providers — OpenAI, Anthropic, Google, DeepSeek, and xAI, deliberately balanced rather than weighted toward any single provider. Each call emits the real, spec-confirmed OTel GenAI metrics (<code>gen_ai.client.token.usage</code>, <code>gen_ai.client.operation.duration</code>, <code>gen_ai.server.time_to_first_token</code>, <code>gen_ai.server.time_per_output_token</code>), plus cost computed from real, current per-model pricing.</p>
+
+<p>Quality/safety scoring (groundedness, relevance, PII/prompt-injection detection) and RAG/agent-specific metrics (context relevancy, tool-selection accuracy) are deliberately emitted under a custom <code>llm.*</code> namespace rather than <code>gen_ai.*</code>, since these genuinely aren't part of the official OTel GenAI semantic conventions — confirmed directly against the spec, which "has no concept of faithfulness or groundedness scoring." Four independent failure-injection toggles are available: cost spike (runaway generation), latency spike, elevated error rate, and quality degradation (elevated hallucination/low-groundedness rate) — matching the real, most-cited production pain points for LLM applications.</p>
+
+<h2 id="simulator-scheduling">Per-Simulator Start/Stop</h2>
+
+<p>Each of the six simulators (Infrastructure, Containers, Kubernetes, Synthetics, RUM, AI Observability) has its own independent Start/Stop control with an optional duration, separate from the global Start/Stop in the top bar. A simulator is actively generating data if <em>either</em> the global run is active <em>or</em> that simulator's own independent run is active — clicking a simulator's own Start both enables it and starts it together in one action; Stop only pauses generation, leaving the configuration saved for next time.</p>
+
+<div class="note">This means you can run, for example, Kubernetes for 10 minutes and Containers for 5, completely independently, without the global Start/Stop affecting either — set each simulator's own Duration field and click its own Start button.</div>
+
+<h2 id="simulator-identity">Cross-Simulator Identity</h2>
+
+<p>Every identity in this app resolves to the same underlying pool, not separate stub generators per simulator. A Scenario's service gets assigned a real host from the Infrastructure fleet; when Containers is enabled, that same service also correlates to a real entry in the Container fleet; when Kubernetes is enabled, it correlates to a real pod on a real node. Search for a <code>host.name</code>, <code>container.id</code>, or <code>k8s.pod.name</code> from a Scenario trace in your backend, and you'll find the exact same identity listed on that simulator's own page — not a coincidentally-similar one.</p>
+
+<h2 id="synthetic-marking">Synthetic Marking</h2>
+
+<p>Every signal this app generates — every trace, log, and metric, including RUM sessions — carries <code>synth.generated: true</code> and <code>synth.generator: "otel-studio"</code> as resource attributes, set once at the SDK's resource construction rather than added per-signal. Use this to filter synthetic test traffic out of production views in your backend, or to confirm a given signal genuinely came from this tool.</p>
 
 <h2 id="endpoints">Multi-Endpoint Fanout</h2>
 
@@ -313,23 +460,45 @@ tr:last-child td{border:none}
 
 <p>Each endpoint supports an optional TLS/mTLS configuration, expandable in the Add/Edit Endpoint form: a CA certificate, a client certificate, a client private key (all PEM format), and an "insecure" toggle to skip certificate verification for testing against self-signed backends.</p>
 
-<h2 id="presets">Stack Presets</h2>
+<h2 id="endpoint-auth">Endpoint URL, Bearer Token &amp; Headers</h2>
 
-<p>One-click endpoint configuration for 12 popular observability backends:</p>
+<p>Every endpoint takes a URL, a protocol and, optionally, a bearer token and extra request headers. Authentication is optional: a collector on a private network needs none.</p>
+
 <table>
-<tr><th>Backend</th><th>Protocol</th><th>Default URL</th></tr>
-<tr><td>Grafana Alloy</td><td>gRPC / HTTP</td><td>http://alloy:4317 or :4318</td></tr>
-<tr><td>OpenTelemetry Collector</td><td>gRPC</td><td>http://otelcol:4317</td></tr>
-<tr><td>Elastic APM</td><td>HTTP</td><td>http://apm-server:8200</td></tr>
-<tr><td>Honeycomb</td><td>HTTP</td><td>https://api.honeycomb.io</td></tr>
-<tr><td>Jaeger</td><td>gRPC</td><td>http://jaeger:4317</td></tr>
-<tr><td>SigNoz</td><td>gRPC</td><td>http://otel-collector:4317</td></tr>
-<tr><td>OpenObserve</td><td>HTTP</td><td>http://openobserve:5080</td></tr>
-<tr><td>Datadog Agent</td><td>HTTP</td><td>http://datadog-agent:4318</td></tr>
-<tr><td>New Relic</td><td>HTTP</td><td>https://otlp.nr-data.net</td></tr>
-<tr><td>Dynatrace</td><td>HTTP</td><td>https://ENV.live.dynatrace.com/api/v2/otlp</td></tr>
-<tr><td>Lightstep / ServiceNow</td><td>HTTP</td><td>https://ingest.lightstep.com</td></tr>
+<tr><th>Setting</th><th>How it works</th></tr>
+<tr><td>URL</td><td>Give the base URL, for example <code>https://collector.example.com:4318</code>. For HTTP, OTel Studio adds <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code>. A URL that already ends in one of those paths is used as given for that signal; the other signals use the same host and base path. For gRPC give <code>host:port</code> or a full URL.</td></tr>
+<tr><td>Protocol</td><td><code>http</code> (OTLP over HTTP, protobuf — the default and accepted by every OTLP receiver), <code>http/json</code> (OTLP over HTTP, JSON) or <code>grpc</code>.</td></tr>
+<tr><td>Bearer token</td><td>Sent as <code>Authorization: Bearer &lt;token&gt;</code> on every request. It is stored encrypted, never shown again after saving and never returned by the API, the live state stream or exports. Leaving the field empty when editing keeps the saved token; "Remove the saved token" clears it.</td></tr>
+<tr><td>Extra headers</td><td>Any number of name/value pairs, up to 20 — for example <code>X-Scope-OrgID</code> for a multi-tenant backend or <code>api-key</code>. Values are stored encrypted like the token and only the names are shown after saving.</td></tr>
 </table>
+
+<p>Header names must be valid HTTP header names and values must be a single line. <code>Content-Type</code>, <code>Content-Length</code>, <code>Content-Encoding</code>, <code>Host</code> and similar headers are set by OTel Studio and cannot be overridden. An invalid header is refused when you save the endpoint.</p>
+
+<p>The <strong>Test</strong> button sends an empty OTLP request in the endpoint's own encoding and tells the cases apart: accepted, reachable but credentials refused (HTTP 401/403), reachable but not accepted as OTLP (for example HTTP 404), or unreachable. Changes to a token or header apply to a running simulation straight away.</p>
+
+<h2 id="backend-presets">Backend Presets</h2>
+
+<p>The Endpoints page's preset list sets URL, protocol, <em>and</em> the correct authentication fields together for 13 backends plus a generic option — modeled on how Grafana's own datasource plugins work, not one generic auth field pretending to fit every vendor. Each vendor's auth shape was verified against its own official docs, not guessed.</p>
+
+<table>
+<tr><th>Backend</th><th>Auth</th><th>Default URL</th></tr>
+<tr><td>Datadog (local Agent)</td><td>None — the Agent handles this separately</td><td>http://datadog-agent:4318</td></tr>
+<tr><td>Datadog (direct cloud intake)</td><td>Header: <code>dd-api-key</code></td><td>Site-specific, no universal URL</td></tr>
+<tr><td>New Relic</td><td>Header: <code>api-key</code></td><td>https://otlp.nr-data.net</td></tr>
+<tr><td>Grafana Cloud</td><td>HTTP Basic Auth (Instance ID + Token)</td><td>otlp-gateway-REGION.grafana.net</td></tr>
+<tr><td>Grafana Alloy (self-hosted)</td><td>None by default</td><td>http://alloy:4317</td></tr>
+<tr><td>OpenTelemetry Collector</td><td>None by default</td><td>http://otelcol:4317</td></tr>
+<tr><td>Honeycomb</td><td>Header: <code>x-honeycomb-team</code> (plus <code>x-honeycomb-dataset</code> for Classic accounts)</td><td>https://api.honeycomb.io</td></tr>
+<tr><td>Jaeger (self-hosted)</td><td>None by default</td><td>http://jaeger:4317</td></tr>
+<tr><td>Elastic</td><td><code>Authorization: Bearer</code> or <code>ApiKey</code></td><td>http://apm-server:8200</td></tr>
+<tr><td>SigNoz Cloud</td><td>Header: <code>signoz-ingestion-key</code></td><td>ingest.REGION.signoz.cloud</td></tr>
+<tr><td>SigNoz (self-hosted)</td><td>None</td><td>http://otel-collector:4317</td></tr>
+<tr><td>OpenObserve</td><td>HTTP Basic Auth (email + password)</td><td>http://openobserve:5080</td></tr>
+<tr><td>Dynatrace</td><td><code>Authorization: Bearer</code> (platform token, HTTP protobuf only)</td><td>https://ENV.live.dynatrace.com/api/v2/otlp</td></tr>
+<tr><td>Generic / Custom</td><td>Bearer token and any headers you add (see above)</td><td>—</td></tr>
+</table>
+
+<div class="note">Selecting a preset in the "Add Endpoint" form is the only way to change backend — there's deliberately no separate dropdown, since two controls setting overlapping parts of the same thing was a real, confirmed source of confusion. The form shows the currently-selected backend as a read-only label; to switch, pick a different entry from the preset list.</div>
 
 <h2 id="webhook">Webhook on Quota Expire</h2>
 
@@ -346,21 +515,165 @@ tr:last-child td{border:none}
 </table>
 <p>Real System Data and Simulation are independent toggles — run either alone or both together.</p>
 
+<h2 id="stats">Stats</h2>
+
+<p>The Stats page shows totals since the last Reset Stats, rates per minute, and an estimate of the metric cardinality and data volume of your current setup. Use it to check that what OTel Studio sent matches what your backend received: a gap means data was dropped or rejected on the way, for example by a refused token (the Test button on the Endpoints page shows that).</p>
+
 <h2 id="export">Import / Export</h2>
 
 <p>Export your scenario configuration as JSON to share setups with your team. Import a config file to restore a saved setup. Export the activity stream as CSV for offline analysis.</p>
+
+<h2 id="users">Settings, Users &amp; Tour</h2>
+
+<p>The icons at the top right are: <strong>Tour</strong> (replays the product tour, which also runs on first login), <strong>Documentation</strong> (this page), <strong>Settings</strong> and <strong>Logout</strong>.</p>
+<table>
+<tr><th>Role</th><th>What it can do</th></tr>
+<tr><td>Admin</td><td>Everything a user can, plus add users (name, password of at least 6 characters, role), change a user's role or password, and remove users</td></tr>
+<tr><td>User</td><td>Run simulations and manage endpoints, and change their own password in Settings</td></tr>
+</table>
+<p>The first admin comes from <code>ADMIN_USER</code> and <code>ADMIN_PASS</code> (see Environment Variables). Each user has their own scenario settings, endpoints and counters.</p>
+
+<h2 id="headless">Command-line Mode</h2>
+
+<p>Runs OTel Studio for a fixed duration with no UI server involved — built for CI pipelines and quick one-shot verification. Exits <code>0</code> on success, so it works as a genuine pass/fail step in a pipeline, not just a long-running process you have to babysit.</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>docker run --rm --network your-network \
+  -v $(pwd)/demo.yaml:/app/demo.yaml \
+  ghcr.io/xplurdata/otel-studio:latest node dist/headless.js --config demo.yaml --duration 60s</pre>
+</div>
+
+<table>
+<tr><th>Flag</th><th>Description</th></tr>
+<tr><td><code>--config &lt;file&gt;</code></td><td>Path to a topology YAML file (required)</td></tr>
+<tr><td><code>--duration &lt;time&gt;</code></td><td>How long to run — accepts <code>60s</code>, <code>5m</code>, <code>2h</code>, or a bare number of seconds (default: <code>60s</code>)</td></tr>
+<tr><td><code>--endpoint &lt;url&gt;</code></td><td>Overrides the endpoint from the config file</td></tr>
+<tr><td><code>--protocol &lt;grpc|http|http/json&gt;</code></td><td>Overrides the protocol (<code>http</code> is OTLP over HTTP as protobuf)</td></tr>
+<tr><td><code>--header "Name: value"</code></td><td>Extra request header; repeat for several. The <code>k1=v1,k2=v2</code> form is accepted too</td></tr>
+<tr><td><code>--token-env &lt;VAR&gt;</code></td><td>Read the bearer token from this environment variable (<code>OTEL_STUDIO_BEARER_TOKEN</code> is read when this is not given). The token is never taken from a flag, so it stays out of process lists</td></tr>
+<tr><td><code>--attr key=value</code></td><td>Extra attribute on every resource; repeat for several, for example <code>tenant.id=acme</code>. <code>service.name</code> and the <code>synth.*</code> markers cannot be overridden</td></tr>
+<tr><td><code>--signals &lt;list&gt;</code></td><td>Which signals to send: <code>traces,logs,metrics</code> (default: all)</td></tr>
+<tr><td><code>--hosts &lt;n&gt;</code></td><td>Number of simulated hosts (enables the host pillar)</td></tr>
+<tr><td><code>--providers &lt;list&gt;</code></td><td><code>aws,gcp,azure</code> (default: all)</td></tr>
+<tr><td><code>--regions &lt;spec&gt;</code></td><td>Regions per provider, for example <code>"aws=us-east-1,eu-west-1;gcp=us-central1"</code></td></tr>
+<tr><td><code>--cpu &lt;min-max&gt;</code>, <code>--mem &lt;min-max&gt;</code></td><td>CPU cores and memory (GB) per host, for example <code>4-16</code></td></tr>
+<tr><td><code>--os &lt;spec&gt;</code></td><td>OS mix in percent, for example <code>"linux=70,windows=30"</code></td></tr>
+<tr><td><code>--rate &lt;ms&gt;</code></td><td>Milliseconds between trace batches (all enabled scenarios)</td></tr>
+<tr><td><code>--error-rate &lt;0-1&gt;</code></td><td>Share of traces that end in an error (all enabled scenarios)</td></tr>
+</table>
+
+<p>The standard OpenTelemetry variables <code>OTEL_EXPORTER_OTLP_ENDPOINT</code>, <code>OTEL_EXPORTER_OTLP_PROTOCOL</code> (<code>grpc</code>, <code>http/protobuf</code>, <code>http/json</code>) and <code>OTEL_EXPORTER_OTLP_HEADERS</code> (<code>key1=value1,key2=value2</code>, values percent-decoded) are read too. The config file and flags win over them. <code>OTEL_STUDIO_HEADERS_JSON</code> takes the extra headers as a JSON object. Listing scenarios in the config means "these and no others".</p>
+
+<p>The YAML config's top-level keys mirror the store shape driving the UI — listing a scenario or simulator in the config enables it automatically, the same as ticking its toggle:</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>endpoint: http://collector:4317
+protocol: grpc
+
+scenarios:
+  ecommerce:
+    rateMs: 1000
+    batchSize: 3
+    errorRate: 0.05
+
+infrastructure:
+  hostCount: 20
+
+containers:
+  count: 20
+  serviceCount: 6</pre>
+</div>
+
+<p>Before exiting, headless mode awaits a genuine flush of every active tracer/logger/meter provider — not just firing shutdown calls and exiting immediately — so exit code <code>0</code> means the data was actually handed off for export, not merely queued.</p>
+
+<table>
+<tr><th>Exit Code</th><th>Meaning</th></tr>
+<tr><td><code>0</code></td><td>Ran for the full duration and exported successfully</td></tr>
+<tr><td><code>1</code></td><td>Bad arguments or invalid config file</td></tr>
+<tr><td><code>2</code></td><td>Collector unreachable at startup</td></tr>
+<tr><td><code>3</code></td><td>Uncaught error during the run</td></tr>
+</table>
+
+<h2 id="job-api">Job API</h2>
+
+<p>Start, inspect and stop runs from another application or a pipeline. Every run is its own command-line process, so runs are isolated and each has its own endpoint, credentials and settings. Up to 25 runs can be active at once (<code>MAX_RUNS</code>).</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>docker run -d --name otel-studio-api -p 3100:3100 \
+  -e API_TOKEN="a-secret-of-at-least-16-characters" \
+  ghcr.io/xplurdata/otel-studio:latest node dist/api.js</pre>
+</div>
+
+<table>
+<tr><th>Call</th><th>Purpose</th></tr>
+<tr><td><code>POST /v1/runs</code></td><td>Start a run (JSON body below); returns <code>201</code> with the run id</td></tr>
+<tr><td><code>GET /v1/runs</code></td><td>List runs</td></tr>
+<tr><td><code>GET /v1/runs/:id</code></td><td>One run: state, timing, exit code and recent log lines</td></tr>
+<tr><td><code>DELETE /v1/runs/:id</code></td><td>Stop a run early; pending data is flushed first</td></tr>
+<tr><td><code>GET /healthz</code></td><td>For probes; needs no token</td></tr>
+</table>
+
+<p>Every call except <code>/healthz</code> needs <code>Authorization: Bearer &lt;API_TOKEN&gt;</code>. <code>API_TOKEN</code> is required, at least 16 characters.</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>curl -X POST http://localhost:3100/v1/runs \
+  -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" \
+  -d '{
+    "endpoint": "https://collector.example.com:4318",
+    "protocol": "http",
+    "duration": "10m",
+    "bearerToken": "...",
+    "headers": { "X-Scope-OrgID": "tenant-1" },
+    "resourceAttributes": { "test.run": "nightly-42" },
+    "signals": ["traces", "logs"],
+    "hosts": { "count": 50 },
+    "scenarios": { "ecommerce": { "rateMs": 1000, "errorRate": 0.05 } }
+  }'</pre>
+</div>
+
+<p>The token and header values in a request are handed to the run through its environment and are not written to disk or returned; run views show header names only.</p>
+
+<h2 id="security">Security</h2>
+
+<table>
+<tr><th>Area</th><th>What OTel Studio does</th></tr>
+<tr><td>Sign-in</td><td>Passwords are stored as bcrypt hashes. The session is a signed token in an <code>HttpOnly</code>, <code>SameSite=Lax</code> cookie that is also <code>Secure</code> over HTTPS. After 10 failed attempts for the same user name from the same address within 15 minutes, further attempts are refused with HTTP 429 until the window ends (<code>LOGIN_MAX_FAILURES</code>, <code>LOGIN_WINDOW_MIN</code>).</td></tr>
+<tr><td>Initial admin</td><td>Set <code>ADMIN_PASS</code>, or a random password is generated on first start and printed once in the container log. There is no built-in default password.</td></tr>
+<tr><td>Stored secrets</td><td>Bearer tokens and header values of endpoints are encrypted at rest with a key derived from <code>JWT_SECRET</code>, and are never returned by the API, the live stream or exports. Keep the <code>/data</code> volume and <code>JWT_SECRET</code> together: a different secret cannot decrypt old values.</td></tr>
+<tr><td>Browser protections</td><td>Responses carry <code>X-Content-Type-Options</code>, <code>X-Frame-Options: DENY</code>, a <code>frame-ancestors 'none'</code> policy, <code>Referrer-Policy</code> and <code>Permissions-Policy</code>; <code>Strict-Transport-Security</code> is added over HTTPS.</td></tr>
+<tr><td>Job API</td><td>Needs <code>API_TOKEN</code> (at least 16 characters), compared in constant time. Endpoint tokens in a request are passed to the run through its environment and never written to disk.</td></tr>
+<tr><td>Image</td><td>Non-root user, build output only (no source files), pinned dependency versions from a lockfile, scanned for HIGH and CRITICAL vulnerabilities, and published with a software bill of materials (CycloneDX).</td></tr>
+</table>
+
+<p><strong>Deployment advice.</strong> OTel Studio serves plain HTTP. For anything beyond a trusted network, put it behind a reverse proxy that terminates TLS, and set <code>TRUST_PROXY=1</code> so client addresses and HTTPS are read from <code>X-Forwarded-*</code> headers (or <code>COOKIE_SECURE=true</code> to always mark the cookie <code>Secure</code>). Do not expose port 3100 (Job API) publicly. Report vulnerabilities privately as described in <a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md">SECURITY.md</a>.</p>
 
 <h2 id="env">Environment Variables</h2>
 
 <table>
 <tr><th>Variable</th><th>Default</th><th>Description</th></tr>
 <tr><td><code>PORT</code></td><td>3002</td><td>HTTP server port</td></tr>
-<tr><td><code>OTEL_ENDPOINT</code></td><td>http://localhost:4318</td><td>Default OTel collector endpoint</td></tr>
-<tr><td><code>OTEL_PROTOCOL</code></td><td>http</td><td>Protocol: <code>grpc</code> or <code>http</code></td></tr>
-<tr><td><code>SERVICE_NAME</code></td><td>otel-agent</td><td>Service name in telemetry resource attributes</td></tr>
+<tr><td><code>OTEL_ENDPOINT</code></td><td><em>(none)</em></td><td>Optional. Pre-creates an endpoint named "Default (from environment)" at start-up. There is no built-in destination: without it, add one on the Endpoints page before pressing Start</td></tr>
+<tr><td><code>OTEL_PROTOCOL</code></td><td>http</td><td>Protocol: <code>grpc</code>, <code>http</code> (OTLP over HTTP, protobuf) or <code>http/json</code></td></tr>
+<tr><td><code>SERVICE_NAME</code></td><td>otel-studio</td><td>Service name in telemetry resource attributes</td></tr>
 <tr><td><code>ENVIRONMENT</code></td><td>production</td><td>Deployment environment attribute</td></tr>
 <tr><td><code>ADMIN_USER</code></td><td>admin</td><td>Initial admin username</td></tr>
-<tr><td><code>ADMIN_PASS</code></td><td>admin123</td><td>Initial admin password — change this for any deployment reachable outside your own machine</td></tr>
+<tr><td><code>ADMIN_PASS</code></td><td>auto-generated</td><td>Initial admin password. If not set, a random 12-character password is generated on first boot and printed once in the container logs — set this explicitly to control the password on future deploys, since the generated one won't be shown again</td></tr>
 <tr><td><code>JWT_SECRET</code></td><td><em>(auto-generated)</em></td><td>Secret for signing auth tokens. If not set, a random one is generated on first boot and persisted in the <code>/data</code> volume — stable across restarts, unique per deployment</td></tr>
 <tr><td><code>DB_PATH</code></td><td>/data/otel-simulator.db</td><td>SQLite database path</td></tr>
 <tr><td><code>MODE_REAL</code></td><td>false</td><td>Enable real system data collection</td></tr>
@@ -373,9 +686,19 @@ tr:last-child td{border:none}
 <tr><td><code>DOCKER_LOGS</code></td><td>true</td><td>Tail Docker container logs</td></tr>
 <tr><td><code>DOCKER_METRICS</code></td><td>true</td><td>Collect Docker container metrics</td></tr>
 <tr><td><code>METRICS_INTERVAL</code></td><td>5000</td><td>System metrics collection interval (ms)</td></tr>
+<tr><td><code>OTEL_STUDIO_BEARER_TOKEN</code></td><td><em>(empty)</em></td><td>Command-line mode: bearer token for the endpoint (see <code>--token-env</code>)</td></tr>
+<tr><td><code>OTEL_STUDIO_HEADERS_JSON</code></td><td><em>(empty)</em></td><td>Command-line mode: extra request headers as a JSON object</td></tr>
+<tr><td><code>OTEL_EXPORTER_OTLP_ENDPOINT</code>, <code>_PROTOCOL</code>, <code>_HEADERS</code></td><td><em>(empty)</em></td><td>Command-line mode: standard OpenTelemetry settings, used when the config file and flags do not set them</td></tr>
+<tr><td><code>RUM_TARGET_URL</code>, <code>RUM_DEMO_PATHS_FILE</code></td><td><em>(empty)</em></td><td>Real-browser RUM only (<code>-browser</code> image): the site to visit and the JSON file listing its pages</td></tr>
+<tr><td><code>TRUST_PROXY</code></td><td><em>(empty)</em></td><td>Set to the number of reverse proxies in front (for example <code>1</code>) so client address and HTTPS come from <code>X-Forwarded-*</code></td></tr>
+<tr><td><code>COOKIE_SECURE</code></td><td>false</td><td><code>true</code> always marks the session cookie <code>Secure</code>; otherwise it is set automatically over HTTPS</td></tr>
+<tr><td><code>LOGIN_MAX_FAILURES</code></td><td>10</td><td>Failed sign-ins allowed per user name and address within the window</td></tr>
+<tr><td><code>LOGIN_WINDOW_MIN</code></td><td>15</td><td>Length of the failed sign-in window in minutes</td></tr>
+<tr><td><code>API_TOKEN</code></td><td><em>(required for the Job API)</em></td><td>Bearer token that protects the Job API; at least 16 characters</td></tr>
+<tr><td><code>API_PORT</code></td><td>3100</td><td>Job API port</td></tr>
+<tr><td><code>MAX_RUNS</code></td><td>25</td><td>Most runs the Job API keeps active at once</td></tr>
 </table>
 
-<p style="margin-top:48px;font-size:12px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">OTel Studio v2.0 — Built by <a href="https://xplurdata.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);text-decoration:none;font-weight:600"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true" style="height:13px;width:auto">XplurData</a></p>
 
 </main>
 </div>
