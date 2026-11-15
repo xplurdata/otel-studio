@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Load-Test and Size an Observability Backend — OTel Studio</title>
+<meta name="description" content="Use OTel Studio templates, fleet sizes, the speed multiplier and the cardinality burst to find the ingest and cardinality limits of an observability backend.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/load-test-and-size-a-backend.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Load-Test and Size an Observability Backend — OTel Studio">
+<meta property="og:description" content="Use OTel Studio templates, fleet sizes, the speed multiplier and the cardinality burst to find the ingest and cardinality limits of an observability backend.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/load-test-and-size-a-backend.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article>
+  <span class="tag">Capacity</span>
+  <h1>Load-Test and Size an Observability Backend</h1>
+  <p class="meta">Produce a known, adjustable load and find where your backend starts to struggle.</p>
+
+<p>Before a telemetry backend takes real traffic you want answers to three questions: how much data will it ingest, what will it cost, and where does it start to struggle? OTel Studio can produce a known, adjustable load so you can find out on purpose instead of during a launch.</p>
+
+<h2>1. Start from a profile, not from zero</h2>
+<p>On the <strong>Scenarios</strong> page, the four Quick Start Templates set a scenario mix and an infrastructure profile in one click: <strong>Startup</strong> (one core scenario, a small mostly-Linux fleet), <strong>Mid-size SaaS</strong>, <strong>Enterprise</strong> (broad coverage across web, infrastructure and APM with a large fleet) and <strong>Regulated Finance</strong>. Pick the one closest to the system you are sizing, then adjust.</p>
+
+<h2>2. Read the estimate before you send anything</h2>
+<p>The <strong>Stats</strong> page shows an estimate of time series and data volume per day for the simulators you have enabled, with a breakdown per simulator. Estate metrics are roughly one series per entity per metric, so fleet size drives cardinality: 20 hosts is a few hundred series, 2,000 hosts is orders of magnitude more. Treat it as a planning number to compare with what your backend actually reports.</p>
+
+<h2>3. Ramp up in steps</h2>
+<ol>
+<li>Run at the default rate for several minutes and record your baseline: ingest rate, CPU and memory of the backend, query latency.</li>
+<li>Raise the <strong>speed multiplier</strong> (0.25× to 10×) — it scales every scenario's send rate without changing batch size or error rate.</li>
+<li>Increase fleet sizes (Infrastructure, Containers, Kubernetes) to grow metric cardinality.</li>
+<li>Add scenarios, or use <strong>Traffic Surge</strong>, which multiplies batch volume by ten.</li>
+<li>After each step wait a few minutes and compare. The knee in the curve is the finding.</li>
+</ol>
+<p>For more than one container's worth of load, start several OTel Studio containers, or use the <a href="otel-studio-in-ci.html">Job API</a> to run up to 25 independent runs from one place.</p>
+
+<h2>4. Test high cardinality deliberately</h2>
+<p>High cardinality is the usual cause of surprise bills and slow queries. The <strong>Cardinality Burst</strong> scenario puts a random user ID on every request, which creates a new series or attribute value each time. Run it for a few minutes and watch series counts, memory and query times — and check whether your pipeline has a cardinality limit or drop rule that actually engages.</p>
+
+<h2>5. Include the signals you really have</h2>
+<p>Logs usually outnumber traces, which outnumber metric points. Turn individual signals on and off with the Traces, Logs and Metrics toggles to see which one dominates your cost. Add geo/IP simulation or custom attributes on a scenario to make records wider — wider records cost more to store and index.</p>
+
+<h2>6. Compare what was sent with what arrived</h2>
+<p>Press <strong>Reset Stats</strong> before a run, and compare the totals afterwards with the backend's own counts. A shortfall points at dropped data: batch or queue limits, rate limits returning HTTP 429, or a collector running out of memory. Check <code>otelcol_exporter_send_failed_*</code> style metrics on your collector as well.</p>
+
+<h2>7. Bound the run and clean up</h2>
+<ul>
+<li>Set a <strong>time limit</strong> (and a webhook) so an unattended test stops by itself.</li>
+<li>Remember retention: test data stays in your backend. Filter or delete it using <code>synth.generated: true</code>.</li>
+<li>Do not point load tests at a shared production backend.</li>
+</ul>
+
+<div class="callout"><strong>What OTel Studio is not.</strong> It generates realistic, correlated data and controllable volume; it is not a replacement for load-testing your own applications. Its numbers tell you how a backend copes with this shape of telemetry — a strong guide, not a guarantee of your production profile.</div>
+<h2>Keep going</h2><div class="next"><a href="test-alerts-and-slos.html">Test alerts and SLOs<span>Failures on demand</span></a><a href="simulate-a-cloud-estate.html">Simulate a cloud estate<span>Hosts, containers and Kubernetes</span></a><a href="../telemetry-reference.html">Telemetry reference<span>What each area emits</span></a></div>
+</article>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

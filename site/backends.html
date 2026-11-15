@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backends and presets — OTel Studio</title>
+<meta name="description" content="Send OTel Studio data to Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace or any OTLP receiver — presets, URLs, protocols and authentication.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/backends.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Backends and presets — OTel Studio">
+<meta property="og:description" content="Send OTel Studio data to Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace or any OTLP receiver — presets, URLs, protocols and authentication.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/backends.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html" class="cur">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article class="wide">
+  <span class="tag">Reference</span>
+  <h1>Backends and presets</h1>
+  <p class="meta">Thirteen presets and a working local Collector, so you can see data arrive in minutes.</p>
+<p>OTel Studio speaks standard OTLP, so it can send to any OTLP receiver. The Endpoints page has presets that fill in the URL, protocol and the right authentication fields for popular destinations. Pick a preset, replace the placeholders (shown in capitals), enter your credentials and press <strong>Test</strong>. A base URL is enough: <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code> are added for HTTP.</p>
+<figure class="fig"><img src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page with presets"><figcaption>The preset list on the Endpoints page, with the bearer token and headers section open.</figcaption></figure><h2 id="presets">Presets</h2><table class="t"><tr><th>Backend</th><th>Default URL</th><th>Protocol</th><th>Authentication sent</th></tr><tr><td>Datadog (local Agent)</td><td><code>http://datadog-agent:4318</code></td><td>HTTP</td><td>None — the Agent handles it</td></tr><tr><td>Datadog (direct intake)</td><td><code>https://otlp.datadoghq.com</code></td><td>HTTP (protobuf only)</td><td><code>dd-api-key</code> header; other Datadog sites use their own host</td></tr><tr><td>New Relic</td><td><code>https://otlp.nr-data.net</code></td><td>HTTP</td><td><code>api-key</code> header (licence key)</td></tr><tr><td>Grafana Cloud</td><td><code>https://otlp-gateway-YOUR_REGION.grafana.net/otlp</code></td><td>HTTP</td><td>Basic authentication: instance ID and API token</td></tr><tr><td>Grafana Alloy</td><td><code>http://alloy:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>OpenTelemetry Collector</td><td><code>http://otelcol:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Honeycomb</td><td><code>https://api.honeycomb.io</code></td><td>HTTP</td><td><code>x-honeycomb-team</code> header; <code>x-honeycomb-dataset</code> for Classic accounts</td></tr><tr><td>Jaeger</td><td><code>http://jaeger:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Elastic APM</td><td><code>http://apm-server:8200</code></td><td>HTTP (protobuf)</td><td><code>Authorization: Bearer</code> secret token, or <code>ApiKey</code></td></tr><tr><td>SigNoz Cloud</td><td><code>https://ingest.YOUR_REGION.signoz.cloud:443</code></td><td>gRPC</td><td><code>signoz-ingestion-key</code> header</td></tr><tr><td>SigNoz (self-hosted)</td><td><code>http://otel-collector:4317</code></td><td>gRPC</td><td>None</td></tr><tr><td>OpenObserve</td><td><code>http://openobserve:5080/api/default</code></td><td>HTTP</td><td>Basic authentication: email and password; <code>default</code> is the organisation</td></tr><tr><td>Dynatrace</td><td><code>https://YOUR_ENV.live.dynatrace.com/api/v2/otlp</code></td><td>HTTP (protobuf only)</td><td><code>Authorization: Bearer</code> platform token with OpenPipeline ingest scopes</td></tr><tr><td>Generic / custom</td><td>(your URL)</td><td>any</td><td>Bearer token and any headers you add</td></tr></table>
+<div class="callout"><strong>Vendor rules worth knowing.</strong> Dynatrace and Datadog accept HTTP with protobuf only — not gRPC or JSON. Datadog expects delta metrics, which OTel Studio sends. Honeycomb needs the dataset header only for Classic accounts. Always check the vendor's current documentation for tokens and scopes; presets are a starting point, and every field can be edited.</div>
+
+<h2 id="selfhosted">Set up a local OpenTelemetry Collector in two minutes</h2>
+<p>The quickest way to see data arrive is a Collector that prints what it receives. Save this as <code>otelcol.yaml</code>:</p>
+<pre><code>receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: 0.0.0.0:4317
+      http:
+        endpoint: 0.0.0.0:4318
+processors:
+  batch: {}
+exporters:
+  debug:
+    verbosity: basic
+service:
+  pipelines:
+    traces:  {receivers: [otlp], processors: [batch], exporters: [debug]}
+    logs:    {receivers: [otlp], processors: [batch], exporters: [debug]}
+    metrics: {receivers: [otlp], processors: [batch], exporters: [debug]}</code></pre><p>Run both containers on one Docker network so the hostname resolves:</p><pre><code>docker network create otel
+docker run -d --name otelcol --network otel \
+  -v $PWD/otelcol.yaml:/etc/otelcol-contrib/config.yaml \
+  otel/opentelemetry-collector-contrib:latest
+docker run -d --name otel-studio --network otel -p 3002:3002 \
+  -e ADMIN_PASS="choose-a-password" \
+  -e OTEL_ENDPOINT="http://otelcol:4317" -e OTEL_PROTOCOL="grpc" \
+  ghcr.io/xplurdata/otel-studio:latest
+docker logs -f otelcol</code></pre>
+<p>Open <code>http://localhost:3002</code>, press <strong>Start</strong>, and watch the collector log. From there you can add processors, exporters and your real backend one stage at a time — see <a href="guides/test-otel-collector-configuration.html">how to test a collector configuration</a>.</p>
+
+<h2 id="tips">Connection tips</h2>
+<ul>
+<li><strong>Use the HTTP port for HTTP and the gRPC port for gRPC.</strong> By convention 4318 is HTTP and 4317 is gRPC. A gRPC endpoint given an HTTP port (or the other way round) connects but sends nothing useful. See <a href="guides/otlp-grpc-vs-http.html">gRPC vs HTTP</a>.</li>
+<li><strong><code>localhost</code> inside a container is the container.</strong> Reach another container by name on a shared network (<code>--network</code>), or reach the host with <code>--add-host host.docker.internal:host-gateway</code>.</li>
+<li><strong>Multi-tenant backends</strong> usually want a tenant header such as <code>X-Scope-OrgID</code> — add it under "Bearer token and headers". See <a href="guides/secure-otlp-endpoints.html">securing endpoints</a>.</li>
+<li><strong>Read the Test result.</strong> “Credentials refused (HTTP 401/403)” means the address is right and the token or headers are wrong; “not accepted as OTLP (HTTP 404)” usually means a wrong path or port.</li>
+<li><strong>Several backends at once:</strong> activate more than one endpoint to send identical data to each, for example to compare two products.</li>
+</ul>
+<h2>Keep going</h2><div class="next"><a href="guides/secure-otlp-endpoints.html">Secure endpoints<span>Tokens, headers, TLS and mTLS</span></a><a href="guides/testing-grafana-stack.html">Test a Grafana stack<span>Tempo, Loki and Mimir</span></a><a href="documentation.html#troubleshooting">Troubleshooting<span>Common connection problems</span></a></div>
+</article>
+
+<footer>
+  <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

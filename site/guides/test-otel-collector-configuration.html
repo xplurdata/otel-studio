@@ -5,6 +5,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>How to Test Your OpenTelemetry Collector Configuration Before Production — OTel Studio</title>
 <meta name="description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors, and exporters before a real workload depends on them.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html">
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html">
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -23,7 +26,7 @@ a{color:var(--accent-dark)}
 .nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
 .nav .logo-sub img{height:9px;width:auto}
 .nav .logo-sub b{color:var(--accent-dark);font-weight:700}
-.links{display:flex;align-items:center;gap:24px}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
 .links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
 .links a:hover{color:var(--accent-dark)}
 .cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
@@ -42,7 +45,8 @@ pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overfl
 pre code{background:none;padding:0;color:inherit}
 .callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
 .callout strong{color:var(--heading)}
-footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
 </style>
 </head>
 <body>
@@ -55,11 +59,7 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);fo
       <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
     </span>
   </div>
-  <div class="links">
-    <a href="../documentation.html">Docs</a>
-    <a href="index.html">Guides</a>
-    <a href="../documentation.html#quickstart" class="cta">Get Started</a>
-  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
 <article>
@@ -128,10 +128,12 @@ footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);fo
     <li><a href="trace-log-correlation.html">Understanding Trace-Log Correlation</a> — the full detail on checklist item 4</li>
     <li><a href="testing-grafana-stack.html">Testing Your Grafana Stack With Synthetic Telemetry</a> — this checklist applied to Tempo/Loki/Mimir specifically</li>
   </ul>
+  <p>Also see <a href="test-alerts-and-slos.html">Test Alert Rules and SLO Burn Rates</a>, <a href="load-test-and-size-a-backend.html">Load-Test and Size a Backend</a> and <a href="otel-studio-in-ci.html">Run OTel Studio in CI</a>.</p>
 </article>
 
 <footer>
-  Built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
 </footer>
 
 </body>

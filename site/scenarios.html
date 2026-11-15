@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Scenario reference — OTel Studio</title>
+<meta name="description" content="All 30 OTel Studio scenarios — service flow, what each one exercises and the controls available — across web app, infrastructure, APM, cloud native, chaos and GenAI groups.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/scenarios.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Scenario reference — OTel Studio">
+<meta property="og:description" content="All 30 OTel Studio scenarios — service flow, what each one exercises and the controls available — across web app, infrastructure, APM, cloud native, chaos and GenAI groups.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/scenarios.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="features.html">Features</a><a href="scenarios.html" class="cur">Scenarios</a><a href="backends.html">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article class="wide">
+  <span class="tag">Reference</span>
+  <h1>The 30 scenarios</h1>
+  <p class="meta">Service flows and what each scenario is good for testing.</p>
+<p>Each scenario simulates a real service topology. For every request OTel Studio produces a trace with <strong>10–15 spans</strong> and correct parent-child links, one correlated log record for every service the request visits (so logs outnumber traces), and metric instruments recorded on every export cycle. Every service in a scenario is its own <code>service.name</code>. Logs carry the trace and span IDs of the span that was active when they were written.</p>
+<div class="toc"><a href="#web-app">Web App</a><a href="#infrastructure">Infrastructure</a><a href="#apm">APM</a><a href="#cloud-native">Cloud Native</a><a href="#chaos-stress">Chaos / Stress</a><a href="#genai">GenAI</a></div><h2 id="web-app">Web App</h2><p>Customer-facing application flows. These also receive RUM sessions as their root when the RUM simulator is on.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>E-Commerce</strong></td><td><code>frontend → cart → inventory → payment → search → recommendations</code></td><td>Checkout, search and recommendation paths; a good all-round default for dashboards and alerts.</td></tr><tr><td><strong>SaaS Platform</strong></td><td><code>api-gateway → auth → user → billing → feature-flags → payment-gateway</code></td><td>Multi-tenant request paths with authentication, billing and feature flags; useful for per-tenant attribute tests.</td></tr><tr><td><strong>Media Streaming</strong></td><td><code>cdn-edge → origin → transcoder → queue-worker → storage</code></td><td>CDN cache behaviour and an asynchronous transcoding pipeline.</td></tr><tr><td><strong>Banking / FinTech</strong></td><td><code>web-portal → fraud-detection → risk-engine → payment → ledger → audit</code></td><td>Fraud scoring and audit trails; pair with synthetic PII to test redaction.</td></tr><tr><td><strong>Social Network</strong></td><td><code>feed → graph → ranking → media → notification-fanout → cache</code></td><td>Fan-out heavy feed generation with a friend-graph traversal.</td></tr></table><h2 id="infrastructure">Infrastructure</h2><p>System and platform workloads.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>Linux Syslog</strong></td><td><code>kernel, sshd, systemd, cron, nginx, postgresql, dockerd</code></td><td>OS-level logs: OOM kills, SSH events, service failures — a log-pipeline workout.</td></tr><tr><td><strong>K8s Control Plane</strong></td><td><code>kube-apiserver → scheduler → kubelet → containerd → coredns → etcd</code></td><td>Scheduling, image pulls and control-plane health.</td></tr><tr><td><strong>Database Cluster</strong></td><td><code>query-router → primary-db → replica-db → wal-archiver → read-cache</code></td><td>Replication, slow queries and deadlocks.</td></tr><tr><td><strong>Message Queue</strong></td><td><code>producer → kafka-broker → consumer-group → processor → dead-letter</code></td><td>Consumer lag and dead-letter routing.</td></tr><tr><td><strong>CI/CD Pipeline</strong></td><td><code>webhook-trigger → build-agent → test-runner → deploy-agent → health-checker</code></td><td>Build, test and deploy stages with rollback triggers.</td></tr></table><h2 id="apm">APM</h2><p>Language-runtime flavoured application stacks.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>Java / JVM</strong></td><td><code>java-backend → node-api → python-worker → go-proxy → ruby-app</code></td><td>A polyglot chain with GC pauses and heap pressure (<code>jvm.memory.heap.used</code>).</td></tr><tr><td><strong>Node.js Services</strong></td><td><code>express-gateway → auth-middleware → product → mongoose → redis → elastic</code></td><td>An Express stack with MongoDB, Redis and Elasticsearch calls.</td></tr><tr><td><strong>Python ML Pipeline</strong></td><td><code>api-server → feature-store → model-server → vector-db → result-cache</code></td><td>Inference paths with CUDA out-of-memory and feature lag.</td></tr><tr><td><strong>Go Services</strong></td><td><code>http-proxy → grpc-service → worker-pool → object-store</code></td><td>Microservices with worker-pool and goroutine behaviour.</td></tr><tr><td><strong>.NET Platform</strong></td><td><code>aspnet-gateway → identity → order → data-service → token-store → cache</code></td><td>ASP.NET with SQL Server connection-pool pressure.</td></tr></table><h2 id="cloud-native">Cloud Native</h2><p>Distributed and edge architectures.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>IoT / Edge</strong></td><td><code>sensor-hub → edge-gateway → stream-processor → timeseries-db → anomaly-detector</code></td><td>Edge buffering and anomaly detection.</td></tr><tr><td><strong>Serverless / FaaS</strong></td><td><code>api-gateway → lambda-auth → lambda-process → dynamodb → s3 → sns</code></td><td>Cold starts and timeouts.</td></tr><tr><td><strong>Service Mesh</strong></td><td><code>istio-ingressgateway → envoy-sidecar → service-a → service-b</code></td><td>Circuit breakers and mTLS errors.</td></tr><tr><td><strong>Security / SIEM</strong></td><td><code>firewall → ids-engine → siem → alert-manager → notification</code></td><td>Security events, CVE detections and SOC alerts.</td></tr><tr><td><strong>Mobile Backend</strong></td><td><code>mobile-api → auth → feed-aggregator → content → analytics → event-store</code></td><td>Biometric auth and push notifications.</td></tr></table><h2 id="chaos-stress">Chaos / Stress</h2><p>Scenarios that behave badly on purpose.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>Error Storm</strong></td><td><code>frontend → cart → payment → inventory</code></td><td>80% forced errors — test error alerting and error budgets.</td></tr><tr><td><strong>Cardinality Burst</strong></td><td><code>api-gateway → data-service</code></td><td>Random user IDs on every request — test high-cardinality handling and cost.</td></tr><tr><td><strong>Latency Spike</strong></td><td><code>frontend → product → payment → slow-db</code></td><td>30% of spans take 2–8 seconds — test latency alerts and percentiles.</td></tr><tr><td><strong>Traffic Surge</strong></td><td><code>gateway → order → inventory → billing → shipping</code></td><td>Ten times the batch volume — test ingestion throughput and back-pressure.</td></tr><tr><td><strong>Cascading Failure</strong></td><td><code>gateway → order → billing → cache</code></td><td>75% errors with circuit-breaker fallbacks — test dependency-failure dashboards.</td></tr></table><h2 id="genai">GenAI</h2><p>LLM application patterns using the OpenTelemetry GenAI conventions.</p><table class="t"><tr><th>Scenario</th><th>Services (request flow)</th><th>What it exercises</th></tr><tr><td><strong>RAG Chatbot</strong></td><td><code>llm-orchestrator (gen_ai spans)</code></td><td>Retrieval-augmented chat with model, token usage and finish reason attributes.</td></tr><tr><td><strong>Agent Workflow</strong></td><td><code>planner (invoke_agent → chat span hierarchy)</code></td><td>Multi-step agent planning that follows the GenAI agent span pattern.</td></tr><tr><td><strong>Content Pipeline</strong></td><td><code>content-generator (gen_ai spans)</code></td><td>Content generation with per-call token and model attributes.</td></tr><tr><td><strong>Code Assistant</strong></td><td><code>code-model (gen_ai spans)</code></td><td>Code generation calls with GenAI conventions.</td></tr><tr><td><strong>Model Routing</strong></td><td><code>primary-provider → fallback-provider</code></td><td>Provider routing and fallback with a distinct <code>gen_ai.request.model</code> per branch.</td></tr></table>
+<h2>Controls available on every scenario</h2>
+<table class="t"><tr><th>Control</th><th>What it does</th></tr><tr><td>Interval, batch, error %</td><td>How often a batch is sent, how many requests per batch, and what share of requests end in an error.</td></tr><tr><td>Geo / IP simulation</td><td>Adds <code>client.address</code> and GeoIP-resolvable attributes — realistic regional ranges or RFC 5737 test ranges.</td></tr><tr><td>Synthetic PII</td><td>Adds <code>user.id</code>, <code>user.name</code>, <code>user.email</code> on reserved example domains, marked <code>pii.synthetic: true</code>, for testing redaction and DLP.</td></tr><tr><td>Custom attributes</td><td>Arbitrary <code>key=value</code> pairs added to the root span and logs — tag runs with a team, region or test ID.</td></tr><tr><td>Span duration override</td><td>Force a minimum and maximum span duration.</td></tr><tr><td>Status code weights</td><td>For example <code>200:90,404:5,500:5</code> to shape the HTTP status mix.</td></tr><tr><td>Sequential mode</td><td>Rotate through the enabled scenarios, one at a time, on a timer.</td></tr></table><figure class="fig"><img src="assets/shot-dashboard.jpg" loading="lazy" alt="Dashboard while several scenarios run"><figcaption>Several scenarios running at once, with the activity stream showing each scenario’s tag.</figcaption></figure><h2>Keep going</h2><div class="next"><a href="features.html">All features<span>Beyond scenarios: simulators, injection, automation</span></a><a href="telemetry-reference.html">Telemetry reference<span>The exact attributes and metrics each area emits</span></a><a href="guides/test-alerts-and-slos.html">Test alerts and SLOs<span>Use the chaos scenarios and injection</span></a></div>
+</article>
+
+<footer>
+  <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>
