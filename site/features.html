@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Features — OTel Studio</title>
-<meta name="description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secure multi-backend delivery, automation and a hardened image.">
+<title>OTel Studio Features: Scenarios, Simulators, Injection</title>
+<meta name="description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secured OTLP delivery, automation and a hardened image.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/features.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Features — OTel Studio">
-<meta property="og:description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secure multi-backend delivery, automation and a hardened image.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OTel Studio Features: Scenarios, Simulators, Injection">
+<meta property="og:description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secured OTLP delivery, automation and a hardened image.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/features.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OTel Studio Features: Scenarios, Simulators, Injection">
+<meta name="twitter:description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secured OTLP delivery, automation and a hardened image.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Everything OTel Studio can do", "item": "https://otel-studio.xplurdata.com/features.html"}]}, {"@type": "WebPage", "name": "OTel Studio Features: Scenarios, Simulators, Injection", "description": "Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secured OTLP delivery, automation and a hardened image.", "url": "https://otel-studio.xplurdata.com/features.html", "isPartOf": {"@type": "WebSite", "name": "OTel Studio", "url": "https://otel-studio.xplurdata.com/"}, "primaryImageOfPage": "https://otel-studio.xplurdata.com/assets/og-image.jpg"}]}</script>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,13 +95,13 @@ footer a{margin:0 8px}
   <div class="links"><a href="features.html" class="cur">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article class="wide">
+<main id="content"><article class="wide">
   <span class="tag">Features</span>
   <h1>Everything OTel Studio can do</h1>
   <p class="meta">Realistic, correlated OpenTelemetry traces, logs and metrics — from a whole simulated estate — sent to any OTLP backend.</p>
 <div class="toc"><a href="#scenarios">Scenarios</a><a href="#estate">Estate simulators</a><a href="#break">Break things on purpose</a><a href="#scale">Scale &amp; control</a><a href="#send">Send anywhere</a><a href="#automate">Automate</a><a href="#safe">Operate safely</a><a href="#guided">Guided</a></div>
 <p>OTel Studio is a telemetry <em>source</em>: you point it at an OTLP endpoint and it produces traces, logs and metrics that look like they came from a real, busy system. This page walks through everything it can do. For step-by-step instructions see the <a href="documentation.html">documentation</a> and the <a href="guides/index.html">guides</a>.</p>
-<figure class="fig"><img src="assets/shot-dashboard.jpg" loading="lazy" alt="OTel Studio dashboard"><figcaption>The dashboard: live counters with sparklines, a status strip for the six simulators, and the activity stream with copyable trace IDs.</figcaption></figure>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-dashboard.jpg" loading="lazy" alt="OTel Studio dashboard"><figcaption>The dashboard: live counters with sparklines, a status strip for the six simulators, and the activity stream with copyable trace IDs.</figcaption></figure>
 <h2 id="scenarios">Application scenarios: 30 realistic topologies</h2>
 <p>A scenario is a service topology that produces genuine request chains: a root span, child spans across services with correct parent-child relationships, one correlated log record for every service a request visits, and matching metrics. They are grouped the way teams think about systems — <strong>Web App</strong> (e-commerce, SaaS, media streaming, banking, social), <strong>Infrastructure</strong> (syslog, Kubernetes control plane, database cluster, message queue, CI/CD), <strong>APM</strong> (Java, Node.js, Python ML, Go, .NET), <strong>Cloud Native</strong> (IoT, serverless, service mesh, security/SIEM, mobile), <strong>Chaos / Stress</strong> and <strong>GenAI</strong>. See the full <a href="scenarios.html">scenario reference</a>.</p>
 <ul>
@@ -96,20 +111,20 @@ footer a{margin:0 8px}
 <li><strong>Quick-start templates:</strong> Startup, Mid-size SaaS, Enterprise and Regulated Finance each set a scenario mix and an infrastructure profile in one click.</li>
 <li><strong>Signal ratios that look real:</strong> logs outnumber traces, which outnumber metric points, the way they do in production.</li>
 </ul>
-<figure class="fig"><img src="assets/scenarios-advanced.jpg" loading="lazy" alt="Advanced settings drawer for a scenario"><figcaption>Advanced settings: geo/IP simulation, synthetic PII, span duration override, status code weights and custom attributes.</figcaption></figure>
+<figure class="fig"><img width="1400" height="754" decoding="async" src="assets/scenarios-advanced.jpg" loading="lazy" alt="Advanced settings drawer for a scenario"><figcaption>Advanced settings: geo/IP simulation, synthetic PII, span duration override, status code weights and custom attributes.</figcaption></figure>
 <h2 id="estate">An estate behind the traffic: six simulators</h2>
 <p>Real systems are not just request chains. Six simulators generate the estate underneath, and they all draw from one shared pool of identities — so the host in a trace, the container on that host and the pod in that cluster are the <em>same</em> host, container and pod everywhere in your backend. Each simulator has its own Start and Stop and an optional duration, independent of the global run.</p>
-<figure class="fig"><img src="assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator"><figcaption>Infrastructure: fleet size, OS mix and a searchable host table with live CPU and memory.</figcaption></figure><ul>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator"><figcaption>Infrastructure: fleet size, OS mix and a searchable host table with live CPU and memory.</figcaption></figure><ul>
 <li><strong>Infrastructure</strong> — a fleet of 20 to 2,000 hosts with a realistic cloud provider, region and OS distribution (Linux, Windows, Unix), configurable CPU and memory tiers, host roles and fleet churn. Each host emits CPU, memory, disk and network metrics plus swap/paging and iowait that move together with real pressure, and OS-level logs.</li>
 <li><strong>Containers</strong> — a container fleet placed on those hosts, with a real lifecycle (running, restarting, OOM-killed, crashed) and Docker's event vocabulary, CPU throttling metrics and memory as a percentage of limit — the signal that predicts an OOM kill.</li>
 <li><strong>Kubernetes</strong> — clusters with control-plane and etcd health, nodes with health conditions, pods with requests, limits and a computed QoS class, deployments with HPA-formula autoscaling and rolling updates, and an events feed that uses real Kubernetes reason strings. Pod → node → infrastructure host all line up.</li>
 </ul>
-<figure class="fig"><img src="assets/shot-kubernetes.jpg" loading="lazy" alt="Kubernetes simulator"><figcaption>Kubernetes: cluster topology, node health, pod phases and deployments.</figcaption></figure><ul>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-kubernetes.jpg" loading="lazy" alt="Kubernetes simulator"><figcaption>Kubernetes: cluster topology, node health, pod phases and deployments.</figcaption></figure><ul>
 <li><strong>Synthetics</strong> — HTTP checks against your own URLs from simulated locations, using the OpenTelemetry Collector's <code>httpcheck.*</code> metric names, with status, body and response-time assertions, retry-before-fail, multi-step checks that pass values between steps, and SSL-expiry warnings.</li>
 <li><strong>RUM</strong> — concurrent browser sessions with Core Web Vitals (LCP, INP, CLS, TTFB, FCP), rage and dead clicks, JavaScript errors with stack traces and fingerprints that group recurring errors, and named funnels. Sessions share trace IDs with backend traces. An optional real-browser mode drives Chromium against your own instrumented site (<code>-browser</code> image).</li>
 <li><strong>AI Observability</strong> — LLM calls across eight models from five providers emitting the OpenTelemetry GenAI metrics, plus cost, groundedness, relevance, PII and prompt-injection signals under a clearly separate <code>llm.*</code> namespace, with four switchable failure modes.</li>
 </ul>
-<figure class="fig"><img src="assets/shot-aiobs.jpg" loading="lazy" alt="AI Observability simulator"><figcaption>AI Observability: call rate, models, failure injection, token, cost, latency and quality metrics.</figcaption></figure><figure class="fig"><img src="assets/shot-rum.jpg" loading="lazy" alt="RUM simulator"><figcaption>RUM: concurrent sessions with Core Web Vitals, device mix and active sessions.</figcaption></figure>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-aiobs.jpg" loading="lazy" alt="AI Observability simulator"><figcaption>AI Observability: call rate, models, failure injection, token, cost, latency and quality metrics.</figcaption></figure><figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-rum.jpg" loading="lazy" alt="RUM simulator"><figcaption>RUM: concurrent sessions with Core Web Vitals, device mix and active sessions.</figcaption></figure>
 <h2 id="break">Break things on purpose</h2>
 <p>Dashboards look fine when nothing is wrong. OTel Studio makes things go wrong in controlled, repeatable ways:</p>
 <ul>
@@ -120,7 +135,7 @@ footer a{margin:0 8px}
 </ul>
 
 <h2 id="scale">Scale and control</h2>
-<figure class="fig"><img src="assets/shot-stats.jpg" loading="lazy" alt="Stats page"><figcaption>Stats: totals, rates per minute and an estimate of time series and data volume for your configuration.</figcaption></figure>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-stats.jpg" loading="lazy" alt="Stats page"><figcaption>Stats: totals, rates per minute and an estimate of time series and data volume for your configuration.</figcaption></figure>
 <ul>
 <li><strong>Speed multiplier</strong> from 0.25× to 10× across all scenarios, without changing batch size or error rate.</li>
 <li><strong>Time limit</strong> from one minute to one hour (and up to 24 hours through the API), with a countdown, and an optional webhook when a run ends.</li>
@@ -131,7 +146,7 @@ footer a{margin:0 8px}
 </ul>
 
 <h2 id="send">Send anywhere, securely</h2>
-<figure class="fig"><img src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page"><figcaption>Endpoints: thirteen backend presets, bearer token, extra headers and TLS settings.</figcaption></figure>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page"><figcaption>Endpoints: thirteen backend presets, bearer token, extra headers and TLS settings.</figcaption></figure>
 <ul>
 <li><strong>Standard OTLP</strong> over gRPC, HTTP with protobuf (the default) or HTTP with JSON. A base URL gets <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code> added; a full per-signal URL is respected.</li>
 <li><strong>Authentication that matches real backends</strong> — a bearer token, any number of extra headers (tenant IDs, API keys, datasets), and TLS or mutual TLS with your own CA and client certificates. See <a href="guides/secure-otlp-endpoints.html">the guide</a>.</li>
@@ -160,7 +175,7 @@ footer a{margin:0 8px}
 <h2 id="guided">Guided and discoverable</h2>
 <p>A fifteen-step product tour highlights every control and page on first sign-in (and replays from the top bar). The documentation is built into the application, and the <a href="documentation.html">website documentation</a> adds a feature map, use-case recipes and troubleshooting.</p>
 <h2>Keep going</h2><div class="next"><a href="scenarios.html">Scenario reference<span>All 30 topologies, service by service</span></a><a href="backends.html">Backends and presets<span>Settings for 13 backends</span></a><a href="telemetry-reference.html">Telemetry reference<span>Exactly what OTel Studio emits</span></a><a href="guides/index.html">Guides<span>Practical walkthroughs</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Send OTLP to Secured Backends: Tokens, Headers and mTLS — OTel Studio</title>
-<meta name="description" content="Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints in OTel Studio, how secrets are protected, and how to read the Test result.">
+<title>OTLP Bearer Tokens, Headers and mTLS — OTel Studio</title>
+<meta name="description" content="Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints, protect the secrets, and read each failure correctly.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/secure-otlp-endpoints.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Send OTLP to Secured Backends: Tokens, Headers and mTLS — OTel Studio">
-<meta property="og:description" content="Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints in OTel Studio, how secrets are protected, and how to read the Test result.">
+<meta property="og:title" content="OTLP Bearer Tokens, Headers and mTLS — OTel Studio">
+<meta property="og:description" content="Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints, protect the secrets, and read each failure correctly.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/secure-otlp-endpoints.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OTLP Bearer Tokens, Headers and mTLS — OTel Studio">
+<meta name="twitter:description" content="Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints, protect the secrets, and read each failure correctly.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "Send OTLP to Secured Backends: Tokens, Headers, TLS and mTLS", "item": "https://otel-studio.xplurdata.com/guides/secure-otlp-endpoints.html"}]}, {"@type": "TechArticle", "headline": "Send OTLP to Secured Backends: Tokens, Headers, TLS and mTLS", "description": "Configure bearer tokens, API-key and tenant headers, TLS and mutual TLS for OTLP endpoints, protect the secrets, and read each failure correctly.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/secure-otlp-endpoints.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,7 +95,7 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article>
+<main id="content"><article>
   <span class="tag">Security</span>
   <h1>Send OTLP to Secured Backends: Tokens, Headers, TLS and mTLS</h1>
   <p class="meta">Credentials that work the first time — and what each failure actually means.</p>
@@ -115,7 +130,7 @@ footer a{margin:0 8px}
 <table class="t"><tr><th>Result</th><th>Meaning</th><th>Try</th></tr><tr><td>Accepted</td><td>The endpoint answered an OTLP request with success.</td><td>Press Start.</td></tr><tr><td>Reachable, but credentials refused (HTTP 401 / 403)</td><td>You reached the backend and it rejected you.</td><td>Check the token, the header names and values, the tenant, and whether the key has ingest permission.</td></tr><tr><td>Reachable, but not accepted as OTLP (HTTP 404 etc.)</td><td>Something answered, but not an OTLP receiver at this path.</td><td>Use the base URL (paths are added for you), the HTTP port (4318) rather than the gRPC port (4317), and check any path prefix such as <code>/otlp</code> or <code>/api/default</code>.</td></tr><tr><td>Unreachable (for example <code>ECONNREFUSED</code>)</td><td>Nothing is listening, or the name does not resolve.</td><td>Inside a container <code>localhost</code> is the container itself — use a shared Docker network or <code>host.docker.internal</code>.</td></tr></table>
 <div class="callout"><strong>An easy trap.</strong> A gRPC endpoint pointed at an HTTP port, or the reverse, can look connected while no data is stored. If the Test result is fine but your backend is empty, check the protocol matches the port and read <a href="otlp-grpc-vs-http.html">OTLP gRPC vs HTTP</a>.</div>
 <h2>Keep going</h2><div class="next"><a href="../backends.html">Backends and presets<span>Settings for 13 backends</span></a><a href="otlp-grpc-vs-http.html">gRPC vs HTTP<span>Choosing a transport</span></a><a href="otel-studio-in-ci.html">Run in CI<span>Passing tokens safely</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

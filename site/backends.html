@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Backends and presets — OTel Studio</title>
-<meta name="description" content="Send OTel Studio data to Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace or any OTLP receiver — presets, URLs, protocols and authentication.">
+<title>Send OpenTelemetry Data to Any Backend — OTel Studio</title>
+<meta name="description" content="Presets and settings for Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace and any OTLP receiver, plus a local Collector.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/backends.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Backends and presets — OTel Studio">
-<meta property="og:description" content="Send OTel Studio data to Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace or any OTLP receiver — presets, URLs, protocols and authentication.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Send OpenTelemetry Data to Any Backend — OTel Studio">
+<meta property="og:description" content="Presets and settings for Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace and any OTLP receiver, plus a local Collector.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/backends.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Send OpenTelemetry Data to Any Backend — OTel Studio">
+<meta name="twitter:description" content="Presets and settings for Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace and any OTLP receiver, plus a local Collector.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Backends and presets", "item": "https://otel-studio.xplurdata.com/backends.html"}]}, {"@type": "WebPage", "name": "Send OpenTelemetry Data to Any Backend — OTel Studio", "description": "Presets and settings for Datadog, New Relic, Grafana, Honeycomb, Elastic, Jaeger, SigNoz, OpenObserve, Dynatrace and any OTLP receiver, plus a local Collector.", "url": "https://otel-studio.xplurdata.com/backends.html", "isPartOf": {"@type": "WebSite", "name": "OTel Studio", "url": "https://otel-studio.xplurdata.com/"}, "primaryImageOfPage": "https://otel-studio.xplurdata.com/assets/og-image.jpg"}]}</script>
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,12 +95,12 @@ footer a{margin:0 8px}
   <div class="links"><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html" class="cur">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article class="wide">
+<main id="content"><article class="wide">
   <span class="tag">Reference</span>
   <h1>Backends and presets</h1>
   <p class="meta">Thirteen presets and a working local Collector, so you can see data arrive in minutes.</p>
 <p>OTel Studio speaks standard OTLP, so it can send to any OTLP receiver. The Endpoints page has presets that fill in the URL, protocol and the right authentication fields for popular destinations. Pick a preset, replace the placeholders (shown in capitals), enter your credentials and press <strong>Test</strong>. A base URL is enough: <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code> are added for HTTP.</p>
-<figure class="fig"><img src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page with presets"><figcaption>The preset list on the Endpoints page, with the bearer token and headers section open.</figcaption></figure><h2 id="presets">Presets</h2><table class="t"><tr><th>Backend</th><th>Default URL</th><th>Protocol</th><th>Authentication sent</th></tr><tr><td>Datadog (local Agent)</td><td><code>http://datadog-agent:4318</code></td><td>HTTP</td><td>None — the Agent handles it</td></tr><tr><td>Datadog (direct intake)</td><td><code>https://otlp.datadoghq.com</code></td><td>HTTP (protobuf only)</td><td><code>dd-api-key</code> header; other Datadog sites use their own host</td></tr><tr><td>New Relic</td><td><code>https://otlp.nr-data.net</code></td><td>HTTP</td><td><code>api-key</code> header (licence key)</td></tr><tr><td>Grafana Cloud</td><td><code>https://otlp-gateway-YOUR_REGION.grafana.net/otlp</code></td><td>HTTP</td><td>Basic authentication: instance ID and API token</td></tr><tr><td>Grafana Alloy</td><td><code>http://alloy:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>OpenTelemetry Collector</td><td><code>http://otelcol:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Honeycomb</td><td><code>https://api.honeycomb.io</code></td><td>HTTP</td><td><code>x-honeycomb-team</code> header; <code>x-honeycomb-dataset</code> for Classic accounts</td></tr><tr><td>Jaeger</td><td><code>http://jaeger:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Elastic APM</td><td><code>http://apm-server:8200</code></td><td>HTTP (protobuf)</td><td><code>Authorization: Bearer</code> secret token, or <code>ApiKey</code></td></tr><tr><td>SigNoz Cloud</td><td><code>https://ingest.YOUR_REGION.signoz.cloud:443</code></td><td>gRPC</td><td><code>signoz-ingestion-key</code> header</td></tr><tr><td>SigNoz (self-hosted)</td><td><code>http://otel-collector:4317</code></td><td>gRPC</td><td>None</td></tr><tr><td>OpenObserve</td><td><code>http://openobserve:5080/api/default</code></td><td>HTTP</td><td>Basic authentication: email and password; <code>default</code> is the organisation</td></tr><tr><td>Dynatrace</td><td><code>https://YOUR_ENV.live.dynatrace.com/api/v2/otlp</code></td><td>HTTP (protobuf only)</td><td><code>Authorization: Bearer</code> platform token with OpenPipeline ingest scopes</td></tr><tr><td>Generic / custom</td><td>(your URL)</td><td>any</td><td>Bearer token and any headers you add</td></tr></table>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page with presets"><figcaption>The preset list on the Endpoints page, with the bearer token and headers section open.</figcaption></figure><h2 id="presets">Presets</h2><table class="t"><tr><th>Backend</th><th>Default URL</th><th>Protocol</th><th>Authentication sent</th></tr><tr><td>Datadog (local Agent)</td><td><code>http://datadog-agent:4318</code></td><td>HTTP</td><td>None — the Agent handles it</td></tr><tr><td>Datadog (direct intake)</td><td><code>https://otlp.datadoghq.com</code></td><td>HTTP (protobuf only)</td><td><code>dd-api-key</code> header; other Datadog sites use their own host</td></tr><tr><td>New Relic</td><td><code>https://otlp.nr-data.net</code></td><td>HTTP</td><td><code>api-key</code> header (licence key)</td></tr><tr><td>Grafana Cloud</td><td><code>https://otlp-gateway-YOUR_REGION.grafana.net/otlp</code></td><td>HTTP</td><td>Basic authentication: instance ID and API token</td></tr><tr><td>Grafana Alloy</td><td><code>http://alloy:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>OpenTelemetry Collector</td><td><code>http://otelcol:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Honeycomb</td><td><code>https://api.honeycomb.io</code></td><td>HTTP</td><td><code>x-honeycomb-team</code> header; <code>x-honeycomb-dataset</code> for Classic accounts</td></tr><tr><td>Jaeger</td><td><code>http://jaeger:4317</code></td><td>gRPC</td><td>None by default</td></tr><tr><td>Elastic APM</td><td><code>http://apm-server:8200</code></td><td>HTTP (protobuf)</td><td><code>Authorization: Bearer</code> secret token, or <code>ApiKey</code></td></tr><tr><td>SigNoz Cloud</td><td><code>https://ingest.YOUR_REGION.signoz.cloud:443</code></td><td>gRPC</td><td><code>signoz-ingestion-key</code> header</td></tr><tr><td>SigNoz (self-hosted)</td><td><code>http://otel-collector:4317</code></td><td>gRPC</td><td>None</td></tr><tr><td>OpenObserve</td><td><code>http://openobserve:5080/api/default</code></td><td>HTTP</td><td>Basic authentication: email and password; <code>default</code> is the organisation</td></tr><tr><td>Dynatrace</td><td><code>https://YOUR_ENV.live.dynatrace.com/api/v2/otlp</code></td><td>HTTP (protobuf only)</td><td><code>Authorization: Bearer</code> platform token with OpenPipeline ingest scopes</td></tr><tr><td>Generic / custom</td><td>(your URL)</td><td>any</td><td>Bearer token and any headers you add</td></tr></table>
 <div class="callout"><strong>Vendor rules worth knowing.</strong> Dynatrace and Datadog accept HTTP with protobuf only — not gRPC or JSON. Datadog expects delta metrics, which OTel Studio sends. Honeycomb needs the dataset header only for Classic accounts. Always check the vendor's current documentation for tokens and scopes; presets are a starting point, and every field can be edited.</div>
 
 <h2 id="selfhosted">Set up a local OpenTelemetry Collector in two minutes</h2>
@@ -126,7 +141,7 @@ docker logs -f otelcol</code></pre>
 <li><strong>Several backends at once:</strong> activate more than one endpoint to send identical data to each, for example to compare two products.</li>
 </ul>
 <h2>Keep going</h2><div class="next"><a href="guides/secure-otlp-endpoints.html">Secure endpoints<span>Tokens, headers, TLS and mTLS</span></a><a href="guides/testing-grafana-stack.html">Test a Grafana stack<span>Tempo, Loki and Mimir</span></a><a href="documentation.html#troubleshooting">Troubleshooting<span>Common connection problems</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
