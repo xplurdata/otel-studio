@@ -87,11 +87,13 @@ tr:last-child td{border:none}
 <div class="layout">
 <nav class="sidebar">
   <div class="group">Getting Started</div>
+  <a href="#overview">Overview</a>
   <a href="#quickstart">Quick Start</a>
   <a href="#images">Image Variants</a>
   <a href="#navigation">Navigating the App</a>
   <a href="#architecture">Architecture</a>
   <a href="#docker">Docker Configuration</a>
+  <a href="#use-cases">Use Cases</a>
   <div class="group">Scenarios</div>
   <a href="#scenarios">30 Scenarios</a>
   <a href="#signals">Signal Types</a>
@@ -127,6 +129,7 @@ tr:last-child td{border:none}
   <div class="group">Reference</div>
   <a href="#env">Environment Variables</a>
   <a href="#security">Security</a>
+  <a href="#troubleshooting">Troubleshooting</a>
 </nav>
 <main class="content">
 
@@ -134,6 +137,24 @@ tr:last-child td{border:none}
 <p class="subtitle">Generate realistic OpenTelemetry data for any observability stack</p>
 
 <p>OTel Studio is a Docker-deployable telemetry data generator that produces correlated traces, logs and metrics using realistic service topologies. Point it at any OTel-compatible backend and get production-like data flowing in 60 seconds.</p>
+
+<h2 id="overview">Overview</h2>
+
+<p>OTel Studio is the data source you do not have yet. It <strong>produces realistic OpenTelemetry traces, logs and metrics</strong> — as if from a real estate of services, hosts, containers, clusters, browsers and AI workloads — and sends them over OTLP to <strong>your</strong> collector or backend. Nothing in your own applications changes. Use it to prove a pipeline works, to build and test dashboards and alerts, to size and load-test a backend, or to demo a stack with traffic that looks real.</p>
+
+<table>
+<tr><th>You want to…</th><th>OTel Studio gives you</th><th>Read</th></tr>
+<tr><td>Get data flowing in a minute</td><td>One container, an Endpoints page, a Start button</td><td><a href="#quickstart">Quick Start</a></td></tr>
+<tr><td>Generate application traffic</td><td>30 scenarios with real parent-child span chains, correlated logs and metrics, per-scenario rate, batch and error controls</td><td><a href="#scenarios">Scenarios</a></td></tr>
+<tr><td>Simulate the estate underneath</td><td>Six simulators — hosts, containers, Kubernetes, synthetic checks, browser sessions, AI/LLM calls — sharing one pool of identities</td><td><a href="#infrastructure">Simulators</a></td></tr>
+<tr><td>Test alerts and SLOs</td><td>Anomaly (traffic and error burst) and Incident (one degraded host with correlated symptoms)</td><td><a href="#anomaly">Anomaly</a>, <a href="#incident">Incident</a></td></tr>
+<tr><td>Test at volume</td><td>Speed multiplier up to 10×, fleets up to 2,000 hosts, cardinality burst, a data-volume estimator</td><td><a href="#stats">Stats</a></td></tr>
+<tr><td>Send to real, secured backends</td><td>OTLP gRPC, HTTP protobuf and HTTP JSON; bearer token and headers; TLS and mTLS; 13 vendor presets; several endpoints at once</td><td><a href="#endpoint-auth">Endpoints</a></td></tr>
+<tr><td>Automate it</td><td>Command-line mode with an exit code for CI, and a Job API to start and stop runs from other tools</td><td><a href="#headless">Command line</a>, <a href="#job-api">Job API</a></td></tr>
+<tr><td>Run it safely</td><td>Non-root container, encrypted stored secrets, sign-in limits, roles, a software bill of materials</td><td><a href="#security">Security</a></td></tr>
+</table>
+
+<p>Key terms: a <strong>scenario</strong> is an application topology (for example E-Commerce) that produces traces, logs and metrics; a <strong>simulator</strong> is one of the six estate generators; an <strong>endpoint</strong> is a destination for the data; a <strong>run</strong> is a period during which data is sent. Everything OTel Studio sends carries <code>synth.generated: true</code>, so your backend can filter it out of production views.</p>
 
 <h2 id="quickstart">Quick Start</h2>
 
@@ -225,6 +246,54 @@ tr:last-child td{border:none}
 <div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
 
 <div class="note"><strong>Runs as a non-root user.</strong> The container runs as the unprivileged user <code>node</code> (uid 1000), and <code>/data</code> is the only place it writes. A named volume works as is; a bind mount must be writable by uid 1000 (<code>chown 1000:1000</code>). For Real System Data, the Docker socket needs the <code>--group-add</code> line shown above, and the log files you mount must be readable by uid 1000 — if they are not, run with <code>--user root</code> instead. In the image the process is started by <code>tini</code>, so <code>docker stop</code> flushes pending telemetry and exits within a second or two.</div>
+
+<h2 id="use-cases">Use Cases</h2>
+
+<h3>Check a collector pipeline end to end</h3>
+<ol>
+<li>Add your collector's OTLP URL on the Endpoints page and press <strong>Test</strong> — it tells you whether the address is reachable, whether the credentials are accepted and whether it speaks OTLP.</li>
+<li>Pick a scenario, press <strong>Start</strong>, and let it run for a few minutes.</li>
+<li>Compare the totals on the <a href="#stats">Stats</a> page (after the last Reset Stats) with what the collector and your backend received. A gap means data was dropped or refused on the way.</li>
+</ol>
+
+<h3>Test an alert rule or an SLO</h3>
+<ol>
+<li>Run a scenario at a steady rate with a low error percentage, and confirm your alert is quiet.</li>
+<li>Press <strong>Inject Anomaly</strong>: for 30 seconds traffic is multiplied by ten and 80% of requests fail. Check the alert fires, notifies and resolves.</li>
+<li>For a host-level story, enable Infrastructure and press <strong>Inject Incident</strong>: one host degrades and the services running on it show matching errors and latency.</li>
+</ol>
+
+<h3>Load-test a backend and estimate cost</h3>
+<ol>
+<li>Choose the <strong>Enterprise</strong> template on the Scenarios page and enable the simulators you care about.</li>
+<li>Read the estimated time series and data volume per day on the <a href="#stats">Stats</a> page before you start.</li>
+<li>Raise the speed multiplier (up to 10×) or enable the Cardinality Burst scenario, set a time limit, and watch your backend's ingestion and query behaviour.</li>
+</ol>
+
+<h3>Compare two backends with identical data</h3>
+<ol>
+<li>Add both as endpoints, each with its own token, headers and TLS settings.</li>
+<li>Activate both. Every signal is sent to each active endpoint, so the two receive the same traffic at the same time.</li>
+</ol>
+
+<h3>Run a check in CI</h3>
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>docker run --rm -e OTEL_STUDIO_BEARER_TOKEN="$TOKEN" \
+  -v $PWD/demo.yaml:/app/demo.yaml:ro ghcr.io/xplurdata/otel-studio:latest \
+  node dist/headless.js --config demo.yaml --duration 60s \
+  --endpoint https://collector.example.com:4318</pre>
+</div>
+<p>The exit code is <code>0</code> only when the run finished and everything was flushed, so it works as a pipeline step. To start many runs from another tool, use the <a href="#job-api">Job API</a>.</p>
+
+<h3>Demo or train on a stack</h3>
+<ol>
+<li>Pick a <strong>Quick Start Template</strong> (for example Mid-size SaaS) for a ready scenario and fleet profile.</li>
+<li>Turn on Sequential mode to rotate through scenarios automatically, and set a time limit (with an optional webhook) so an unattended demo stops on its own.</li>
+</ol>
 
 <h2 id="scenarios">30 Scenarios</h2>
 
@@ -699,7 +768,24 @@ containers:
 <tr><td><code>MAX_RUNS</code></td><td>25</td><td>Most runs the Job API keeps active at once</td></tr>
 </table>
 
+<p style="margin-top:48px;font-size:12px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">OTel Studio v2.0 — Built by <a href="https://xplurdata.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);text-decoration:none;font-weight:600"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true" style="height:13px;width:auto">XplurData</a></p>
 
+<h2 id="troubleshooting">Troubleshooting</h2>
+
+<table>
+<tr><th>What you see</th><th>Likely cause and fix</th></tr>
+<tr><td>"No endpoint configured" when pressing Start</td><td>There is no built-in destination. Add one on the Endpoints page (or start the container with <code>OTEL_ENDPOINT</code>).</td></tr>
+<tr><td>Test says <em>credentials refused (HTTP 401/403)</em></td><td>The backend answered but rejected the token or headers. Check the token, the header names the vendor expects, and the tenant or dataset header.</td></tr>
+<tr><td>Test says <em>not accepted as OTLP (HTTP 404)</em></td><td>The URL path is wrong. Give the base URL (for example <code>https://host:4318</code>); <code>/v1/traces</code> and the other paths are added for you. Check you are using the HTTP port (usually 4318), not the gRPC port (4317).</td></tr>
+<tr><td><code>connect ECONNREFUSED</code> to <code>localhost</code> or <code>127.0.0.1</code></td><td>Inside a container, <code>localhost</code> is the container itself. Use the collector's container name on a shared Docker network (<code>--network</code>), or the host's address (<code>--add-host host.docker.internal:host-gateway</code>).</td></tr>
+<tr><td>Counters rise but the backend shows nothing</td><td>Press Test on the endpoint. Check the protocol matches the port (gRPC needs 4317, HTTP 4318), the tenant header, the time range you are viewing, and that your backend is not filtering <code>synth.generated</code> data.</td></tr>
+<tr><td>HTTP 429 when signing in</td><td>Too many failed attempts. Wait for the window to end (15 minutes by default; <code>LOGIN_MAX_FAILURES</code>, <code>LOGIN_WINDOW_MIN</code>).</td></tr>
+<tr><td>The admin password is lost</td><td>If you did not set <code>ADMIN_PASS</code>, the generated one is printed once in <code>docker logs</code>. Another admin can reset it in Settings. With no admin session, remove the data volume to start fresh (this deletes saved settings).</td></tr>
+<tr><td>Settings or endpoints disappear after a restart, or a "cannot persist" warning</td><td>The container runs as uid 1000 and writes only to <code>/data</code>. Use a named volume, or <code>chown 1000:1000</code> a bind-mounted folder.</td></tr>
+<tr><td>Real System Data shows nothing</td><td>Mounted log files must be readable by uid 1000, and the Docker socket needs <code>--group-add</code> for its group — or run with <code>--user root</code>.</td></tr>
+<tr><td>"Real-browser RUM needs the -browser image"</td><td>Use <code>ghcr.io/xplurdata/otel-studio:latest-browser</code>; the default image has no browser.</td></tr>
+<tr><td>"port is already allocated" on start</td><td>Port 3002 is in use. Map another host port, for example <code>-p 3003:3002</code>.</td></tr>
+</table>
 </main>
 </div>
 
