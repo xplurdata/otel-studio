@@ -41,6 +41,9 @@ OTel Studio sits between "too simple" and "too heavy": drop in a Docker image, p
 ## Features
 
 - **30 realistic service topologies** — actual parent-child request chains across Web App, Infrastructure, APM, Cloud Native, Chaos/Stress and GenAI categories, not random noise
+- **Six simulators sharing one estate** — hosts (20 to 2,000), containers, Kubernetes, synthetic checks, browser sessions (RUM) and AI/LLM workloads, all correlated by shared identities
+- **Anomaly and incident injection** — a traffic and error burst, or one degraded host with matching symptoms across traces, metrics and logs
+- **Quick-start templates, a volume estimator and speed up to 10×** for load and cardinality tests
 - **Correlated signals** — logs share trace IDs with the spans that produced them
 - **Chaos scenarios** — dedicated error-storm, cardinality-burst, and latency-spike modes for testing alerting and dashboards
 - **Multi-endpoint fanout** — send to two or more OTel backends (e.g. Grafana + Elastic) simultaneously, with independent TLS/mTLS per endpoint
