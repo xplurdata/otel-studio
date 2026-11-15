@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Features — OTel Studio</title>
+<meta name="description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secure multi-backend delivery, automation and a hardened image.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/features.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Features — OTel Studio">
+<meta property="og:description" content="Everything OTel Studio can do: 30 scenarios, six estate simulators, anomaly and incident injection, secure multi-backend delivery, automation and a hardened image.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/features.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="features.html" class="cur">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article class="wide">
+  <span class="tag">Features</span>
+  <h1>Everything OTel Studio can do</h1>
+  <p class="meta">Realistic, correlated OpenTelemetry traces, logs and metrics — from a whole simulated estate — sent to any OTLP backend.</p>
+<div class="toc"><a href="#scenarios">Scenarios</a><a href="#estate">Estate simulators</a><a href="#break">Break things on purpose</a><a href="#scale">Scale &amp; control</a><a href="#send">Send anywhere</a><a href="#automate">Automate</a><a href="#safe">Operate safely</a><a href="#guided">Guided</a></div>
+<p>OTel Studio is a telemetry <em>source</em>: you point it at an OTLP endpoint and it produces traces, logs and metrics that look like they came from a real, busy system. This page walks through everything it can do. For step-by-step instructions see the <a href="documentation.html">documentation</a> and the <a href="guides/index.html">guides</a>.</p>
+<figure class="fig"><img src="assets/shot-dashboard.jpg" loading="lazy" alt="OTel Studio dashboard"><figcaption>The dashboard: live counters with sparklines, a status strip for the six simulators, and the activity stream with copyable trace IDs.</figcaption></figure>
+<h2 id="scenarios">Application scenarios: 30 realistic topologies</h2>
+<p>A scenario is a service topology that produces genuine request chains: a root span, child spans across services with correct parent-child relationships, one correlated log record for every service a request visits, and matching metrics. They are grouped the way teams think about systems — <strong>Web App</strong> (e-commerce, SaaS, media streaming, banking, social), <strong>Infrastructure</strong> (syslog, Kubernetes control plane, database cluster, message queue, CI/CD), <strong>APM</strong> (Java, Node.js, Python ML, Go, .NET), <strong>Cloud Native</strong> (IoT, serverless, service mesh, security/SIEM, mobile), <strong>Chaos / Stress</strong> and <strong>GenAI</strong>. See the full <a href="scenarios.html">scenario reference</a>.</p>
+<ul>
+<li><strong>Per-scenario control:</strong> send interval, batch size and error percentage for each scenario, enabled independently, with Select all / Deselect all per group.</li>
+<li><strong>Advanced settings per scenario:</strong> geo/IP simulation (realistic regional ranges, or safe RFC 5737 test ranges), synthetic PII (names and emails on reserved example domains, marked <code>pii.synthetic</code>), custom attributes, span-duration overrides and weighted HTTP status codes.</li>
+<li><strong>Sequential mode:</strong> run one scenario at a time and rotate through the enabled ones on a timer.</li>
+<li><strong>Quick-start templates:</strong> Startup, Mid-size SaaS, Enterprise and Regulated Finance each set a scenario mix and an infrastructure profile in one click.</li>
+<li><strong>Signal ratios that look real:</strong> logs outnumber traces, which outnumber metric points, the way they do in production.</li>
+</ul>
+<figure class="fig"><img src="assets/scenarios-advanced.jpg" loading="lazy" alt="Advanced settings drawer for a scenario"><figcaption>Advanced settings: geo/IP simulation, synthetic PII, span duration override, status code weights and custom attributes.</figcaption></figure>
+<h2 id="estate">An estate behind the traffic: six simulators</h2>
+<p>Real systems are not just request chains. Six simulators generate the estate underneath, and they all draw from one shared pool of identities — so the host in a trace, the container on that host and the pod in that cluster are the <em>same</em> host, container and pod everywhere in your backend. Each simulator has its own Start and Stop and an optional duration, independent of the global run.</p>
+<figure class="fig"><img src="assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator"><figcaption>Infrastructure: fleet size, OS mix and a searchable host table with live CPU and memory.</figcaption></figure><ul>
+<li><strong>Infrastructure</strong> — a fleet of 20 to 2,000 hosts with a realistic cloud provider, region and OS distribution (Linux, Windows, Unix), configurable CPU and memory tiers, host roles and fleet churn. Each host emits CPU, memory, disk and network metrics plus swap/paging and iowait that move together with real pressure, and OS-level logs.</li>
+<li><strong>Containers</strong> — a container fleet placed on those hosts, with a real lifecycle (running, restarting, OOM-killed, crashed) and Docker's event vocabulary, CPU throttling metrics and memory as a percentage of limit — the signal that predicts an OOM kill.</li>
+<li><strong>Kubernetes</strong> — clusters with control-plane and etcd health, nodes with health conditions, pods with requests, limits and a computed QoS class, deployments with HPA-formula autoscaling and rolling updates, and an events feed that uses real Kubernetes reason strings. Pod → node → infrastructure host all line up.</li>
+</ul>
+<figure class="fig"><img src="assets/shot-kubernetes.jpg" loading="lazy" alt="Kubernetes simulator"><figcaption>Kubernetes: cluster topology, node health, pod phases and deployments.</figcaption></figure><ul>
+<li><strong>Synthetics</strong> — HTTP checks against your own URLs from simulated locations, using the OpenTelemetry Collector's <code>httpcheck.*</code> metric names, with status, body and response-time assertions, retry-before-fail, multi-step checks that pass values between steps, and SSL-expiry warnings.</li>
+<li><strong>RUM</strong> — concurrent browser sessions with Core Web Vitals (LCP, INP, CLS, TTFB, FCP), rage and dead clicks, JavaScript errors with stack traces and fingerprints that group recurring errors, and named funnels. Sessions share trace IDs with backend traces. An optional real-browser mode drives Chromium against your own instrumented site (<code>-browser</code> image).</li>
+<li><strong>AI Observability</strong> — LLM calls across eight models from five providers emitting the OpenTelemetry GenAI metrics, plus cost, groundedness, relevance, PII and prompt-injection signals under a clearly separate <code>llm.*</code> namespace, with four switchable failure modes.</li>
+</ul>
+<figure class="fig"><img src="assets/shot-aiobs.jpg" loading="lazy" alt="AI Observability simulator"><figcaption>AI Observability: call rate, models, failure injection, token, cost, latency and quality metrics.</figcaption></figure><figure class="fig"><img src="assets/shot-rum.jpg" loading="lazy" alt="RUM simulator"><figcaption>RUM: concurrent sessions with Core Web Vitals, device mix and active sessions.</figcaption></figure>
+<h2 id="break">Break things on purpose</h2>
+<p>Dashboards look fine when nothing is wrong. OTel Studio makes things go wrong in controlled, repeatable ways:</p>
+<ul>
+<li><strong>Inject Anomaly</strong> — for 30 seconds traffic is multiplied by ten, 80% of requests fail and some spans take two to eight seconds. Use it to test alert rules, burn-rate alerts and error dashboards.</li>
+<li><strong>Inject Incident</strong> — one host from your fleet degrades for 60 seconds, and the services and pods running on it show matching errors and latency. One root cause, symptoms in traces, metrics and logs — the story a real outage tells.</li>
+<li><strong>Chaos scenarios</strong> — Error Storm (80% failures), Latency Spike, Traffic Surge (10× volume), Cascading Failure (75% errors with circuit-breaker fallback) and Cardinality Burst (random user IDs per request).</li>
+<li><strong>GenAI failure modes</strong> — runaway cost, latency spikes, elevated error rate and quality degradation.</li>
+</ul>
+
+<h2 id="scale">Scale and control</h2>
+<figure class="fig"><img src="assets/shot-stats.jpg" loading="lazy" alt="Stats page"><figcaption>Stats: totals, rates per minute and an estimate of time series and data volume for your configuration.</figcaption></figure>
+<ul>
+<li><strong>Speed multiplier</strong> from 0.25× to 10× across all scenarios, without changing batch size or error rate.</li>
+<li><strong>Time limit</strong> from one minute to one hour (and up to 24 hours through the API), with a countdown, and an optional webhook when a run ends.</li>
+<li><strong>Volume estimator</strong> — estimated time series and data volume per day for the simulators you have enabled, before you send anything.</li>
+<li><strong>Live activity stream</strong> with type filters, pause, copyable trace IDs and a CSV export.</li>
+<li><strong>Signals on demand</strong> — switch traces, logs and metrics on and off independently.</li>
+<li><strong>Scale out</strong> — run several containers, or up to 25 concurrent runs per Job API instance.</li>
+</ul>
+
+<h2 id="send">Send anywhere, securely</h2>
+<figure class="fig"><img src="assets/shot-endpoints.jpg" loading="lazy" alt="Endpoints page"><figcaption>Endpoints: thirteen backend presets, bearer token, extra headers and TLS settings.</figcaption></figure>
+<ul>
+<li><strong>Standard OTLP</strong> over gRPC, HTTP with protobuf (the default) or HTTP with JSON. A base URL gets <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code> added; a full per-signal URL is respected.</li>
+<li><strong>Authentication that matches real backends</strong> — a bearer token, any number of extra headers (tenant IDs, API keys, datasets), and TLS or mutual TLS with your own CA and client certificates. See <a href="guides/secure-otlp-endpoints.html">the guide</a>.</li>
+<li><strong>Thirteen presets</strong> fill in the URL, protocol and the right authentication fields — see <a href="backends.html">Backends</a>.</li>
+<li><strong>Fan-out</strong> — activate several endpoints and every signal goes to each of them, each with its own credentials.</li>
+<li><strong>A Test button that tells you why</strong> — accepted, reachable but credentials refused (HTTP 401/403), reachable but not OTLP (for example HTTP 404), or unreachable, with the reason.</li>
+</ul>
+
+<h2 id="automate">Automate</h2>
+<ul>
+<li><strong>Command-line mode</strong> runs for a fixed time and exits with a status code (0 success, 1 bad arguments or config, 2 collector unreachable, 3 error during the run) — a pass/fail step for CI. Flags cover endpoint, protocol, headers, signals, hosts, regions, CPU and memory tiers, OS mix, rate and error rate, and the standard <code>OTEL_EXPORTER_OTLP_*</code> variables are read.</li>
+<li><strong>Job API</strong> — start, list, inspect and stop up to 25 concurrent runs over HTTP, each with its own endpoint, credentials and settings.</li>
+<li><strong>Control API and config files</strong> — everything the UI does is an API call, and complete setups export and import as JSON. See <a href="guides/otel-studio-in-ci.html">the CI guide</a>.</li>
+</ul>
+
+<h2 id="safe">Operate it safely</h2>
+<ul>
+<li><strong>Small, hardened image</strong> — about 290 MB for <code>linux/amd64</code> and <code>linux/arm64</code>, running as an unprivileged user, scanned for vulnerabilities and published with a software bill of materials.</li>
+<li><strong>Secrets handled with care</strong> — endpoint tokens and header values are encrypted at rest, never shown again and never exported. Sign-in attempts are rate limited, sessions use <code>HttpOnly</code>, <code>SameSite</code> cookies, and responses carry security headers.</li>
+<li><strong>Roles</strong> — admin and user accounts, each with their own scenarios, endpoints and counters.</li>
+<li><strong>Private by design</strong> — the server contacts only the endpoints you add, and the web interface loads nothing from third-party hosts, so it works on an isolated network.</li>
+<li><strong>Easy to filter out</strong> — everything carries <code>synth.generated: true</code> and <code>synth.generator: otel-studio</code>.</li>
+<li><strong>Real data too</strong> — optionally tail log files and read Docker container logs and metrics from the host alongside the simulation.</li>
+</ul>
+
+<h2 id="guided">Guided and discoverable</h2>
+<p>A fifteen-step product tour highlights every control and page on first sign-in (and replays from the top bar). The documentation is built into the application, and the <a href="documentation.html">website documentation</a> adds a feature map, use-case recipes and troubleshooting.</p>
+<h2>Keep going</h2><div class="next"><a href="scenarios.html">Scenario reference<span>All 30 topologies, service by service</span></a><a href="backends.html">Backends and presets<span>Settings for 13 backends</span></a><a href="telemetry-reference.html">Telemetry reference<span>Exactly what OTel Studio emits</span></a><a href="guides/index.html">Guides<span>Practical walkthroughs</span></a></div>
+</article>
+
+<footer>
+  <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/documentation.html">
 <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
 <title>OTel Studio — Documentation</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -81,7 +82,7 @@ tr:last-child td{border:none}
   </div>
   <span class="sep">/</span>
   <span class="doc-label">Documentation</span>
-  <a href="guides/index.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:16px">Guides</a>
+  <a href="features.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Features</a><a href="scenarios.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Scenarios</a><a href="backends.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Backends</a><a href="telemetry-reference.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Telemetry</a><a href="features.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Features</a><a href="scenarios.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Scenarios</a><a href="backends.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Backends</a><a href="telemetry-reference.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Telemetry</a><a href="guides/index.html" style="font-size:12px;color:var(--muted);text-decoration:none;font-weight:600;margin-left:14px">Guides</a>
   <a href="index.html" class="back">← Back to home</a>
 </div>
 <div class="layout">
@@ -93,6 +94,7 @@ tr:last-child td{border:none}
   <a href="#navigation">Navigating the App</a>
   <a href="#architecture">Architecture</a>
   <a href="#docker">Docker Configuration</a>
+  <a href="#deployment">Deployment Recipes</a>
   <a href="#use-cases">Use Cases</a>
   <div class="group">Scenarios</div>
   <a href="#scenarios">30 Scenarios</a>
@@ -126,10 +128,13 @@ tr:last-child td{border:none}
   <div class="group">CI / Automation</div>
   <a href="#headless">Command-line Mode</a>
   <a href="#job-api">Job API</a>
+  <a href="#control-api">Control API</a>
   <div class="group">Reference</div>
   <a href="#env">Environment Variables</a>
+  <a href="#telemetry">What It Emits</a>
   <a href="#security">Security</a>
   <a href="#troubleshooting">Troubleshooting</a>
+  <a href="#faq">FAQ</a>
 </nav>
 <main class="content">
 
@@ -246,6 +251,104 @@ tr:last-child td{border:none}
 <div class="note"><code>JWT_SECRET</code> is optional — if omitted, OTel Studio generates a random one on first boot and persists it in the mounted <code>/data</code> volume, so it stays stable across restarts without needing to be set manually. Pass <code>-e JWT_SECRET="..."</code> explicitly only if you're running multiple replicas that need to share one signing secret.</div>
 
 <div class="note"><strong>Runs as a non-root user.</strong> The container runs as the unprivileged user <code>node</code> (uid 1000), and <code>/data</code> is the only place it writes. A named volume works as is; a bind mount must be writable by uid 1000 (<code>chown 1000:1000</code>). For Real System Data, the Docker socket needs the <code>--group-add</code> line shown above, and the log files you mount must be readable by uid 1000 — if they are not, run with <code>--user root</code> instead. In the image the process is started by <code>tini</code>, so <code>docker stop</code> flushes pending telemetry and exits within a second or two.</div>
+
+<h2 id="deployment">Deployment Recipes</h2>
+
+<h3>Docker Compose</h3>
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>services:
+  otelcol:
+    image: otel/opentelemetry-collector-contrib:latest
+    volumes: ["./otelcol.yaml:/etc/otelcol-contrib/config.yaml:ro"]
+  otel-studio:
+    image: ghcr.io/xplurdata/otel-studio:latest
+    ports: ["3002:3002"]
+    environment:
+      ADMIN_PASS: ${ADMIN_PASS:?set ADMIN_PASS}
+      OTEL_ENDPOINT: http://otelcol:4317
+      OTEL_PROTOCOL: grpc
+    volumes: ["studio-data:/data"]
+    depends_on: [otelcol]
+    restart: unless-stopped
+volumes:
+  studio-data: {}</pre>
+</div>
+<p>Both services share the Compose network, so <code>otelcol</code> resolves by name.</p>
+
+<h3>Kubernetes</h3>
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>apiVersion: apps/v1
+kind: Deployment
+metadata: { name: otel-studio }
+spec:
+  replicas: 1
+  selector: { matchLabels: { app: otel-studio } }
+  template:
+    metadata: { labels: { app: otel-studio } }
+    spec:
+      securityContext: { runAsUser: 1000, runAsNonRoot: true, fsGroup: 1000 }
+      containers:
+        - name: otel-studio
+          image: ghcr.io/xplurdata/otel-studio:latest
+          ports: [{ containerPort: 3002 }]
+          env:
+            - name: ADMIN_PASS
+              valueFrom: { secretKeyRef: { name: otel-studio, key: admin-pass } }
+            - name: OTEL_ENDPOINT
+              value: http://otel-collector.observability:4317
+            - name: OTEL_PROTOCOL
+              value: grpc
+          readinessProbe: { httpGet: { path: /login, port: 3002 } }
+          resources: { requests: { memory: 128Mi }, limits: { memory: 256Mi } }
+          volumeMounts: [{ name: data, mountPath: /data }]
+      volumes:
+        - name: data
+          persistentVolumeClaim: { claimName: otel-studio-data }
+---
+apiVersion: v1
+kind: Service
+metadata: { name: otel-studio }
+spec:
+  selector: { app: otel-studio }
+  ports: [{ port: 3002, targetPort: 3002 }]</pre>
+</div>
+<p>Run one replica: the live state is held in the process. Create the <code>otel-studio</code> secret and the <code>otel-studio-data</code> claim first.</p>
+
+<h3>Behind a reverse proxy (TLS)</h3>
+<p>OTel Studio serves plain HTTP; terminate TLS in front of it and set <code>TRUST_PROXY=1</code>. The live activity stream (<code>/events</code>) is a long-lived connection, so turn proxy buffering off for it:</p>
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>server {
+  listen 443 ssl;
+  server_name studio.example.com;
+  # ssl_certificate ... ;
+
+  location / {
+    proxy_pass http://127.0.0.1:3002;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Forwarded-For $remote_addr;
+  }
+  location /events {
+    proxy_pass http://127.0.0.1:3002;
+    proxy_http_version 1.1;
+    proxy_set_header Connection "";
+    proxy_buffering off;
+    proxy_read_timeout 1h;
+  }
+}</pre>
+</div>
 
 <h2 id="use-cases">Use Cases</h2>
 
@@ -562,7 +665,7 @@ curl -b cookies.txt -X POST http://localhost:3002/api/control/pillar -H "Content
 <tr><td>Elastic</td><td><code>Authorization: Bearer</code> or <code>ApiKey</code></td><td>http://apm-server:8200</td></tr>
 <tr><td>SigNoz Cloud</td><td>Header: <code>signoz-ingestion-key</code></td><td>ingest.REGION.signoz.cloud</td></tr>
 <tr><td>SigNoz (self-hosted)</td><td>None</td><td>http://otel-collector:4317</td></tr>
-<tr><td>OpenObserve</td><td>HTTP Basic Auth (email + password)</td><td>http://openobserve:5080</td></tr>
+<tr><td>OpenObserve</td><td>HTTP Basic Auth (email + password)</td><td>http://openobserve:5080/api/default</td></tr>
 <tr><td>Dynatrace</td><td><code>Authorization: Bearer</code> (platform token, HTTP protobuf only)</td><td>https://ENV.live.dynatrace.com/api/v2/otlp</td></tr>
 <tr><td>Generic / Custom</td><td>Bearer token and any headers you add (see above)</td><td>—</td></tr>
 </table>
@@ -727,10 +830,45 @@ containers:
 <tr><td>Stored secrets</td><td>Bearer tokens and header values of endpoints are encrypted at rest with a key derived from <code>JWT_SECRET</code>, and are never returned by the API, the live stream or exports. Keep the <code>/data</code> volume and <code>JWT_SECRET</code> together: a different secret cannot decrypt old values.</td></tr>
 <tr><td>Browser protections</td><td>Responses carry <code>X-Content-Type-Options</code>, <code>X-Frame-Options: DENY</code>, a <code>frame-ancestors 'none'</code> policy, <code>Referrer-Policy</code> and <code>Permissions-Policy</code>; <code>Strict-Transport-Security</code> is added over HTTPS.</td></tr>
 <tr><td>Job API</td><td>Needs <code>API_TOKEN</code> (at least 16 characters), compared in constant time. Endpoint tokens in a request are passed to the run through its environment and never written to disk.</td></tr>
+<tr><td>Privacy</td><td>The server contacts only the endpoints you add (and the URLs of synthetic checks you define). The web interface loads its fonts and icons from the image itself, so the browser makes no request to any third-party host and the UI works on an isolated network.</td></tr>
 <tr><td>Image</td><td>Non-root user, build output only (no source files), pinned dependency versions from a lockfile, scanned for HIGH and CRITICAL vulnerabilities, and published with a software bill of materials (CycloneDX).</td></tr>
 </table>
 
 <p><strong>Deployment advice.</strong> OTel Studio serves plain HTTP. For anything beyond a trusted network, put it behind a reverse proxy that terminates TLS, and set <code>TRUST_PROXY=1</code> so client addresses and HTTPS are read from <code>X-Forwarded-*</code> headers (or <code>COOKIE_SECURE=true</code> to always mark the cookie <code>Secure</code>). Do not expose port 3100 (Job API) publicly. Report vulnerabilities privately as described in <a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md">SECURITY.md</a>.</p>
+
+<h2 id="control-api">Control API</h2>
+
+<p>Everything the web interface does is an HTTP call, so you can script it. Sign in once to get a session cookie, then call the endpoints below with that cookie. This is the interface the UI itself uses, so it can change between minor versions; for stable automation prefer the <a href="#headless">command-line mode</a> and the <a href="#job-api">Job API</a>.</p>
+
+<div class="code-wrap">
+<div class="code-head">
+  <span class="code-lang">bash</span>
+  <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
+</div>
+<pre>curl -c jar.txt -X POST http://localhost:3002/api/login -H "Content-Type: application/json" \
+  -d '{"username":"admin","password":"your-password"}'
+curl -b jar.txt http://localhost:3002/api/state                       # full configuration and counters
+curl -b jar.txt -X POST http://localhost:3002/api/control -H "Content-Type: application/json" \
+  -d '{"action":"start"}'                                             # start (needs an active endpoint)</pre>
+</div>
+
+<table>
+<tr><th>Call</th><th>Purpose</th></tr>
+<tr><td><code>POST /api/login</code>, <code>POST /api/logout</code></td><td>Start and end a session (limited to repeated failures per user and address)</td></tr>
+<tr><td><code>GET /api/state</code>, <code>GET /api/me</code>, <code>GET /api/pillar-status</code></td><td>Configuration and counters, the current user, and the status of the six simulators</td></tr>
+<tr><td><code>POST /api/control</code></td><td><code>{"action":"start|stop|reset"}</code> plus settings (<code>sim</code>, <code>infrastructure</code>, <code>containers</code>, <code>kubernetes</code>, <code>sum</code>, <code>rum</code>, <code>aiobs</code>, signals, speed, scenarios)</td></tr>
+<tr><td><code>POST /api/control/pillar</code></td><td><code>{"pillar":"kubernetes","action":"start|stop","quotaMinutes":10}</code> for one simulator</td></tr>
+<tr><td><code>POST /api/anomaly/inject</code>, <code>/api/anomaly/stop</code></td><td>The anomaly burst; optional <code>{"durationMs":30000}</code></td></tr>
+<tr><td><code>POST /api/incident/inject</code>, <code>/api/incident/stop</code></td><td>The host incident (needs Infrastructure on); optional <code>{"durationMs":60000}</code></td></tr>
+<tr><td><code>GET/POST /api/endpoints</code>, <code>PUT/DELETE /api/endpoints/:id</code></td><td>List, create, update and delete endpoints (<code>name</code>, <code>url</code>, <code>protocol</code>, <code>bearer_token</code>, <code>extra_headers</code>, TLS fields)</td></tr>
+<tr><td><code>POST /api/endpoints/:id/activate</code>, <code>/test</code></td><td>Make an endpoint active, and test it (the same result as the Test button)</td></tr>
+<tr><td><code>GET /api/export/scenarios.json</code>, <code>POST /api/import/scenarios</code></td><td>Export and import a complete setup</td></tr>
+<tr><td><code>GET /api/export/activity.csv</code></td><td>The activity stream as CSV</td></tr>
+<tr><td><code>GET /api/environment-templates</code>, <code>/api/backend-presets</code>, <code>/api/cardinality-estimate</code></td><td>Templates, vendor presets, and the volume estimate</td></tr>
+<tr><td><code>GET/POST /api/users</code>, <code>PUT /api/users/:id/role</code>, <code>PUT /api/users/:id/password</code>, <code>DELETE /api/users/:id</code></td><td>User management (admin; any user may change their own password)</td></tr>
+<tr><td><code>GET /events</code></td><td>Server-sent events: live counters and the activity stream</td></tr>
+</table>
+<p>Errors return a JSON body such as <code>{"error":"No endpoint configured. Add one on the Endpoints page, then press Start."}</code> with a 4xx status.</p>
 
 <h2 id="env">Environment Variables</h2>
 
@@ -768,7 +906,21 @@ containers:
 <tr><td><code>MAX_RUNS</code></td><td>25</td><td>Most runs the Job API keeps active at once</td></tr>
 </table>
 
-<p style="margin-top:48px;font-size:12px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:6px">OTel Studio v2.0 — Built by <a href="https://xplurdata.com" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:5px;color:var(--accent);text-decoration:none;font-weight:600"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true" style="height:13px;width:auto">XplurData</a></p>
+<h2 id="telemetry">What OTel Studio Emits</h2>
+
+<table>
+<tr><th>Area</th><th>Details</th></tr>
+<tr><td>Traces</td><td>10–15 spans per request with parent-child links; each service in a scenario is its own <code>service.name</code>; failed requests get an error status.</td></tr>
+<tr><td>Logs</td><td>One record per service a request visits, carrying that span's <code>trace_id</code> and <code>span_id</code>.</td></tr>
+<tr><td>Metrics</td><td>Exported every 10 seconds with delta temporality.</td></tr>
+<tr><td>Resource attributes</td><td><code>service.name</code>, <code>service.version</code>, <code>deployment.environment</code>, <code>telemetry.sdk.name</code>, <code>synth.generated</code>, <code>synth.generator</code>; <code>host.name</code>, <code>os.type</code>, <code>cloud.provider</code>, <code>cloud.region</code>, <code>container.id</code>, <code>container.name</code>, <code>k8s.cluster.name</code>, <code>k8s.namespace.name</code>, <code>k8s.pod.name</code> when those simulators are on; <code>client.address</code> and <code>geo.*</code> with geo simulation; <code>user.*</code> with synthetic PII.</td></tr>
+<tr><td>Application metrics</td><td><code>http.requests.total</code>, <code>http.errors.total</code>, <code>http.request.duration</code>, <code>db.queries.total</code>, <code>cache.hit.rate</code>, <code>logs.emitted.total</code>, <code>jvm.memory.heap.used</code>, <code>process.cpu.utilization</code>, <code>process.memory.usage</code></td></tr>
+<tr><td>Host metrics</td><td><code>system.cpu.utilization</code>, <code>system.memory.utilization</code>, <code>system.disk.utilization</code>, <code>system.paging.utilization</code>, <code>system.load_average.1m</code>, <code>system.network.io</code> and related</td></tr>
+<tr><td>Container and Kubernetes</td><td><code>container.cpu.usage</code>, <code>container.cpu.throttling_data.*</code>, <code>container.memory.usage</code>, <code>container.memory.percent</code>, <code>container.network.io</code>, <code>k8s.pod.cpu.usage</code>, <code>k8s.pod.memory.usage</code>, <code>k8s.pod.memory.utilization</code></td></tr>
+<tr><td>GenAI</td><td><code>gen_ai.client.token.usage</code>, <code>gen_ai.client.operation.duration</code>, <code>gen_ai.server.time_to_first_token</code>, <code>gen_ai.server.time_per_output_token</code>; custom <code>llm.cost.usd</code>, <code>llm.eval.*</code>, <code>llm.safety.*</code>, <code>llm.agent.*</code></td></tr>
+<tr><td>Synthetics</td><td><code>httpcheck.status</code>, <code>httpcheck.response.duration</code>, <code>httpcheck.dns.lookup.duration</code>, <code>httpcheck.tls.handshake.duration</code></td></tr>
+</table>
+<p>To drop synthetic data in a Collector, filter on <code>resource.attributes["synth.generated"] == true</code>.</p>
 
 <h2 id="troubleshooting">Troubleshooting</h2>
 
@@ -786,6 +938,31 @@ containers:
 <tr><td>"Real-browser RUM needs the -browser image"</td><td>Use <code>ghcr.io/xplurdata/otel-studio:latest-browser</code>; the default image has no browser.</td></tr>
 <tr><td>"port is already allocated" on start</td><td>Port 3002 is in use. Map another host port, for example <code>-p 3003:3002</code>.</td></tr>
 </table>
+
+<h2 id="faq">FAQ</h2>
+
+<h3>Does OTel Studio send data anywhere except my endpoints?</h3>
+<p>No. The server contacts only the endpoints you add, plus the URLs of any synthetic checks you define. The web interface loads its fonts and icons from the image, so it makes no third-party requests and works on an isolated network.</p>
+
+<h3>Is the data real?</h3>
+<p>No — it is synthetic but realistic, and every signal is marked <code>synth.generated: true</code>. The optional Real System Data mode, if you enable it, reads the host's actual log files and Docker metrics.</p>
+
+<h3>How do I remove test data from my backend afterwards?</h3>
+<p>Filter or delete on <code>synth.generated</code>, or on a run-wide attribute you set (<code>--attr test.run=...</code> in command-line mode and the Job API). Sending test traffic to its own tenant, dataset or project makes clean-up trivial.</p>
+
+<h3>Can I run several instances?</h3>
+<p>Yes, with separate <code>/data</code> volumes. For many concurrent runs from one place use the <a href="#job-api">Job API</a> (up to 25 at once).</p>
+
+<h3>Does it run on Windows and macOS?</h3>
+<p>Anywhere Docker runs, including Docker Desktop and Apple Silicon (the image is built for <code>linux/amd64</code> and <code>linux/arm64</code>).</p>
+
+<h3>Why do I see more logs than traces?</h3>
+<p>By design: one log record is written for every service a request visits, so a five-service chain produces five logs per trace. This matches how real systems behave.</p>
+
+<h3>What is the licence?</h3>
+<p>MIT. There is no account, licence check or usage reporting.</p>
+
+
 </main>
 </div>
 

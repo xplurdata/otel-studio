@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulate a Cloud Estate: Hosts, Containers and Kubernetes That Line Up — OTel Studio</title>
+<meta name="description" content="Generate correlated host, container and Kubernetes telemetry whose identities match across layers, and inject a host incident with OTel Studio.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Simulate a Cloud Estate: Hosts, Containers and Kubernetes That Line Up — OTel Studio">
+<meta property="og:description" content="Generate correlated host, container and Kubernetes telemetry whose identities match across layers, and inject a host incident with OTel Studio.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article>
+  <span class="tag">Estate</span>
+  <h1>Simulate a Cloud Estate That Lines Up</h1>
+  <p class="meta">Hosts, containers, pods and services that share identities — so you can follow an incident from symptom to cause.</p>
+
+<p>Most telemetry generators produce traces and stop there. Real incidents cross layers: a host runs out of memory, a container is OOM-killed, a pod is evicted, and a service that was running on it starts failing. To test dashboards and runbooks that follow that chain, the identities have to line up. OTel Studio's simulators share one pool, so they do.</p>
+
+<h2>The chain</h2>
+<p>Everything starts at <strong>Infrastructure</strong>, a fleet of 20 to 2,000 hosts with a realistic mix of cloud provider, region and operating system. On top of it:</p>
+<ul>
+<li><strong>Scenario services</strong> are placed on real hosts from the fleet: their resources carry <code>host.name</code>, <code>cloud.provider</code> and <code>cloud.region</code> from a host that exists.</li>
+<li><strong>Containers</strong> are placed on those hosts, and a service that runs in a container carries that container's identity.</li>
+<li><strong>Kubernetes</strong> nodes are placed on hosts, pods on nodes, and services on pods.</li>
+</ul>
+<p>The result: take a <code>k8s.pod.name</code> from a trace, find the pod, find its node, and find the host — and the host is the one reporting memory pressure.</p>
+<figure class="fig"><img src="../assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator page"><figcaption>A host fleet with OS mix, cloud and region, and live CPU and memory.</figcaption></figure>
+<h2>Set it up</h2>
+<ol>
+<li>Open <strong>Simulators → Infrastructure</strong>, choose a size (Small Team 20, Mid-size 200 or Enterprise 2,000 hosts) and press <strong>Start Infrastructure</strong>.</li>
+<li>Start <strong>Containers</strong> and <strong>Kubernetes</strong> from their pages. Both need Infrastructure enabled.</li>
+<li>Enable a few scenarios — E-Commerce, SaaS, a Kubernetes control-plane scenario — and press the main <strong>Start</strong>.</li>
+<li>The Dashboard's status strip shows all six simulators and their counts at a glance.</li>
+</ol>
+<p>Each simulator starts and stops on its own, with an optional duration, so you can run Kubernetes for ten minutes while Containers runs for five.</p>
+
+<h2>What each layer reports</h2>
+<table class="t"><tr><th>Layer</th><th>Realistic behaviour</th></tr><tr><td>Hosts</td><td>CPU, memory, disk and network metrics, plus swap/paging and iowait that rise with real memory and disk pressure; fleet churn that replaces hosts like auto-scaling.</td></tr><tr><td>Containers</td><td>A lifecycle of running, restarting, OOM-killed and crashed with Docker's event sequence (including exit code 137); CPU throttling counters; memory as a percentage of the limit.</td></tr><tr><td>Kubernetes</td><td>Pod phases and failure reasons (OOMKilled, CrashLoopBackOff, ImagePullBackOff, Evicted, Unschedulable); resource requests and limits with the computed QoS class; HPA-style autoscaling; rolling updates; node conditions; control-plane health; an events feed with real reason strings.</td></tr></table>
+<h2>Add an incident</h2>
+<p>Press <strong>Inject Incident</strong>. OTel Studio picks one host at random, finds the services and pods running on it, and degrades them together for 60 seconds. An <code>[INCIDENT]</code> entry in the activity stream names the host and the affected services. In your backend you should see one host's metrics turn bad while the traces and logs of exactly those services show errors and latency.</p>
+<p>Use it to check that your dashboards let an on-call engineer walk from a failing service to the host, that alerts group by the right labels, and that a runbook's first three queries really find the problem.</p>
+
+<h2>Things to try</h2>
+<ul>
+<li>Search your backend for a host name from the Infrastructure page and confirm traces, container metrics and pod metrics all reference it.</li>
+<li>Turn on only Infrastructure: it raises logs and metrics even with no scenario running, which is a cheap way to test host-metric dashboards.</li>
+<li>Resize the fleet and watch series counts rise — then compare with the Stats estimate.</li>
+<li>Run the estate for an hour with a time limit and check retention and downsampling behave.</li>
+</ul>
+<h2>Keep going</h2><div class="next"><a href="load-test-and-size-a-backend.html">Load-test a backend<span>Fleet size and cardinality</span></a><a href="test-alerts-and-slos.html">Test alerts<span>Failure injection</span></a><a href="../telemetry-reference.html">Telemetry reference<span>Metric names per layer</span></a></div>
+</article>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Run OTel Studio in CI: Headless Mode and the Job API — OTel Studio</title>
+<meta name="description" content="Gate telemetry pipeline changes in CI with OTel Studio command-line mode and exit codes, and run many isolated runs through the Job API.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Run OTel Studio in CI: Headless Mode and the Job API — OTel Studio">
+<meta property="og:description" content="Gate telemetry pipeline changes in CI with OTel Studio command-line mode and exit codes, and run many isolated runs through the Job API.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article>
+  <span class="tag">Automation</span>
+  <h1>Run OTel Studio in CI: Headless Mode and the Job API</h1>
+  <p class="meta">Send known traffic through your pipeline on every change, and fail the build when it breaks.</p>
+
+<p>A telemetry pipeline is code and configuration, so it deserves a pipeline test: after every change to a collector configuration, an alert rule or a dashboard, send known traffic through it and fail the build if something is wrong. OTel Studio's command-line mode and Job API are built for that.</p>
+
+<h2>Command-line mode</h2>
+<p>The same image that serves the web interface runs headless. It starts, generates traffic for a fixed time, flushes everything and exits with a status code:</p>
+<table class="t"><tr><th>Exit code</th><th>Meaning</th></tr><tr><td><code>0</code></td><td>Ran for the full duration and exported successfully</td></tr><tr><td><code>1</code></td><td>Bad arguments or invalid configuration</td></tr><tr><td><code>2</code></td><td>Collector unreachable at start-up</td></tr><tr><td><code>3</code></td><td>Error during the run</td></tr></table>
+<p>Describe the traffic in a small YAML file. Listing a scenario or simulator enables it; omit it to leave it off:</p>
+<pre><code># load.yaml
+service: ci-check
+env: ci
+scenarios:
+  ecommerce:
+    rateMs: 1000        # ms between batches
+    batchSize: 3        # requests per batch
+    errorRate: 0.05     # 5% of requests fail
+infrastructure:
+  hostCount: 20
+containers:
+  count: 20
+  serviceCount: 6</code></pre><p>Run it. The endpoint can come from the file, a flag or the standard OpenTelemetry variables; the token comes from the environment:</p><pre><code>docker run --rm \
+  -e OTEL_STUDIO_BEARER_TOKEN="$OTLP_TOKEN" \
+  -v "$PWD/load.yaml:/app/load.yaml:ro" \
+  ghcr.io/xplurdata/otel-studio:latest \
+  node dist/headless.js --config load.yaml --duration 2m \
+  --endpoint https://collector.example.com:4318 --protocol http \
+  --header "X-Scope-OrgID: ci" \
+  --attr test.run=$GITHUB_RUN_ID</code></pre>
+<p>The <code>--attr</code> flag stamps a run-wide resource attribute on everything sent, so you can find exactly this run's data afterwards. The container has no shell and needs none: the command is the program.</p>
+
+<h2>A GitHub Actions example</h2>
+<pre><code>name: pipeline-check
+on: [pull_request]
+jobs:
+  telemetry:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate test traffic
+        env:
+          OTLP_TOKEN: ${{ secrets.OTLP_TOKEN }}
+        run: |
+          docker run --rm -e OTEL_STUDIO_BEARER_TOKEN="$OTLP_TOKEN" \
+            -v "$PWD/ci/load.yaml:/app/load.yaml:ro" \
+            ghcr.io/xplurdata/otel-studio:latest \
+            node dist/headless.js --config load.yaml --duration 90s \
+            --endpoint "${{ vars.OTLP_ENDPOINT }}" --protocol http \
+            --attr test.run=${{ github.run_id }}
+      - name: Check the data arrived
+        run: ./ci/assert-data-arrived.sh ${{ github.run_id }}</code></pre>
+<p>The first step fails the job on a non-zero exit code. The second is yours: query your backend for records with <code>test.run</code> equal to the run ID and fail if the count is zero or too low. That closes the loop — the pipeline is proven end to end, not just "the exporter did not complain".</p>
+
+<h2>Settings you can pass without a config file</h2>
+<p>Flags cover the common cases: <code>--signals traces,logs,metrics</code>, <code>--hosts</code>, <code>--providers</code>, <code>--regions</code>, <code>--cpu</code>, <code>--mem</code>, <code>--os</code>, <code>--rate</code> and <code>--error-rate</code>. If you set no endpoint on the command line or in the file, the standard <code>OTEL_EXPORTER_OTLP_ENDPOINT</code>, <code>OTEL_EXPORTER_OTLP_PROTOCOL</code> and <code>OTEL_EXPORTER_OTLP_HEADERS</code> variables are used. The configuration file and flags take precedence over them.</p>
+
+<h2>The Job API: many runs from one place</h2>
+<p>When you need several runs at once — different tenants, different load shapes, several environments — run the Job API and start them over HTTP. Each run is its own isolated process with its own endpoint, credentials and settings, and up to 25 can be active at once:</p>
+<pre><code>docker run -d --name otel-studio-api -p 3100:3100 \
+  -e API_TOKEN="a-secret-of-at-least-16-characters" \
+  ghcr.io/xplurdata/otel-studio:latest node dist/api.js
+
+curl -X POST http://localhost:3100/v1/runs \
+  -H "Authorization: Bearer $API_TOKEN" -H "Content-Type: application/json" \
+  -d '{
+    "endpoint": "https://collector.example.com:4318",
+    "protocol": "http",
+    "duration": "10m",
+    "bearerToken": "...",
+    "headers": { "X-Scope-OrgID": "tenant-1" },
+    "resourceAttributes": { "test.run": "nightly-42" },
+    "signals": ["traces", "logs"],
+    "scenarios": { "ecommerce": { "rateMs": 1000, "errorRate": 0.05 } }
+  }'
+
+curl -H "Authorization: Bearer $API_TOKEN" http://localhost:3100/v1/runs/&lt;id&gt;      # state, timing, exit code
+curl -X DELETE -H "Authorization: Bearer $API_TOKEN" http://localhost:3100/v1/runs/&lt;id&gt;   # stop early</code></pre>
+<p>Endpoint tokens in a request are passed to the run through its environment and never written to disk; run views show header <em>names</em> only. Keep port 3100 off the public internet.</p>
+
+<div class="callout"><strong>Tips.</strong> Give CI its own tenant or dataset so test data is easy to find and delete. Keep durations short (one to two minutes is usually plenty). Pin the image to a version tag in CI so a new release never changes your pipeline unexpectedly.</div>
+<h2>Keep going</h2><div class="next"><a href="secure-otlp-endpoints.html">Secure endpoints<span>Tokens and headers</span></a><a href="test-otel-collector-configuration.html">Test a collector configuration<span>What to check at each stage</span></a><a href="../documentation.html#job-api">Job API reference<span>Every call</span></a></div>
+</article>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

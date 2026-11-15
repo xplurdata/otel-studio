@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telemetry reference — OTel Studio</title>
+<meta name="description" content="Exactly what OTel Studio emits: resource attributes, application, host, container, Kubernetes, GenAI, RUM and synthetic metrics, and how to filter synthetic data.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/telemetry-reference.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Telemetry reference — OTel Studio">
+<meta property="og:description" content="Exactly what OTel Studio emits: resource attributes, application, host, container, Kubernetes, GenAI, RUM and synthetic metrics, and how to filter synthetic data.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/telemetry-reference.html">
+<meta name="twitter:card" content="summary">
+<link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<nav class="nav">
+  <div class="logo">
+    <a href="index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="documentation.html">Docs</a><a href="guides/index.html">Guides</a><a href="documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<article class="wide">
+  <span class="tag">Reference</span>
+  <h1>Telemetry reference</h1>
+  <p class="meta">The attributes and metrics OTel Studio produces, for building dashboards, alerts and pipeline filters.</p>
+<p>This page lists what OTel Studio puts on the wire, so you can build dashboards, alert rules and pipeline filters against it. Names follow the OpenTelemetry semantic conventions wherever a convention exists; anything that is not part of a convention uses a clearly separate prefix (<code>llm.*</code>, <code>synth.*</code>). Backends may rewrite metric names (for example adding <code>_total</code> or unit suffixes in Prometheus), so check how yours maps them.</p>
+<div class="toc"><a href="#shape">Signal shape</a><a href="#resource">Resource attributes</a><a href="#app">Application metrics</a><a href="#estate">Estate metrics</a><a href="#genai">GenAI</a><a href="#rum">RUM &amp; synthetics</a><a href="#filter">Filtering</a></div>
+
+<h2 id="shape">Signal shape</h2>
+<table class="t"><tr><th>Signal</th><th>What you get</th></tr><tr><td>Traces</td><td>One trace per request, with 10–15 spans and correct parent-child links across the services of a scenario. Each service is its own <code>service.name</code>. Failed requests are marked with an error status.</td></tr><tr><td>Logs</td><td>One log record for every service a request visits, with severity, a realistic message, and the <code>trace_id</code> and <code>span_id</code> of the span active when it was written — so searching a trace ID in your log backend finds the matching records.</td></tr><tr><td>Metrics</td><td>Recorded on a 10-second export cycle with <strong>delta</strong> temporality. Application metrics are shared across scenarios; estate simulators add their own per-entity series.</td></tr></table>
+<h2 id="resource">Resource attributes</h2>
+<table class="t"><tr><th>Attribute</th><th>Meaning</th></tr><tr><td><code>service.name</code>, <code>service.version</code>, <code>deployment.environment</code></td><td>Service identity. <code>SERVICE_NAME</code> and <code>ENVIRONMENT</code> set the defaults; each scenario service uses its own name.</td></tr><tr><td><code>telemetry.sdk.name</code></td><td>Always <code>otel-studio</code>.</td></tr><tr><td><code>synth.generated</code>, <code>synth.generator</code></td><td><code>true</code> and <code>otel-studio</code> on every resource, so synthetic data is easy to filter in or out.</td></tr><tr><td><code>host.name</code>, <code>os.type</code>, <code>cloud.provider</code>, <code>cloud.region</code></td><td>Assigned to scenario services from the Infrastructure fleet when it is enabled.</td></tr><tr><td><code>container.id</code>, <code>container.name</code></td><td>The container a service runs in, when Containers is enabled.</td></tr><tr><td><code>k8s.cluster.name</code>, <code>k8s.namespace.name</code>, <code>k8s.pod.name</code></td><td>The pod a service runs in, when Kubernetes is enabled.</td></tr><tr><td><code>client.address</code> and <code>geo.*</code> (country, city, latitude, longitude)</td><td>When geo/IP simulation is on for a scenario.</td></tr><tr><td><code>user.id</code>, <code>user.name</code>, <code>user.email</code>, <code>pii.synthetic</code></td><td>When synthetic PII is on for a scenario; emails use reserved example domains.</td></tr><tr><td>Your own attributes</td><td>Custom attributes per scenario, and run-wide resource attributes in command-line mode and the Job API (<code>--attr key=value</code>).</td></tr></table>
+<h2 id="app">Application metrics</h2>
+<table class="t"><tr><th>Metric</th><th>Type</th><th>Description</th></tr><tr><td><code>http.requests.total</code>, <code>http.errors.total</code></td><td>Counter</td><td>Requests and failed requests — the basis for error-rate and burn-rate alerts.</td></tr><tr><td><code>http.request.duration</code></td><td>Histogram (ms)</td><td>Request latency for percentile and SLO queries.</td></tr><tr><td><code>db.queries.total</code></td><td>Counter</td><td>Database calls in scenarios that have one.</td></tr><tr><td><code>cache.hit.rate</code></td><td>Gauge</td><td>Cache effectiveness in scenarios with a cache.</td></tr><tr><td><code>logs.emitted.total</code></td><td>Counter</td><td>Log records generated.</td></tr><tr><td><code>jvm.memory.heap.used</code>, <code>process.cpu.utilization</code>, <code>process.memory.usage</code></td><td>Gauge</td><td>Process and runtime metrics used by the APM-style scenarios.</td></tr></table>
+<h2 id="estate">Estate metrics</h2>
+<table class="t"><tr><th>Area</th><th>Metrics</th></tr><tr><td>Hosts (Infrastructure)</td><td><code>system.cpu.utilization</code>, <code>system.cpu.usage</code>, <code>system.memory.utilization</code>, <code>system.memory.usage</code>, <code>system.memory.used</code>, <code>system.disk.utilization</code>, <code>system.paging.utilization</code>, <code>system.load_average.1m</code>, <code>system.network.io</code>, <code>system.network.rx_bytes</code>, <code>system.network.tx_bytes</code></td></tr><tr><td>Containers</td><td><code>container.cpu.usage</code>, <code>container.cpu.throttling_data.throttled_periods</code>, <code>container.cpu.throttling_data.throttled_time</code>, <code>container.memory.usage</code>, <code>container.memory.percent</code>, <code>container.filesystem.usage</code>, <code>container.network.io</code></td></tr><tr><td>Kubernetes</td><td><code>k8s.pod.cpu.usage</code>, <code>k8s.pod.memory.usage</code>, <code>k8s.pod.memory.utilization</code>. The Kubernetes page also shows nodes, deployments, control-plane health and an events feed.</td></tr><tr><td>Real System Data (optional)</td><td>Host CPU, memory, load average and network interface statistics, Docker container CPU and memory, and tailed log files.</td></tr></table>
+<div class="callout"><strong>Cardinality.</strong> Host, container and pod counts set how many series each estate metric produces — roughly one series per entity per metric. The Stats page shows an estimate for your configuration before you send, and the <em>Cardinality Burst</em> scenario deliberately adds a random user ID to each request.</div>
+
+<h2 id="genai">GenAI</h2>
+<p>Spans carry the GenAI attributes <code>gen_ai.system</code>, <code>gen_ai.request.model</code>, <code>gen_ai.response.model</code>, <code>gen_ai.response.finish_reasons</code>, <code>gen_ai.usage.input_tokens</code> and <code>gen_ai.usage.output_tokens</code>. Metrics:</p>
+<table class="t"><tr><th>Metric</th><th>Notes</th></tr><tr><td><code>gen_ai.client.token.usage</code></td><td>Histogram, split by <code>gen_ai.token.type</code> (input or output).</td></tr><tr><td><code>gen_ai.client.operation.duration</code></td><td>Histogram of call duration.</td></tr><tr><td><code>gen_ai.server.time_to_first_token</code>, <code>gen_ai.server.time_per_output_token</code></td><td>Histograms for streaming latency.</td></tr><tr><td><code>llm.cost.usd</code></td><td>Histogram of per-call cost from per-model pricing.</td></tr><tr><td><code>llm.eval.groundedness_score</code>, <code>llm.eval.relevance_score</code>, <code>llm.rag.context_relevance_score</code></td><td>Quality scores. Deliberately in the custom <code>llm.*</code> namespace, because they are not part of the GenAI conventions.</td></tr><tr><td><code>llm.safety.pii_detected_total</code>, <code>llm.safety.prompt_injection_detected_total</code></td><td>Safety counters.</td></tr><tr><td><code>llm.agent.tool_selection_total</code>, <code>llm.agent.tool_selection_correct_total</code></td><td>Agent tool-selection accuracy.</td></tr></table>
+<h2 id="rum">RUM and synthetics</h2>
+<ul>
+<li><strong>RUM</strong> sessions emit a page-load span carrying Core Web Vitals (LCP, INP, CLS, TTFB, FCP) and browser, operating system, viewport and connection attributes (for example <code>browser.name</code>), frustration signals (rage and dead clicks), JavaScript errors with stack trace, file, line and a fingerprint, and conversion milestones. A share of Web App scenario traces share a session's trace ID.</li>
+<li><strong>Synthetics</strong> follow the Collector's <code>httpcheck</code> receiver: <code>httpcheck.status</code>, <code>httpcheck.response.duration</code>, <code>httpcheck.dns.lookup.duration</code> and <code>httpcheck.tls.handshake.duration</code>, plus an SSL certificate-expiry value per check.</li>
+</ul>
+
+<h2 id="filter">Filtering synthetic data</h2>
+<p>Everything OTel Studio sends carries <code>synth.generated: true</code> as a resource attribute. To keep it out of production views, add a filter on that attribute in your backend, or drop it in your Collector:</p>
+<pre><code>processors:
+  filter/synthetic:
+    error_mode: ignore
+    traces:
+      span:
+        - 'resource.attributes["synth.generated"] == true'
+    logs:
+      log_record:
+        - 'resource.attributes["synth.generated"] == true'
+    metrics:
+      metric:
+        - 'resource.attributes["synth.generated"] == true' </code></pre><p>To keep <em>only</em> synthetic data in a test environment, invert the condition.</p><h2>Keep going</h2><div class="next"><a href="scenarios.html">Scenario reference<span>What each scenario produces</span></a><a href="guides/trace-log-correlation.html">Trace-log correlation<span>Why it breaks and how to verify it</span></a><a href="guides/genai-observability-testing.html">Test GenAI dashboards<span>Using the llm and gen_ai metrics</span></a></div>
+</article>
+
+<footer>
+  <div><a href="features.html">Features</a><a href="scenarios.html">Scenarios</a><a href="backends.html">Backends</a><a href="telemetry-reference.html">Telemetry reference</a><a href="documentation.html">Documentation</a><a href="guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>
