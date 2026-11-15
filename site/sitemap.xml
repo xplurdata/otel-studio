@@ -16,5 +16,14 @@
   <url><loc>https://otel-studio.xplurdata.com/guides/genai-observability-testing.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://otel-studio.xplurdata.com/guides/testing-grafana-stack.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://otel-studio.xplurdata.com/guides/trace-log-correlation.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/opentelemetry-docker-compose-sandbox.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/test-tail-sampling.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/test-pii-redaction.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/opentelemetry-high-cardinality.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/opentelemetry-genai-semantic-conventions.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/test-synthetic-monitoring-alerts.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
+  <url><loc>https://otel-studio.xplurdata.com/guides/real-user-monitoring-opentelemetry.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
   <url><loc>https://otel-studio.xplurdata.com/guides/otlp-grpc-vs-http.html</loc><lastmod>2026-11-15</lastmod><priority>0.7</priority></url>
 </urlset>

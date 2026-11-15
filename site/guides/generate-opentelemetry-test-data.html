@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>How to Generate OpenTelemetry Test Data — OTel Studio</title>
+<meta name="description" content="Four ways to get OpenTelemetry traces, logs and metrics without production traffic: your own app, telemetrygen, the OpenTelemetry Demo and OTel Studio.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="How to Generate OpenTelemetry Test Data — OTel Studio">
+<meta property="og:description" content="Four ways to get OpenTelemetry traces, logs and metrics without production traffic: your own app, telemetrygen, the OpenTelemetry Demo and OTel Studio.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="How to Generate OpenTelemetry Test Data — OTel Studio">
+<meta name="twitter:description" content="Four ways to get OpenTelemetry traces, logs and metrics without production traffic: your own app, telemetrygen, the OpenTelemetry Demo and OTel Studio.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "How to Generate OpenTelemetry Test Data: telemetrygen, the Demo App and OTel Studio", "item": "https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html"}]}, {"@type": "TechArticle", "headline": "How to Generate OpenTelemetry Test Data: telemetrygen, the Demo App and OTel Studio", "description": "Four ways to get OpenTelemetry traces, logs and metrics without production traffic: your own app, telemetrygen, the OpenTelemetry Demo and OTel Studio.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<main id="content"><article>
+  <span class="tag">Basics</span>
+  <h1>How to Generate OpenTelemetry Test Data: telemetrygen, the Demo App and OTel Studio</h1>
+  <p class="meta">Pick the right source of test telemetry for the question you are asking.</p>
+
+<p>Sooner or later every observability project needs data that does not come from production: to try a new collector, build a dashboard, rehearse an alert or size a backend. There are four common ways to get it, and each is the right answer for a different question. This page compares them honestly so you can pick the one that fits.</p>
+
+<h2>The four options</h2>
+<table class="t"><tr><th>Option</th><th>What you get</th><th>Best for</th><th>Watch out for</th></tr><tr><td><strong>Your own application</strong>, instrumented with an OpenTelemetry SDK</td><td>Real data from real code</td><td>Verifying your own instrumentation, context propagation and resource attributes</td><td>Needs a running, loaded system; hard to produce rare failures on demand</td></tr><tr><td><strong>telemetrygen</strong> (from the OpenTelemetry Collector contrib project)</td><td>A command-line tool that sends generated traces, logs or metrics at a set rate for a set duration</td><td>Quick smoke tests: "does this receiver accept data?"</td><td>Simple, uniform data; no service topology, no correlation between signals unless you build it</td></tr><tr><td><strong>The OpenTelemetry Demo</strong> (the "astronomy shop")</td><td>A complete microservices shop in many languages with real instrumentation and feature flags to cause failures</td><td>Learning how real instrumentation looks and trying a backend end to end</td><td>Many containers to run; behaviour is fixed to that one application</td></tr><tr><td><strong>OTel Studio</strong></td><td>A generator with 30 service topologies, six estate simulators, correlated logs, and anomaly and incident injection, controlled from a UI, a command line or an API</td><td>Dashboards, alert rules, collector pipelines, capacity and cardinality tests, demos, CI checks</td><td>The data is synthetic: it cannot test your own SDK instrumentation</td></tr></table>
+<h2>Start with the question, not the tool</h2>
+<ul>
+<li><strong>"Does my collector accept OTLP at all?"</strong> Any generator works. <code>telemetrygen</code> is the lightest; OTel Studio's Test button also answers it without sending real data.</li>
+<li><strong>"Is my instrumentation correct?"</strong> Only your own application can tell you. Synthetic data cannot validate code it never ran.</li>
+<li><strong>"Does my dashboard handle many services, hosts and pods?"</strong> You need varied, correlated data at some scale — OTel Studio's scenarios and estate simulators, or a loaded real system.</li>
+<li><strong>"Does my alert fire on a spike in errors, and resolve?"</strong> You need failures on demand. See <a href="test-alerts-and-slos.html">Test Alert Rules and SLO Burn Rates</a>.</li>
+<li><strong>"What will this cost at ten times the volume?"</strong> You need a controllable rate and cardinality. See <a href="load-test-and-size-a-backend.html">Load-Test and Size a Backend</a>.</li>
+<li><strong>"Does my pipeline keep trace IDs on logs?"</strong> You need traffic where logs are written inside spans. See <a href="trace-log-correlation.html">Trace-Log Correlation</a>.</li>
+</ul>
+
+<h2>What good test data looks like</h2>
+<p>Whatever generator you use, data that tests a pipeline well has these properties:</p>
+<ol>
+<li><strong>Varied.</strong> Several services, several operations, a mix of fast and slow requests and of successes and errors. A processor that filters on status codes will pass a test with one hand-made 200 response and fail in production.</li>
+<li><strong>Correlated.</strong> Logs carry the trace and span IDs of the span they were written in, and the same host or pod identity appears in traces and metrics.</li>
+<li><strong>Controllable.</strong> You can raise the rate, add failures and stop it, so tests are repeatable.</li>
+<li><strong>Marked.</strong> It is obviously test data. OTel Studio sets <code>synth.generated: true</code> on everything, so it can be filtered out of production views.</li>
+<li><strong>Realistic in shape.</strong> Logs outnumber traces, which outnumber metric points. Volume tests with the wrong ratios give the wrong answers.</li>
+</ol>
+
+<h2>Examples side by side</h2>
+<p>A quick smoke test with <code>telemetrygen</code>:</p>
+<pre><code>telemetrygen traces --otlp-endpoint localhost:4317 --otlp-insecure --duration 10s --rate 5</code></pre><p>The same idea with OTel Studio — a minute of correlated traffic from a realistic topology, from the command line:</p><pre><code>docker run --rm ghcr.io/xplurdata/otel-studio:latest \
+  node dist/headless.js --config load.yaml --duration 60s \
+  --endpoint http://collector:4318 --protocol http</code></pre>
+<p>Both are valid; they answer different questions. Many teams use both — a one-line generator for "is it up?" and a topology-based one for everything after.</p>
+<h2>Keep going</h2><div class="next"><a href="test-otel-collector-configuration.html">Test a collector configuration<span>Stage by stage</span></a><a href="otel-studio-in-ci.html">Run in CI<span>Automate the checks</span></a><a href="../scenarios.html">The 30 scenarios<span>What OTel Studio can generate</span></a></div>
+</article></main>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

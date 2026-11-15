@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenTelemetry GenAI Semantic Conventions Explained</title>
+<meta name="description" content="What the OpenTelemetry GenAI conventions standardise for LLM spans and metrics, what they leave out (cost, quality, safety), and how to build dashboards.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/opentelemetry-genai-semantic-conventions.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenTelemetry GenAI Semantic Conventions Explained">
+<meta property="og:description" content="What the OpenTelemetry GenAI conventions standardise for LLM spans and metrics, what they leave out (cost, quality, safety), and how to build dashboards.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/opentelemetry-genai-semantic-conventions.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenTelemetry GenAI Semantic Conventions Explained">
+<meta name="twitter:description" content="What the OpenTelemetry GenAI conventions standardise for LLM spans and metrics, what they leave out (cost, quality, safety), and how to build dashboards.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "OpenTelemetry GenAI Semantic Conventions Explained", "item": "https://otel-studio.xplurdata.com/guides/opentelemetry-genai-semantic-conventions.html"}]}, {"@type": "TechArticle", "headline": "OpenTelemetry GenAI Semantic Conventions Explained", "description": "What the OpenTelemetry GenAI conventions standardise for LLM spans and metrics, what they leave out (cost, quality, safety), and how to build dashboards.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/opentelemetry-genai-semantic-conventions.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<main id="content"><article>
+  <span class="tag">GenAI</span>
+  <h1>OpenTelemetry GenAI Semantic Conventions Explained</h1>
+  <p class="meta">Spans, metrics and the gaps you have to fill yourself.</p>
+
+<p>The OpenTelemetry GenAI semantic conventions give LLM applications a shared vocabulary: how to name a model call, what to record about tokens, how to measure latency. They are still maturing, so it helps to know what is standard, what is not, and how to build useful dashboards on top. This guide explains the pieces and shows how to try them with synthetic data.</p>
+<div class="callout"><strong>A moving target.</strong> The GenAI conventions are marked as under development, and attribute names have been revised between releases. Pin the version of the conventions your instrumentation follows, and check the current names against the specification. OTel Studio follows the names listed in its <a href="../telemetry-reference.html#genai">telemetry reference</a>.</div>
+
+<h2>What the conventions cover</h2>
+<table class="t"><tr><th>Area</th><th>What it standardises</th><th>Examples</th></tr><tr><td>Spans</td><td>One span per model call, named for the operation and the model, with request and response attributes</td><td><code>gen_ai.request.model</code>, <code>gen_ai.response.model</code>, <code>gen_ai.response.finish_reasons</code>, <code>gen_ai.usage.input_tokens</code>, <code>gen_ai.usage.output_tokens</code></td></tr><tr><td>Agent spans</td><td>A hierarchy for agent frameworks: an agent invocation containing model calls and tool calls</td><td>An <code>invoke_agent</code> span with child <code>chat</code> spans</td></tr><tr><td>Client metrics</td><td>Token counts and call duration measured by the caller</td><td><code>gen_ai.client.token.usage</code> (split by input or output), <code>gen_ai.client.operation.duration</code></td></tr><tr><td>Server metrics</td><td>Latency measured by the model server</td><td><code>gen_ai.server.time_to_first_token</code>, <code>gen_ai.server.time_per_output_token</code></td></tr><tr><td>Content</td><td>Prompts and completions, as opt-in events or attributes</td><td>Off by default because they can hold sensitive data</td></tr></table>
+<h2>What the conventions do not cover</h2>
+<p>Production LLM monitoring needs more than latency and tokens, and several of the things teams care about most have no standard name yet:</p>
+<ul>
+<li><strong>Cost.</strong> Dollars per call depend on per-model pricing that changes; there is no standard metric.</li>
+<li><strong>Quality.</strong> Groundedness, relevance, hallucination rate and context relevance (for retrieval) come from evaluation, not from the call itself.</li>
+<li><strong>Safety.</strong> Counts of detected personal data or prompt-injection attempts.</li>
+<li><strong>Agent accuracy.</strong> Whether the agent picked the right tool.</li>
+</ul>
+<p>OTel Studio puts these in a separate <code>llm.*</code> namespace on purpose — <code>llm.cost.usd</code>, <code>llm.eval.groundedness_score</code>, <code>llm.eval.relevance_score</code>, <code>llm.rag.context_relevance_score</code>, <code>llm.safety.*</code> and <code>llm.agent.*</code> — so that custom signals never masquerade as standard ones. That is good practice for your own instrumentation too: keep your own metrics under your own prefix, and migrate when a standard arrives.</p>
+
+<h2>Try it with synthetic data</h2>
+<ol>
+<li>Start the <strong>AI Observability</strong> simulator at 30 calls a minute (Simulators → AI Observability). It simulates eight models from five providers.</li>
+<li>Run a GenAI scenario beside it — RAG Chatbot or Agent Workflow — to get spans with the span attributes above.</li>
+<li>In your backend, plot tokens by model, p95 call duration and time to first token, and spend per hour per model.</li>
+<li>Switch on the failure modes one at a time (cost spike, latency spike, high error rate, quality degradation) and check the right panels and alerts react.</li>
+</ol>
+<p>The full walkthrough, with a test plan, is in <a href="genai-observability-testing.html">Test GenAI Observability Dashboards</a>.</p>
+
+<h2>Design tips</h2>
+<ul>
+<li><strong>Split by provider and model</strong> everywhere; averages across models hide the expensive one.</li>
+<li><strong>Separate input from output tokens</strong> — they are priced differently and grow differently.</li>
+<li><strong>Alert on rate of change</strong> of cost, not just absolute spend, so a runaway prompt is caught within minutes.</li>
+<li><strong>Treat captured prompts as sensitive data</strong> and run them through redaction (see <a href="test-pii-redaction.html">Test PII Redaction</a>).</li>
+</ul>
+<h2>Keep going</h2><div class="next"><a href="genai-observability-testing.html">Test GenAI dashboards<span>A step-by-step test plan</span></a><a href="test-pii-redaction.html">Test PII redaction<span>Before capturing prompts</span></a><a href="../scenarios.html#genai">GenAI scenarios<span>Five LLM application patterns</span></a></div>
+</article></main>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>
