@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Run OTel Studio in CI: Headless Mode and the Job API — OTel Studio</title>
-<meta name="description" content="Gate telemetry pipeline changes in CI with OTel Studio command-line mode and exit codes, and run many isolated runs through the Job API.">
+<title>OpenTelemetry Pipeline Checks in CI — OTel Studio</title>
+<meta name="description" content="Gate telemetry pipeline changes in CI with command-line mode and exit codes, a GitHub Actions example, and many isolated runs through the Job API.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Run OTel Studio in CI: Headless Mode and the Job API — OTel Studio">
-<meta property="og:description" content="Gate telemetry pipeline changes in CI with OTel Studio command-line mode and exit codes, and run many isolated runs through the Job API.">
+<meta property="og:title" content="OpenTelemetry Pipeline Checks in CI — OTel Studio">
+<meta property="og:description" content="Gate telemetry pipeline changes in CI with command-line mode and exit codes, a GitHub Actions example, and many isolated runs through the Job API.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenTelemetry Pipeline Checks in CI — OTel Studio">
+<meta name="twitter:description" content="Gate telemetry pipeline changes in CI with command-line mode and exit codes, a GitHub Actions example, and many isolated runs through the Job API.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "Run OTel Studio in CI: Headless Mode and the Job API", "item": "https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html"}]}, {"@type": "TechArticle", "headline": "Run OTel Studio in CI: Headless Mode and the Job API", "description": "Gate telemetry pipeline changes in CI with command-line mode and exit codes, a GitHub Actions example, and many isolated runs through the Job API.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,7 +95,7 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article>
+<main id="content"><article>
   <span class="tag">Automation</span>
   <h1>Run OTel Studio in CI: Headless Mode and the Job API</h1>
   <p class="meta">Send known traffic through your pipeline on every change, and fail the build when it breaks.</p>
@@ -163,7 +178,7 @@ curl -X DELETE -H "Authorization: Bearer $API_TOKEN" http://localhost:3100/v1/ru
 
 <div class="callout"><strong>Tips.</strong> Give CI its own tenant or dataset so test data is easy to find and delete. Keep durations short (one to two minutes is usually plenty). Pin the image to a version tag in CI so a new release never changes your pipeline unexpectedly.</div>
 <h2>Keep going</h2><div class="next"><a href="secure-otlp-endpoints.html">Secure endpoints<span>Tokens and headers</span></a><a href="test-otel-collector-configuration.html">Test a collector configuration<span>What to check at each stage</span></a><a href="../documentation.html#job-api">Job API reference<span>Every call</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

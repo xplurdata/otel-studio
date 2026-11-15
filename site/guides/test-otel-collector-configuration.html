@@ -3,11 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>How to Test Your OpenTelemetry Collector Configuration Before Production — OTel Studio</title>
-<meta name="description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors, and exporters before a real workload depends on them.">
+<title>Test Your OpenTelemetry Collector Config — OTel Studio</title>
+<meta name="description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors and exporters before production, one stage at a time.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
+<meta property="og:title" content="Test Your OpenTelemetry Collector Config — OTel Studio">
+<meta property="og:description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors and exporters before production, one stage at a time.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Test Your OpenTelemetry Collector Config — OTel Studio">
+<meta name="twitter:description" content="A practical checklist for testing OpenTelemetry Collector receivers, processors and exporters before production, one stage at a time.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "How to Test Your OpenTelemetry Collector Configuration Before Production", "item": "https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html"}]}, {"@type": "TechArticle", "headline": "How to Test Your OpenTelemetry Collector Configuration Before Production", "description": "A practical checklist for testing OpenTelemetry Collector receivers, processors and exporters before production, one stage at a time.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-07-13", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -51,6 +68,7 @@ footer a{margin:0 8px}
 </head>
 <body>
 
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -62,7 +80,7 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article>
+<main id="content"><article>
   <span class="tag">Testing</span>
   <h1>How to Test Your OpenTelemetry Collector Configuration Before Production</h1>
   <p class="meta">A practical checklist for validating receivers, processors, and exporters before a real workload depends on them.</p>
@@ -129,7 +147,7 @@ footer a{margin:0 8px}
     <li><a href="testing-grafana-stack.html">Testing Your Grafana Stack With Synthetic Telemetry</a> — this checklist applied to Tempo/Loki/Mimir specifically</li>
   </ul>
   <p>Also see <a href="test-alerts-and-slos.html">Test Alert Rules and SLO Burn Rates</a>, <a href="load-test-and-size-a-backend.html">Load-Test and Size a Backend</a> and <a href="otel-studio-in-ci.html">Run OTel Studio in CI</a>.</p>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

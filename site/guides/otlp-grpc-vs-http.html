@@ -3,11 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OTLP gRPC vs HTTP: Which Should You Use — OTel Studio</title>
-<meta name="description" content="A practical comparison of OTLP over gRPC vs HTTP for OpenTelemetry — performance, firewall/proxy behavior, and how to choose for your actual setup.">
+<title>OTLP gRPC vs HTTP: Which to Use — OTel Studio</title>
+<meta name="description" content="Compare OTLP over gRPC, HTTP protobuf and HTTP JSON: ports, proxies, overhead and debugging, and how to choose for your deployment.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/otlp-grpc-vs-http.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
+<meta property="og:title" content="OTLP gRPC vs HTTP: Which to Use — OTel Studio">
+<meta property="og:description" content="Compare OTLP over gRPC, HTTP protobuf and HTTP JSON: ports, proxies, overhead and debugging, and how to choose for your deployment.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/otlp-grpc-vs-http.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OTLP gRPC vs HTTP: Which to Use — OTel Studio">
+<meta name="twitter:description" content="Compare OTLP over gRPC, HTTP protobuf and HTTP JSON: ports, proxies, overhead and debugging, and how to choose for your deployment.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "OTLP gRPC vs HTTP: Which Should You Use", "item": "https://otel-studio.xplurdata.com/guides/otlp-grpc-vs-http.html"}]}, {"@type": "TechArticle", "headline": "OTLP gRPC vs HTTP: Which Should You Use", "description": "Compare OTLP over gRPC, HTTP protobuf and HTTP JSON: ports, proxies, overhead and debugging, and how to choose for your deployment.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-07-13", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/otlp-grpc-vs-http.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -50,6 +67,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -61,7 +79,7 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article>
+<main id="content"><article>
   <span class="tag">Protocols</span>
   <h1>OTLP gRPC vs HTTP: Which Should You Use</h1>
   <p class="meta">A practical comparison for choosing between the two OTLP transport options in a real deployment.</p>
@@ -103,7 +121,7 @@ footer a{margin:0 8px}
 
   <h2>In OTel Studio</h2>
   <p>Each endpoint has its own protocol setting: <strong>gRPC</strong>, <strong>HTTP (protobuf)</strong> — the default and accepted by every OTLP receiver — or <strong>HTTP (JSON)</strong>, which is easy to read in a packet capture. For HTTP, give the base URL (for example <code>https://collector.example.com:4318</code>) and OTel Studio adds <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code>; a URL that already ends in one of those paths is used as given. Some vendors accept HTTP protobuf only (Dynatrace, Datadog), and Elastic APM Server rejects JSON, which is why protobuf is the default. The <strong>Test</strong> button sends an empty export in the endpoint's own encoding and reports whether it was accepted, refused (HTTP 401/403), not OTLP (HTTP 404), or unreachable. See <a href="secure-otlp-endpoints.html">Send OTLP to Secured Backends</a> for credentials.</p>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

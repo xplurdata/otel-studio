@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Guides — OTel Studio</title>
-<meta name="description" content="Practical guides for testing OpenTelemetry pipelines, alerts, backends and GenAI dashboards with synthetic telemetry from OTel Studio.">
+<title>OpenTelemetry Testing Guides — OTel Studio</title>
+<meta name="description" content="Practical guides for testing OpenTelemetry pipelines, alert rules, backends and GenAI dashboards with synthetic telemetry from OTel Studio.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/index.html">
-<meta property="og:type" content="article">
-<meta property="og:title" content="Guides — OTel Studio">
-<meta property="og:description" content="Practical guides for testing OpenTelemetry pipelines, alerts, backends and GenAI dashboards with synthetic telemetry from OTel Studio.">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="website">
+<meta property="og:title" content="OpenTelemetry Testing Guides — OTel Studio">
+<meta property="og:description" content="Practical guides for testing OpenTelemetry pipelines, alert rules, backends and GenAI dashboards with synthetic telemetry from OTel Studio.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/index.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenTelemetry Testing Guides — OTel Studio">
+<meta name="twitter:description" content="Practical guides for testing OpenTelemetry pipelines, alert rules, backends and GenAI dashboards with synthetic telemetry from OTel Studio.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}]}, {"@type": "WebPage", "name": "OpenTelemetry Testing Guides — OTel Studio", "description": "Practical guides for testing OpenTelemetry pipelines, alert rules, backends and GenAI dashboards with synthetic telemetry from OTel Studio.", "url": "https://otel-studio.xplurdata.com/guides/index.html", "isPartOf": {"@type": "WebSite", "name": "OTel Studio", "url": "https://otel-studio.xplurdata.com/"}, "primaryImageOfPage": "https://otel-studio.xplurdata.com/assets/og-image.jpg"}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,12 +95,12 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article class="wide">
+<main id="content"><article class="wide">
   <span class="tag">Guides</span>
   <h1>Guides</h1>
   <p class="meta">Make the situation you are testing actually happen.</p>
 <p>Practical guides for testing observability pipelines, alerts and backends — each one uses OTel Studio to make the situation you are testing actually happen.</p><div class="cards"><div class="card"><span class="tag">Testing</span><h3 style="margin-top:6px"><a href="test-otel-collector-configuration.html" style="text-decoration:none;color:var(--heading)">How to Test Your OpenTelemetry Collector Configuration Before Production</a></h3><p>A checklist for validating receivers, processors and exporters, stage by stage.</p><a class="more" href="test-otel-collector-configuration.html">Read the guide →</a></div><div class="card"><span class="tag">Alerting</span><h3 style="margin-top:6px"><a href="test-alerts-and-slos.html" style="text-decoration:none;color:var(--heading)">Test Alert Rules and SLO Burn Rates With Injected Failures</a></h3><p>Make errors, latency and host incidents happen on demand and check alerts fire, notify and resolve.</p><a class="more" href="test-alerts-and-slos.html">Read the guide →</a></div><div class="card"><span class="tag">Capacity</span><h3 style="margin-top:6px"><a href="load-test-and-size-a-backend.html" style="text-decoration:none;color:var(--heading)">Load-Test and Size an Observability Backend</a></h3><p>Ramp volume and cardinality in steps and find where your backend starts to struggle.</p><a class="more" href="load-test-and-size-a-backend.html">Read the guide →</a></div><div class="card"><span class="tag">Security</span><h3 style="margin-top:6px"><a href="secure-otlp-endpoints.html" style="text-decoration:none;color:var(--heading)">Send OTLP to Secured Backends: Tokens, Headers, TLS and mTLS</a></h3><p>Credentials that work the first time, and what each failure means.</p><a class="more" href="secure-otlp-endpoints.html">Read the guide →</a></div><div class="card"><span class="tag">Automation</span><h3 style="margin-top:6px"><a href="otel-studio-in-ci.html" style="text-decoration:none;color:var(--heading)">Run OTel Studio in CI: Headless Mode and the Job API</a></h3><p>Gate pipeline changes with exit codes, and run many isolated runs over HTTP.</p><a class="more" href="otel-studio-in-ci.html">Read the guide →</a></div><div class="card"><span class="tag">Estate</span><h3 style="margin-top:6px"><a href="simulate-a-cloud-estate.html" style="text-decoration:none;color:var(--heading)">Simulate a Cloud Estate That Lines Up</a></h3><p>Hosts, containers, pods and services that share identities, plus a host incident.</p><a class="more" href="simulate-a-cloud-estate.html">Read the guide →</a></div><div class="card"><span class="tag">GenAI</span><h3 style="margin-top:6px"><a href="genai-observability-testing.html" style="text-decoration:none;color:var(--heading)">Test GenAI Dashboards With Synthetic LLM Calls</a></h3><p>Token, cost, latency and quality signals, and the failures you need alerts for.</p><a class="more" href="genai-observability-testing.html">Read the guide →</a></div><div class="card"><span class="tag">Guide</span><h3 style="margin-top:6px"><a href="testing-grafana-stack.html" style="text-decoration:none;color:var(--heading)">Testing Your Grafana Stack With Synthetic Telemetry</a></h3><p>Validate Tempo, Loki and Mimir dashboards and alerts before real traffic arrives.</p><a class="more" href="testing-grafana-stack.html">Read the guide →</a></div><div class="card"><span class="tag">Concepts</span><h3 style="margin-top:6px"><a href="trace-log-correlation.html" style="text-decoration:none;color:var(--heading)">Understanding Trace-Log Correlation in Distributed Systems</a></h3><p>How it works, why it silently breaks, and how to verify it.</p><a class="more" href="trace-log-correlation.html">Read the guide →</a></div><div class="card"><span class="tag">Protocols</span><h3 style="margin-top:6px"><a href="otlp-grpc-vs-http.html" style="text-decoration:none;color:var(--heading)">OTLP gRPC vs HTTP: Which Should You Use</a></h3><p>A practical comparison of the two OTLP transports.</p><a class="more" href="otlp-grpc-vs-http.html">Read the guide →</a></div></div><h2>Keep going</h2><div class="next"><a href="../documentation.html">Documentation<span>Every feature, with use-case recipes and troubleshooting</span></a><a href="../features.html">Features<span>What OTel Studio can do</span></a><a href="../telemetry-reference.html">Telemetry reference<span>Attributes and metrics emitted</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>

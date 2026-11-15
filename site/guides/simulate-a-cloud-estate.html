@@ -3,14 +3,28 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Simulate a Cloud Estate: Hosts, Containers and Kubernetes That Line Up — OTel Studio</title>
-<meta name="description" content="Generate correlated host, container and Kubernetes telemetry whose identities match across layers, and inject a host incident with OTel Studio.">
+<title>Simulate Hosts, Containers and Kubernetes — OTel Studio</title>
+<meta name="description" content="Generate host, container and Kubernetes telemetry whose identities line up across layers, and inject a host incident to follow it from symptom to cause.">
 <link rel="canonical" href="https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Simulate a Cloud Estate: Hosts, Containers and Kubernetes That Line Up — OTel Studio">
-<meta property="og:description" content="Generate correlated host, container and Kubernetes telemetry whose identities match across layers, and inject a host incident with OTel Studio.">
+<meta property="og:title" content="Simulate Hosts, Containers and Kubernetes — OTel Studio">
+<meta property="og:description" content="Generate host, container and Kubernetes telemetry whose identities line up across layers, and inject a host incident to follow it from symptom to cause.">
 <meta property="og:url" content="https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Simulate Hosts, Containers and Kubernetes — OTel Studio">
+<meta name="twitter:description" content="Generate host, container and Kubernetes telemetry whose identities line up across layers, and inject a host incident to follow it from symptom to cause.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "Simulate a Cloud Estate That Lines Up", "item": "https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html"}]}, {"@type": "TechArticle", "headline": "Simulate a Cloud Estate That Lines Up", "description": "Generate host, container and Kubernetes telemetry whose identities line up across layers, and inject a host incident to follow it from symptom to cause.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/simulate-a-cloud-estate.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
 <link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -69,6 +83,7 @@ footer a{margin:0 8px}
 </style>
 </head>
 <body>
+<a class="skip" href="#content">Skip to content</a>
 <nav class="nav">
   <div class="logo">
     <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
@@ -80,7 +95,7 @@ footer a{margin:0 8px}
   <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
 </nav>
 
-<article>
+<main id="content"><article>
   <span class="tag">Estate</span>
   <h1>Simulate a Cloud Estate That Lines Up</h1>
   <p class="meta">Hosts, containers, pods and services that share identities — so you can follow an incident from symptom to cause.</p>
@@ -95,7 +110,7 @@ footer a{margin:0 8px}
 <li><strong>Kubernetes</strong> nodes are placed on hosts, pods on nodes, and services on pods.</li>
 </ul>
 <p>The result: take a <code>k8s.pod.name</code> from a trace, find the pod, find its node, and find the host — and the host is the one reporting memory pressure.</p>
-<figure class="fig"><img src="../assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator page"><figcaption>A host fleet with OS mix, cloud and region, and live CPU and memory.</figcaption></figure>
+<figure class="fig"><img width="1400" height="800" decoding="async" src="../assets/shot-infrastructure.jpg" loading="lazy" alt="Infrastructure simulator page"><figcaption>A host fleet with OS mix, cloud and region, and live CPU and memory.</figcaption></figure>
 <h2>Set it up</h2>
 <ol>
 <li>Open <strong>Simulators → Infrastructure</strong>, choose a size (Small Team 20, Mid-size 200 or Enterprise 2,000 hosts) and press <strong>Start Infrastructure</strong>.</li>
@@ -119,7 +134,7 @@ footer a{margin:0 8px}
 <li>Run the estate for an hour with a time limit and check retention and downsampling behave.</li>
 </ul>
 <h2>Keep going</h2><div class="next"><a href="load-test-and-size-a-backend.html">Load-test a backend<span>Fleet size and cardinality</span></a><a href="test-alerts-and-slos.html">Test alerts<span>Failure injection</span></a><a href="../telemetry-reference.html">Telemetry reference<span>Metric names per layer</span></a></div>
-</article>
+</article></main>
 
 <footer>
   <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
