@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test OpenTelemetry Tail Sampling — OTel Studio</title>
+<meta name="description" content="Test Collector tail-based sampling policies for errors, latency and probability with traffic whose error and latency mix you control.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/test-tail-sampling.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Test OpenTelemetry Tail Sampling — OTel Studio">
+<meta property="og:description" content="Test Collector tail-based sampling policies for errors, latency and probability with traffic whose error and latency mix you control.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/test-tail-sampling.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Test OpenTelemetry Tail Sampling — OTel Studio">
+<meta name="twitter:description" content="Test Collector tail-based sampling policies for errors, latency and probability with traffic whose error and latency mix you control.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "Test OpenTelemetry Tail Sampling With Traffic You Control", "item": "https://otel-studio.xplurdata.com/guides/test-tail-sampling.html"}]}, {"@type": "TechArticle", "headline": "Test OpenTelemetry Tail Sampling With Traffic You Control", "description": "Test Collector tail-based sampling policies for errors, latency and probability with traffic whose error and latency mix you control.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/test-tail-sampling.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<main id="content"><article>
+  <span class="tag">Collector</span>
+  <h1>Test OpenTelemetry Tail Sampling With Traffic You Control</h1>
+  <p class="meta">Make sure the traces you most need are the ones you keep.</p>
+
+<p>Tail-based sampling decides whether to keep a trace <em>after</em> seeing all of it, so you can keep every error and every slow request and only a sample of the rest. It is powerful, and easy to get wrong: a policy that quietly drops error traces looks exactly like a healthy system. This guide shows how to test a tail-sampling configuration with traffic whose errors and latency you control.</p>
+
+<h2>A configuration to test</h2>
+<p>The Collector's <code>tail_sampling</code> processor (in the contrib distribution) evaluates policies against buffered traces. This one keeps every error, every request slower than one second, and ten percent of the rest:</p>
+<pre><code>processors:
+  tail_sampling:
+    decision_wait: 10s        # how long to wait for a trace to complete
+    num_traces: 50000         # traces held in memory while waiting
+    policies:
+      - name: keep-errors
+        type: status_code
+        status_code: { status_codes: [ERROR] }
+      - name: keep-slow
+        type: latency
+        latency: { threshold_ms: 1000 }
+      - name: sample-the-rest
+        type: probabilistic
+        probabilistic: { sampling_percentage: 10 }
+
+service:
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors: [tail_sampling, batch]
+      exporters: [otlp/backend]</code></pre>
+<h2>Generate traffic with a known mix</h2>
+<p>You can only check a sampling decision if you know what went in. Run these in turn, each for a few minutes, resetting the counters on the Stats page between runs:</p>
+<table class="t"><tr><th>Run</th><th>Traffic</th><th>What you should see in the backend</th></tr><tr><td>1. Baseline</td><td>E-Commerce with a 5% error rate</td><td>Every error trace, every slow trace, and about 10% of the healthy ones</td></tr><tr><td>2. Error storm</td><td><strong>Error Storm</strong> scenario (80% errors)</td><td>Nearly everything kept — the errors policy is doing its job</td></tr><tr><td>3. Latency</td><td><strong>Latency Spike</strong> scenario (30% of spans take 2–8 s)</td><td>All slow traces kept even though few are errors — the latency policy</td></tr><tr><td>4. Healthy only</td><td>A scenario at 0% errors and no latency injection</td><td>About 10% of traces — the probabilistic policy alone</td></tr></table>
+<h2>How to check</h2>
+<ol>
+<li><strong>Count in, count out.</strong> The Stats page shows how many traces OTel Studio sent. Compare with the number your backend stored; the ratio should match your policies.</li>
+<li><strong>Check that kept traces are complete.</strong> Open a few error traces. Every span should be present with correct parent-child links. Missing child spans mean spans arrived after <code>decision_wait</code> expired.</li>
+<li><strong>Verify no error is lost.</strong> Search for error status spans by service and compare with the activity stream's error entries.</li>
+<li><strong>Watch the collector.</strong> The processor exposes metrics about decisions and dropped traces; if you see traces dropped before a decision, raise <code>num_traces</code> or the memory limit.</li>
+</ol>
+
+<div class="callout"><strong>Why spans arrive at different times.</strong> In OTel Studio each service in a scenario exports through its own tracer provider, so the spans of one trace can reach the Collector in different batches — as they do from real, separately deployed services. That is exactly the situation <code>decision_wait</code> exists for, which makes it a good test: set it too low and you will see incomplete traces.</div>
+
+<h2>Two production gotchas to test for</h2>
+<ul>
+<li><strong>One trace, one collector.</strong> Tail sampling needs every span of a trace in the same Collector instance. With several Collectors you need a load-balancing exporter that routes by trace ID in front of them. Test the whole topology, not just a single instance.</li>
+<li><strong>Memory.</strong> Buffered traces cost memory in proportion to rate times <code>decision_wait</code>. Ramp the speed multiplier (up to 10×) and watch the Collector's memory; set a memory limiter ahead of the sampler.</li>
+</ul>
+<h2>Keep going</h2><div class="next"><a href="test-otel-collector-configuration.html">Test a collector configuration<span>The general checklist</span></a><a href="load-test-and-size-a-backend.html">Load-test a backend<span>Ramp the rate in steps</span></a><a href="../scenarios.html#chaos-stress">Chaos scenarios<span>Error Storm, Latency Spike and more</span></a></div>
+</article></main>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenTelemetry Data Not Showing Up? Checklist — OTel Studio</title>
+<meta name="description" content="A step-by-step checklist for OpenTelemetry data that does not arrive: endpoint, port, networking, Collector pipelines, backend limits and app settings.">
+<link rel="canonical" href="https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
+<meta name="theme-color" content="#f59e0b">
+<meta property="og:site_name" content="OTel Studio">
+<meta property="og:locale" content="en_US">
+<meta property="og:type" content="article">
+<meta property="og:title" content="OpenTelemetry Data Not Showing Up? Checklist — OTel Studio">
+<meta property="og:description" content="A step-by-step checklist for OpenTelemetry data that does not arrive: endpoint, port, networking, Collector pipelines, backend limits and app settings.">
+<meta property="og:url" content="https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html">
+<meta property="og:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="OTel Studio: realistic OpenTelemetry data for any backend">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="OpenTelemetry Data Not Showing Up? Checklist — OTel Studio">
+<meta name="twitter:description" content="A step-by-step checklist for OpenTelemetry data that does not arrive: endpoint, port, networking, Collector pipelines, backend limits and app settings.">
+<meta name="twitter:image" content="https://otel-studio.xplurdata.com/assets/og-image.jpg">
+<link rel="apple-touch-icon" href="https://otel-studio.xplurdata.com/assets/apple-touch-icon.png">
+<style id="seo-extra">.skip{position:absolute;left:-999px;top:0}.skip:focus{left:8px;top:8px;background:#fff;color:#0f172a;padding:8px 14px;border-radius:8px;z-index:1000;box-shadow:0 2px 12px rgba(0,0,0,.2)}img,video{max-width:100%;height:auto}</style>
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://otel-studio.xplurdata.com/"}, {"@type": "ListItem", "position": 2, "name": "Guides", "item": "https://otel-studio.xplurdata.com/guides/index.html"}, {"@type": "ListItem", "position": 3, "name": "OpenTelemetry Data Not Showing Up? A Troubleshooting Checklist", "item": "https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html"}]}, {"@type": "TechArticle", "headline": "OpenTelemetry Data Not Showing Up? A Troubleshooting Checklist", "description": "A step-by-step checklist for OpenTelemetry data that does not arrive: endpoint, port, networking, Collector pipelines, backend limits and app settings.", "image": "https://otel-studio.xplurdata.com/assets/og-image.jpg", "datePublished": "2026-11-15", "dateModified": "2026-11-15", "inLanguage": "en", "mainEntityOfPage": "https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html", "author": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com"}, "publisher": {"@type": "Organization", "name": "XplurData", "url": "https://xplurdata.com", "logo": {"@type": "ImageObject", "url": "https://otel-studio.xplurdata.com/assets/apple-touch-icon.png"}}}]}</script>
+<link rel="icon" type="image/svg+xml" href="../assets/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#fafaf8;--surface:#fff;--border:#e5e3de;--text:#1c1a17;--muted:#8c8880;--accent:#f59e0b;--accent-dark:#d97706;--code-bg:#f4f0ea;--heading:#0f172a}
+body{background:var(--bg);color:var(--text);font-family:'Inter',-apple-system,BlinkMacSystemFont,sans-serif;line-height:1.7}
+h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
+a{color:var(--accent-dark)}
+.nav{display:flex;align-items:center;justify-content:space-between;padding:16px 32px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+.nav .logo{display:flex;align-items:center;gap:9px;text-decoration:none;color:var(--heading)}
+.nav .mark{width:28px;height:28px;border-radius:7px;background:#f59e0b;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#1a0800;flex-shrink:0}
+.nav .logo-text{display:flex;flex-direction:column;gap:1px;line-height:1.15}
+.nav .name{font-size:15px;font-weight:600}
+.nav .name b{color:var(--accent)}
+.nav .logo-sub{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--muted)}
+.nav .logo-sub img{height:9px;width:auto}
+.nav .logo-sub b{color:var(--accent-dark);font-weight:700}
+.links{display:flex;align-items:center;gap:22px;flex-wrap:wrap}
+.links a{font-size:13px;font-weight:600;text-decoration:none;color:var(--text)}
+.links a:hover,.links a.cur{color:var(--accent-dark)}
+.cta{background:var(--accent);color:#1a0800!important;padding:8px 16px;border-radius:20px}
+article{max-width:700px;margin:0 auto;padding:50px 24px 80px}
+article.wide{max-width:1040px}
+.tag{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+article h1{font-size:32px;font-weight:700;color:var(--heading);letter-spacing:-.01em;margin:12px 0 16px;line-height:1.3}
+.meta{font-size:15px;color:var(--muted);margin-bottom:34px}
+article h2{font-size:22px;font-weight:700;color:var(--heading);margin:44px 0 14px}
+article h3{font-size:17px;font-weight:600;color:var(--heading);margin:26px 0 10px}
+article p{font-size:15.5px;color:var(--text);margin-bottom:16px}
+article ul,article ol{margin:0 0 16px 22px;font-size:15.5px}
+article li{margin-bottom:8px}
+code{font-family:'IBM Plex Mono',monospace;background:var(--code-bg);padding:2px 6px;border-radius:4px;font-size:13.5px}
+pre{background:#0d1117;color:#e6edf3;border-radius:10px;padding:18px 20px;overflow-x:auto;margin:18px 0;font-family:'IBM Plex Mono',monospace;font-size:13px;line-height:1.6}
+pre code{background:none;padding:0;color:inherit}
+.callout{background:var(--code-bg);border-left:3px solid var(--accent);border-radius:6px;padding:16px 18px;margin:20px 0;font-size:14.5px}
+.callout strong{color:var(--heading)}
+table.t{width:100%;border-collapse:collapse;font-size:13.5px;margin:18px 0 26px;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+table.t th{text-align:left;padding:10px 14px;background:var(--code-bg);font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+table.t td{padding:10px 14px;border-top:1px solid var(--border);vertical-align:top}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;margin:18px 0 28px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px}
+.card h3{margin:0 0 6px;font-size:15.5px}
+.card p{font-size:13.5px;color:var(--muted);margin:0 0 8px}
+.card a.more{font-size:13px;font-weight:600;text-decoration:none}
+.fig{margin:22px 0;border:1px solid var(--border);border-radius:14px;overflow:hidden;background:var(--surface);box-shadow:0 8px 28px rgba(0,0,0,.06)}
+.fig img{width:100%;display:block}
+.fig figcaption{padding:10px 16px;font-size:12.5px;color:var(--muted);border-top:1px solid var(--border)}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 30px}
+.toc a{font-size:12.5px;font-weight:600;text-decoration:none;color:var(--accent-dark);background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:4px 12px}
+.next{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:10px}
+.next a{display:block;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:12px 16px;text-decoration:none;font-size:14px;font-weight:600;color:var(--heading)}
+.next a span{display:block;font-size:12.5px;font-weight:400;color:var(--muted);margin-top:2px}
+footer{text-align:center;padding:32px 24px;border-top:1px solid var(--border);font-size:12px;color:var(--muted);margin-top:40px;line-height:2}
+footer a{margin:0 8px}
+</style>
+</head>
+<body>
+<a class="skip" href="#content">Skip to content</a>
+<nav class="nav">
+  <div class="logo">
+    <a href="../index.html" style="text-decoration:none;color:inherit;display:flex"><div class="mark">O</div></a>
+    <span class="logo-text">
+      <a href="../index.html" class="name" style="text-decoration:none;color:inherit">OTel <b>Studio</b></a>
+      <a href="https://xplurdata.com" target="_blank" rel="noopener" class="logo-sub" style="text-decoration:none"><img src="https://xplurdata.com/XplurData.svg" alt="" aria-hidden="true">by <b>XplurData</b></a>
+    </span>
+  </div>
+  <div class="links"><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../documentation.html">Docs</a><a href="../guides/index.html" class="cur">Guides</a><a href="../documentation.html#quickstart" class="cta">Get Started</a></div>
+</nav>
+
+<main id="content"><article>
+  <span class="tag">Troubleshooting</span>
+  <h1>OpenTelemetry Data Not Showing Up? A Troubleshooting Checklist</h1>
+  <p class="meta">Stop guessing: test one stage at a time, starting with a sender you trust.</p>
+
+<p>"I send OpenTelemetry data and nothing shows up" is the most common OpenTelemetry problem, and it is hard because the pipeline has many stages and most of them fail silently. The way through is to <strong>stop guessing and test one stage at a time</strong>, starting with a sender you trust. This checklist is ordered from the most to the least common causes.</p>
+
+<h2>Step 0: use a known-good sender</h2>
+<p>If you are not sure whether the fault is in your application or in the pipeline, remove the application from the question. Point OTel Studio at the same endpoint. If its data arrives, your pipeline is fine and the problem is in your instrumentation. If it does not, the problem is downstream of the sender, and everything below applies.</p>
+
+<h2>1. Is the endpoint reachable, and is it OTLP?</h2>
+<p>On the Endpoints page press <strong>Test</strong>. It reports four different situations:</p>
+<table class="t"><tr><th>Result</th><th>Meaning</th><th>Next step</th></tr><tr><td>Accepted</td><td>The receiver answered an OTLP request</td><td>Go to step 4</td></tr><tr><td>Reachable, but credentials refused (HTTP 401/403)</td><td>The address is right; the token, header or tenant is wrong</td><td>Fix credentials — see <a href="secure-otlp-endpoints.html">Secured Backends</a></td></tr><tr><td>Reachable, but not accepted as OTLP (HTTP 404 etc.)</td><td>Something is listening, but not an OTLP receiver at this path</td><td>Step 2</td></tr><tr><td>Unreachable (<code>ECONNREFUSED</code>, timeout)</td><td>Nothing is listening, a firewall blocks it, or the name does not resolve</td><td>Step 3</td></tr></table>
+<h2>2. Right protocol, right port, right path</h2>
+<ul>
+<li>By convention <strong>4317 is gRPC</strong> and <strong>4318 is HTTP</strong>. A gRPC exporter pointed at 4318 (or the reverse) can look connected and deliver nothing.</li>
+<li>For HTTP the paths are <code>/v1/traces</code>, <code>/v1/logs</code> and <code>/v1/metrics</code>. Use the base URL, or a full per-signal URL for that signal only.</li>
+<li>Some backends put OTLP under a prefix (<code>/otlp</code>, <code>/api/default</code>); include it in the base URL.</li>
+<li>A proxy in the path may break HTTP/2, which gRPC needs. See <a href="otlp-grpc-vs-http.html">gRPC vs HTTP</a>.</li>
+</ul>
+
+<h2>3. Networking, especially in containers</h2>
+<ul>
+<li>Inside a container, <code>localhost</code> is the container. Use the target's container name on a shared Docker network, or <code>host.docker.internal</code> for the host.</li>
+<li>In Kubernetes use the service DNS name and check NetworkPolicies and the namespace.</li>
+<li>Confirm the Collector's receiver is bound to <code>0.0.0.0</code>, not <code>localhost</code>, if traffic comes from another container or host.</li>
+</ul>
+
+<h2>4. Is the Collector dropping it?</h2>
+<p>If the receiver accepted the data, look inside the Collector:</p>
+<ol>
+<li><strong>Add a <code>debug</code> exporter</strong> with <code>verbosity: detailed</code> to the pipeline. If records print here but not in the backend, the problem is after this point.</li>
+<li><strong>Check every pipeline.</strong> A signal needs a pipeline of its own; metrics sent to a Collector that only has a traces pipeline are accepted and discarded.</li>
+<li><strong>Check processors that filter, sample or limit.</strong> A <code>filter</code> rule, a <code>tail_sampling</code> policy or a <code>memory_limiter</code> can drop data without errors in the sender. See <a href="test-tail-sampling.html">Test Tail Sampling</a>.</li>
+<li><strong>Read the Collector's own metrics and logs</strong> for refused or dropped counts and exporter send failures.</li>
+</ol>
+
+<h2>5. Is the backend rejecting or hiding it?</h2>
+<ul>
+<li>Authentication, tenant and project headers; ingest quotas and rate limits (HTTP 429).</li>
+<li>Time range: data with timestamps outside the window you are viewing, or a host clock that is wrong.</li>
+<li>Delta versus cumulative metrics: some backends accept only one.</li>
+<li>Attribute or series limits that silently drop new data. See <a href="opentelemetry-high-cardinality.html">High Cardinality</a>.</li>
+<li>Filtered views: if you are looking at production views, synthetic data marked <code>synth.generated</code> may be excluded.</li>
+</ul>
+
+<h2>6. Only now suspect the application</h2>
+<p>If a known-good sender works end to end but your application does not, check: the SDK is configured with the endpoint and protocol you think; the exporter is not blocked by an environment variable overriding it; spans are ended (unended spans are never exported); the process flushes on exit (short-lived jobs often exit before the batch is sent); sampling is not set to zero; and the service name is what you are searching for.</p>
+
+<div class="callout"><strong>The principle.</strong> Change one thing, observe, and move one stage along. A sender you trust turns "the pipeline is broken somewhere" into "it works up to here" — which is most of the way to the fix.</div>
+<h2>Keep going</h2><div class="next"><a href="opentelemetry-docker-compose-sandbox.html">Local sandbox<span>A known-good pipeline to compare against</span></a><a href="test-otel-collector-configuration.html">Test a collector configuration<span>Prevent the problem</span></a><a href="../documentation.html#troubleshooting">OTel Studio troubleshooting<span>Sender-side problems</span></a></div>
+</article></main>
+
+<footer>
+  <div><a href="../features.html">Features</a><a href="../scenarios.html">Scenarios</a><a href="../backends.html">Backends</a><a href="../telemetry-reference.html">Telemetry reference</a><a href="../documentation.html">Documentation</a><a href="../guides/index.html">Guides</a><a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener">GitHub</a><a href="https://github.com/xplurdata/otel-studio/blob/main/SECURITY.md" target="_blank" rel="noopener">Security</a></div>
+  <div>OTel Studio is open source (MIT), built by <a href="https://xplurdata.com" target="_blank" rel="noopener">XplurData</a>. Not affiliated with the OpenTelemetry project or the CNCF.</div>
+</footer>
+</body>
+</html>

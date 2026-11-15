@@ -118,7 +118,7 @@ footer a{margin:0 8px}
 <h2 id="rum">RUM and synthetics</h2>
 <ul>
 <li><strong>RUM</strong> sessions emit a page-load span carrying Core Web Vitals (LCP, INP, CLS, TTFB, FCP) and browser, operating system, viewport and connection attributes (for example <code>browser.name</code>), frustration signals (rage and dead clicks), JavaScript errors with stack trace, file, line and a fingerprint, and conversion milestones. A share of Web App scenario traces share a session's trace ID.</li>
-<li><strong>Synthetics</strong> follow the Collector's <code>httpcheck</code> receiver: <code>httpcheck.status</code>, <code>httpcheck.response.duration</code>, <code>httpcheck.dns.lookup.duration</code> and <code>httpcheck.tls.handshake.duration</code>, plus an SSL certificate-expiry value per check.</li>
+<li><strong>Synthetics</strong> follow the Collector's <code>httpcheck</code> receiver naming: <code>httpcheck.status</code> (1 when the check passes, 0 when it fails) carries <code>http.url</code>, <code>location</code> and <code>http.status_code</code> attributes, alongside <code>httpcheck.response.duration</code>, <code>httpcheck.dns.lookup.duration</code> and <code>httpcheck.tls.handshake.duration</code>. Certificate-expiry warnings are shown in the interface.</li>
 </ul>
 
 <h2 id="filter">Filtering synthetic data</h2>
