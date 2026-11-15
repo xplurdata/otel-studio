@@ -54,6 +54,26 @@ h1,h2,h3,.nav .name{font-family:'Space Grotesk',sans-serif}
 .step-num{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#1a0800;font-weight:800;font-size:14px;display:flex;align-items:center;justify-content:center;margin:0 auto 12px}
 .step h3{font-size:14px;font-weight:700;color:var(--heading);margin-bottom:6px}
 .step p{font-size:12px;color:var(--muted);line-height:1.5}
+.section p a,.quickstart p a,.news ~ p a{color:var(--accent-dark)}
+.band{max-width:1000px;margin:0 auto;padding:0 24px;text-align:center}
+.band .label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:12px}
+.band .chips{margin-top:0}
+.diagram{max-width:1000px;margin:24px auto 0;padding:0 16px}
+.diagram svg{width:100%;height:auto;display:block}
+.diagram text{font-family:'Inter',sans-serif}
+.diagram .t1{font-size:15px;font-weight:700;fill:#0f172a}
+.diagram .t2{font-size:12.5px;fill:#5b5750}
+.diagram .t3{font-size:11px;font-weight:600;fill:#8c8880;letter-spacing:.04em}
+.news{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;max-width:1000px;margin:0 auto}
+.news .item{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);border-radius:10px;padding:16px 18px}
+.news .item h3{font-size:14.5px;margin-bottom:4px;color:var(--heading)}
+.news .item p{font-size:13px;color:var(--muted);line-height:1.55}
+.learn{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px;max-width:1000px;margin:0 auto}
+.learn a{display:block;text-decoration:none;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px 20px;color:var(--text)}
+.learn a:hover{border-color:var(--accent)}
+.learn .k{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--accent-dark)}
+.learn h3{font-size:15px;margin:6px 0 4px;color:var(--heading)}
+.learn p{font-size:13px;color:var(--muted);line-height:1.55}
 .shots{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:20px;max-width:1100px;margin:0 auto}
 .shot{background:var(--surface);border:1px solid var(--border);border-radius:14px;overflow:hidden;box-shadow:0 8px 28px rgba(0,0,0,.06)}
 .shot img{width:100%;display:block;border-bottom:1px solid var(--border)}
@@ -176,9 +196,47 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
   <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px">Open <code>http://localhost:3002</code>, add your OTLP backend on the <strong>Endpoints</strong> page (or pass <code>-e OTEL_ENDPOINT=...</code>), and press Start. The image runs on <code>linux/amd64</code> and <code>linux/arm64</code>. Need real-browser RUM? Use the <code>latest-browser</code> tag, which also includes Chromium. See <a href="documentation.html#images">Image Variants</a>.</p>
 </div>
 
+<section class="section" style="padding-top:8px;padding-bottom:8px">
+  <div class="band">
+    <p class="label">Presets for the destinations teams actually use</p>
+    <div class="chips">
+      <span>OpenTelemetry Collector</span><span>Grafana Alloy</span><span>Grafana Cloud</span><span>Jaeger</span><span>Elastic APM</span><span>SigNoz</span><span>OpenObserve</span><span>Datadog</span><span>New Relic</span><span>Honeycomb</span><span>Dynatrace</span><span>Any OTLP receiver</span>
+    </div>
+    <p style="font-size:13px;color:var(--muted);margin-top:14px"><a href="backends.html">See the settings for each backend →</a></p>
+  </div>
+</section>
+
 <section class="section">
   <h2>How it works</h2>
   <p class="lead">Four steps from zero to realistic, correlated telemetry.</p>
+  <div class="diagram">
+    <svg viewBox="0 0 1000 230" role="img" aria-label="OTel Studio sends OTLP traces, logs and metrics to your collector or backend, where you build dashboards and alerts">
+      <defs><marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" fill="#d97706"/></marker></defs>
+      <rect x="10" y="20" width="300" height="190" rx="16" fill="#f59e0b"/>
+      <text x="30" y="55" class="t1" style="fill:#1a0800">OTel Studio</text>
+      <text x="30" y="82" class="t2" style="fill:#2b1500">30 application scenarios</text>
+      <text x="30" y="104" class="t2" style="fill:#2b1500">6 estate simulators</text>
+      <text x="30" y="126" class="t2" style="fill:#2b1500">hosts · containers · Kubernetes</text>
+      <text x="30" y="148" class="t2" style="fill:#2b1500">synthetics · RUM · AI workloads</text>
+      <text x="30" y="178" class="t2" style="fill:#2b1500;font-weight:600">anomaly and incident injection</text>
+      <line x1="318" y1="115" x2="392" y2="115" stroke="#d97706" stroke-width="2.5" marker-end="url(#ah)"/>
+      <text x="355" y="100" text-anchor="middle" class="t3">OTLP</text>
+      <text x="355" y="140" text-anchor="middle" class="t3">gRPC · HTTP</text>
+      <rect x="400" y="50" width="230" height="130" rx="16" fill="#fff" stroke="#e5e3de" stroke-width="1.5"/>
+      <text x="420" y="85" class="t1">Your pipeline</text>
+      <text x="420" y="110" class="t2">Collector · Alloy · agents</text>
+      <text x="420" y="132" class="t2">processors · sampling · routing</text>
+      <text x="420" y="160" class="t2" style="font-weight:600">bearer token · headers · mTLS</text>
+      <line x1="638" y1="115" x2="712" y2="115" stroke="#d97706" stroke-width="2.5" marker-end="url(#ah)"/>
+      <rect x="720" y="20" width="270" height="190" rx="16" fill="#fff" stroke="#e5e3de" stroke-width="1.5"/>
+      <text x="740" y="55" class="t1">Your backend</text>
+      <text x="740" y="82" class="t2">traces · logs · metrics</text>
+      <text x="740" y="112" class="t2">dashboards</text>
+      <text x="740" y="134" class="t2">alert rules and SLOs</text>
+      <text x="740" y="156" class="t2">cost and capacity</text>
+      <text x="740" y="186" class="t2" style="font-weight:600">filter on synth.generated</text>
+    </svg>
+  </div>
   <div class="steps">
     <div class="step"><div class="step-num">1</div><h3>Pick a scenario</h3><p>Choose from 30 realistic service topologies — or run several at once.</p></div>
     <div class="step"><div class="step-num">2</div><h3>OTel Studio generates correlated data</h3><p>Traces, logs, and metrics with matching trace IDs, real parent-child span chains.</p></div>
@@ -286,6 +344,33 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
     <div class="card"><h3>Platform Teams</h3><p>Demoing a new backend to stakeholders without waiting on a live integration.</p></div>
     <div class="card"><h3>Developers</h3><p>Writing alert rules or dashboards who need controllable error/latency scenarios to test against.</p></div>
     <div class="card"><h3>Open Source Projects</h3><p>Tools like SigNoz, OpenObserve, and Coroot needing a test data generator for their own CI/testing.</p></div>
+  </div>
+</section>
+
+<section class="section">
+  <h2>New in 2.0</h2>
+  <p class="lead">A bigger release: secured delivery, automation, and a hardened image.</p>
+  <div class="news">
+    <div class="item"><h3>Bearer token and headers</h3><p>Per-endpoint token and custom headers, stored encrypted and never shown again — for multi-tenant and SaaS backends.</p></div>
+    <div class="item"><h3>Command line and Job API</h3><p>Run headless in CI with exit codes, or start up to 25 isolated runs over HTTP.</p></div>
+    <div class="item"><h3>OTLP the standard way</h3><p>HTTP protobuf is the default, per-signal URLs are respected, and the usual <code>OTEL_EXPORTER_OTLP_*</code> variables are read.</p></div>
+    <div class="item"><h3>Small, hardened image</h3><p>About 290 MB, non-root, for amd64 and arm64, with sign-in limits, security headers and an SBOM.</p></div>
+    <div class="item"><h3>Corrected vendor presets</h3><p>Dynatrace, Datadog, Honeycomb and OpenObserve presets updated against current documentation.</p></div>
+    <div class="item"><h3>Nothing phones home</h3><p>No built-in destination and no third-party requests from the interface.</p></div>
+  </div>
+  <p style="text-align:center;margin-top:18px;font-size:13px"><a href="https://github.com/xplurdata/otel-studio/releases/tag/v2.0.0" target="_blank" rel="noopener">Read the full release notes →</a></p>
+</section>
+
+<section class="section">
+  <h2>Learn more</h2>
+  <p class="lead">Guides for the jobs people actually do with it, and the reference when you need detail.</p>
+  <div class="learn">
+    <a href="guides/test-alerts-and-slos.html"><span class="k">Guide</span><h3>Test alert rules and SLO burn rates</h3><p>Make errors, latency and host incidents happen on demand and check your alerts.</p></a>
+    <a href="guides/load-test-and-size-a-backend.html"><span class="k">Guide</span><h3>Load-test and size a backend</h3><p>Ramp volume and cardinality in steps and find the limit.</p></a>
+    <a href="guides/otel-studio-in-ci.html"><span class="k">Guide</span><h3>Run it in CI</h3><p>Fail the build when the pipeline breaks, with exit codes and the Job API.</p></a>
+    <a href="guides/secure-otlp-endpoints.html"><span class="k">Guide</span><h3>Secured backends</h3><p>Tokens, tenant headers, TLS and mTLS that work the first time.</p></a>
+    <a href="telemetry-reference.html"><span class="k">Reference</span><h3>Telemetry reference</h3><p>Every attribute and metric it emits, and how to filter synthetic data.</p></a>
+    <a href="documentation.html#deployment"><span class="k">Docs</span><h3>Deploy it</h3><p>Docker Compose, Kubernetes and a TLS reverse proxy, plus troubleshooting and FAQ.</p></a>
   </div>
 </section>
 
