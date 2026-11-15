@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-<meta name="description" content="A UI-driven, topology-aware OpenTelemetry data generator. 25 realistic service topologies, correlated traces/logs/metrics, multi-endpoint fanout. Docker-deployable in 60 seconds.">
+<meta name="description" content="A UI-driven, topology-aware OpenTelemetry data generator. 30 realistic service topologies, correlated traces/logs/metrics, multi-endpoint fanout. Docker-deployable in 60 seconds.">
 
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
@@ -128,7 +128,7 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
   <div class="hero-text">
     <p class="tagline">A telemetry data generator, by <b>XplurData</b></p>
     <h1>You built the dashboards. You wrote the alerts.<br>But there's no real traffic yet to know if any of it works.</h1>
-    <p>OTel Studio generates that traffic for you — realistic, correlated traces, logs, and metrics across 25 service topologies, sent to any OTel-compatible backend in 60 seconds. No code, no app to deploy.</p>
+    <p>OTel Studio generates that traffic for you — realistic, correlated traces, logs, and metrics across 30 service topologies, sent to any OTel-compatible backend in 60 seconds. No code, no app to deploy.</p>
     <div class="hero-ctas">
       <a href="documentation.html#quickstart" class="btn btn-primary">Quick Start →</a>
       <a href="https://github.com/xplurdata/otel-studio" target="_blank" rel="noopener" class="btn btn-outline">View on GitHub</a>
@@ -157,26 +157,19 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
       <button type="button" class="copy-btn" onclick="copyCode(this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg><span class="copy-label">Copy</span></button>
     </div>
     <pre>docker run -d --name otel-studio -p 3002:3002 \
-  -e OTEL_ENDPOINT="http://your-collector:4317" \
-  -e OTEL_PROTOCOL="grpc" \
-  -e SERVICE_NAME="otel-agent" \
-  -e ENVIRONMENT="production" \
   -e ADMIN_PASS="your-password" \
-  -e MODE_REAL="true" \
-  -e MODE_SIM="true" \
-  -v /var/log:/var/log:ro \
-  -v /var/run/docker.sock:/var/run/docker.sock \
   -v otel-data:/data \
   ghcr.io/xplurdata/otel-studio:latest</pre>
   </div>
   <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px">If your collector runs in Docker too, add <code>--network &lt;your-network&gt;</code> so the hostname in <code>OTEL_ENDPOINT</code> resolves — see <a href="documentation.html#docker">Docker Configuration</a> for details.</p>
+  <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:8px">Open <code>http://localhost:3002</code>, add your OTLP backend on the <strong>Endpoints</strong> page (or pass <code>-e OTEL_ENDPOINT=...</code>), and press Start. The image runs on <code>linux/amd64</code> and <code>linux/arm64</code>. Need real-browser RUM? Use the <code>latest-browser</code> tag, which also includes Chromium. See <a href="documentation.html#images">Image Variants</a>.</p>
 </div>
 
 <section class="section">
   <h2>How it works</h2>
   <p class="lead">Four steps from zero to realistic, correlated telemetry.</p>
   <div class="steps">
-    <div class="step"><div class="step-num">1</div><h3>Pick a scenario</h3><p>Choose from 25 realistic service topologies — or run several at once.</p></div>
+    <div class="step"><div class="step-num">1</div><h3>Pick a scenario</h3><p>Choose from 30 realistic service topologies — or run several at once.</p></div>
     <div class="step"><div class="step-num">2</div><h3>OTel Studio generates correlated data</h3><p>Traces, logs, and metrics with matching trace IDs, real parent-child span chains.</p></div>
     <div class="step"><div class="step-num">3</div><h3>Sent via standard OTLP</h3><p>gRPC or HTTP, to one endpoint or several simultaneously.</p></div>
     <div class="step"><div class="step-num">4</div><h3>Lands in your backend</h3><p>Grafana, Datadog, SigNoz, Honeycomb, or any OTel-compatible tool — no code required.</p></div>
@@ -201,14 +194,16 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
   <h2>Everything you need to test a real pipeline</h2>
   <p class="lead">Not random noise — actual request chains with parent-child spans, correlated logs, matching metrics.</p>
   <div class="grid">
-    <div class="card"><div class="icon">🗂️</div><h3>25 Scenarios</h3><p>Web App, Infrastructure, APM, Cloud Native, and Chaos/Stress topologies — real parent-child request chains, not random data.</p></div>
+    <div class="card"><div class="icon">🗂️</div><h3>30 Scenarios</h3><p>Web App, Infrastructure, APM, Cloud Native, Chaos/Stress and GenAI topologies — real parent-child request chains, not random data.</p></div>
     <div class="card"><div class="icon">🔗</div><h3>Correlated Signals</h3><p>Logs share trace IDs with the spans that produced them. Search a trace ID, see the matching logs and metrics.</p></div>
     <div class="card"><div class="icon">⚡</div><h3>Chaos Scenarios</h3><p>Dedicated error-storm, cardinality-burst, and latency-spike modes for testing alerting and dashboards.</p></div>
     <div class="card"><div class="icon">🔀</div><h3>Multi-Endpoint Fanout</h3><p>Send to two or more OTel backends simultaneously, with independent TLS/mTLS per endpoint.</p></div>
     <div class="card"><div class="icon">🌍</div><h3>Geo / IP Simulation</h3><p>Tag generated telemetry with realistic regional IP ranges, or safe RFC 5737 test ranges.</p></div>
     <div class="card"><div class="icon">🪪</div><h3>Synthetic PII</h3><p>Opt-in, per-scenario synthetic user data for testing redaction and DLP pipelines — never real people's data.</p></div>
     <div class="card"><div class="icon">📡</div><h3>Real System Data</h3><p>Optionally tail real log files and Docker container logs/metrics alongside simulated traffic.</p></div>
-    <div class="card"><div class="icon">🎛️</div><h3>One-Click Stack Presets</h3><p>Grafana Alloy, OTel Collector, Elastic APM, Honeycomb, Jaeger, SigNoz, OpenObserve, Datadog, New Relic, Dynatrace, Lightstep.</p></div>
+    <div class="card"><div class="icon">🔐</div><h3>Bearer Token &amp; Headers</h3><p>Add a bearer token and any request headers per endpoint — for multi-tenant and SaaS backends. Stored encrypted, never shown again.</p></div>
+    <div class="card"><div class="icon">⌨️</div><h3>Command Line &amp; Job API</h3><p>Run it headless in CI, or start and stop runs from another application over a small HTTP API. Standard <code>OTEL_EXPORTER_OTLP_*</code> variables are supported.</p></div>
+    <div class="card"><div class="icon">🎛️</div><h3>One-Click Stack Presets</h3><p>Grafana Alloy, OTel Collector, Elastic APM, Honeycomb, Jaeger, SigNoz, OpenObserve, Datadog, New Relic and Dynatrace.</p></div>
   </div>
 </section>
 
@@ -238,6 +233,10 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
   <h2>Frequently asked questions</h2>
   <div style="max-width:700px;margin:0 auto">
     <details style="border-bottom:1px solid var(--border);padding:16px 0">
+      <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Why are there two image tags?</summary>
+      <p style="margin-top:10px;color:var(--muted)">The default image (<code>latest</code>, about 290 MB) contains OTel Studio only and covers everything except one feature. <code>latest-browser</code> (about 1.1 GB) adds Chromium for real-browser RUM, where a headless browser visits your own instrumented website. Most people never need it, so it is kept out of the default image. Both support <code>linux/amd64</code> and <code>linux/arm64</code>.</p>
+    </details>
+    <details style="border-bottom:1px solid var(--border);padding:16px 0">
       <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Does OTel Studio require any changes to my application code?</summary>
       <p style="margin-top:10px;color:var(--muted)">No. OTel Studio generates telemetry independently — it doesn't instrument or touch your actual application at all. It sends realistic OTLP traces, logs, and metrics directly to your collector or backend, so you can validate dashboards, alerts, and pipeline configuration without deploying anything to your real services.</p>
     </details>
@@ -247,7 +246,7 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
     </details>
     <details style="border-bottom:1px solid var(--border);padding:16px 0">
       <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Does it work with self-hosted and on-premise observability stacks?</summary>
-      <p style="margin-top:10px;color:var(--muted)">Yes — OTel Studio speaks standard OTLP (gRPC or HTTP) to any compatible endpoint, self-hosted or cloud. The one-click stack presets cover 12 popular backends, but any OTLP receiver works, including a self-hosted OpenTelemetry Collector, Grafana stack, Jaeger, or your own custom pipeline.</p>
+      <p style="margin-top:10px;color:var(--muted)">Yes — OTel Studio speaks standard OTLP (gRPC, or HTTP as protobuf or JSON) to any compatible endpoint, self-hosted or cloud. The one-click stack presets cover 13 popular backends, but any OTLP receiver works, including a self-hosted OpenTelemetry Collector, Grafana stack, Jaeger, or your own custom pipeline.</p>
     </details>
     <details style="border-bottom:1px solid var(--border);padding:16px 0">
       <summary style="font-weight:600;cursor:pointer;color:var(--heading)">How is this different from telemetrygen or hand-written test scripts?</summary>
@@ -255,7 +254,7 @@ pre{background:none;border:none;padding:16px;overflow-x:auto;font-family:'IBM Pl
     </details>
     <details style="border-bottom:1px solid var(--border);padding:16px 0">
       <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Is the generated data actually realistic, or just random noise?</summary>
-      <p style="margin-top:10px;color:var(--muted)">Each of the 25 scenarios models a genuine service topology — real parent-child span chains, realistic log messages per service (JVM GC pauses, Kubernetes OOMKills, gRPC deadline errors, and similar), and natural signal ratios where logs outnumber traces the way they do in real systems. It's synthetic, but built to resemble what an actual distributed system produces, not randomized filler.</p>
+      <p style="margin-top:10px;color:var(--muted)">Each of the 30 scenarios models a genuine service topology — real parent-child span chains, realistic log messages per service (JVM GC pauses, Kubernetes OOMKills, gRPC deadline errors, and similar), and natural signal ratios where logs outnumber traces the way they do in real systems. It's synthetic, but built to resemble what an actual distributed system produces, not randomized filler.</p>
     </details>
     <details style="border-bottom:1px solid var(--border);padding:16px 0">
       <summary style="font-weight:600;cursor:pointer;color:var(--heading)">Can I send data to more than one backend at the same time?</summary>
