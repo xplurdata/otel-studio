@@ -5,13 +5,14 @@
 <h1 align="center">OTel Studio</h1>
 
 <p align="center">
-  A UI-driven, topology-aware OpenTelemetry data generator.<br>
-  Realistic correlated traces, logs, and metrics — against any OTel-compatible backend, no app deployment required.
+  A free, MIT-licensed, self-hosted OpenTelemetry data generator.<br>
+  Realistic correlated traces, logs and metrics over OTLP — for any OpenTelemetry-compatible backend, with no application to deploy.
 </p>
 
 <p align="center">
   <a href="https://otel-studio.xplurdata.com">Live Site</a> ·
   <a href="https://otel-studio.xplurdata.com/documentation.html">Documentation</a> ·
+  <a href="https://otel-studio.xplurdata.com/guides/index.html">Guides</a> ·
   <a href="https://xplurdata.com">XplurData</a>
 </p>
 
@@ -20,23 +21,29 @@
   <img alt="Docker" src="https://img.shields.io/badge/docker-ready-2496ED.svg?logo=docker&logoColor=white">
   <img alt="OpenTelemetry" src="https://img.shields.io/badge/OpenTelemetry-native-f5a800.svg">
   <a href="https://github.com/xplurdata/otel-studio/pkgs/container/otel-studio"><img alt="GHCR" src="https://img.shields.io/badge/ghcr.io-xplurdata%2Fotel--studio-2496ED?logo=docker&logoColor=white"></a>
-  <a href="https://github.com/xplurdata/otel-studio/actions/workflows/security-scan.yml"><img alt="Security Scan" src="https://github.com/xplurdata/otel-studio/actions/workflows/security-scan.yml/badge.svg"></a>
+  <img alt="Multi-arch" src="https://img.shields.io/badge/linux-amd64%20%7C%20arm64-555.svg">
+  <img alt="Release" src="https://img.shields.io/badge/release-2.0.0-f59e0b.svg">
+</p>
+
+<p align="center">
+  <a href="https://otel-studio.xplurdata.com"><img src="site/assets/hero-poster.jpg" alt="OTel Studio dashboard showing live telemetry generation" width="860"></a>
 </p>
 
 ---
 
-## Why OTel Studio
+## Where OTel Studio fits
 
-Most observability teams can't test their pipelines realistically because they don't have good data generators.
+Testing an observability pipeline, alert or dashboard needs data that looks like production. Different tools suit different jobs:
 
-| Tool | Limitation |
+| Tool | Best for |
 |---|---|
-| `telemetrygen` | CLI-only, random data, no service topology, no UI |
-| hotrod / astronomy-shop | Full demo apps — heavy to deploy, not configurable |
-| k6 / Gatling | Load-testing tools, not observability-focused — no trace/log/metric correlation |
-| Hand-written scripts | Every team reinvents the same wheel |
+| `telemetrygen` | A quick command-line stream of simple spans, logs or metrics |
+| The OpenTelemetry Demo | A complete, instrumented demo shop to explore OpenTelemetry end to end |
+| k6 / Gatling | Load-testing HTTP services themselves |
+| Hand-written scripts | One-off checks for a single case |
+| **OTel Studio** | Realistic, correlated traces, logs and metrics from many services, hosts, clusters and users, with a UI, anomaly injection and a command-line mode for CI |
 
-OTel Studio sits between "too simple" and "too heavy": drop in a Docker image, point it at your collector, and get realistic correlated traces + logs + metrics in under 60 seconds.
+Drop in a Docker image, point it at your Collector or backend, and see correlated data in about a minute. See the guide [How to generate OpenTelemetry test data](https://otel-studio.xplurdata.com/guides/generate-opentelemetry-test-data.html) for when to use which.
 
 ## Features
 
@@ -65,7 +72,7 @@ docker run -d --name otel-studio -p 3002:3002 \
   ghcr.io/xplurdata/otel-studio:latest
 ```
 
-Open `http://localhost:3002`, log in, pick a scenario, hit Start.
+Open `http://localhost:3002`, log in, pick a scenario, hit Start. There is no built-in destination: set `OTEL_ENDPOINT` as above, or add one on the **Endpoints** page, which also takes a bearer token and extra headers.
 
 Full setup, environment variables, and every feature documented at **[otel-studio.xplurdata.com/documentation.html](https://otel-studio.xplurdata.com/documentation.html)**.
 
@@ -78,13 +85,25 @@ Both images are published for `linux/amd64` and `linux/arm64`.
 | `latest`, `2.0.0` | OTel Studio only (about 290 MB). Use this one. |
 | `latest-browser`, `2.0.0-browser` | The same plus Chromium (about 1.1 GB), for real-browser RUM only. |
 
+## Guides
+
+- [Test your OpenTelemetry Collector configuration before production](https://otel-studio.xplurdata.com/guides/test-otel-collector-configuration.html)
+- [Test alert rules and SLO burn rates with injected failures](https://otel-studio.xplurdata.com/guides/test-alerts-and-slos.html)
+- [Send OTLP to secured backends: tokens, headers, TLS and mTLS](https://otel-studio.xplurdata.com/guides/secure-otlp-endpoints.html)
+- [Run OTel Studio in CI](https://otel-studio.xplurdata.com/guides/otel-studio-in-ci.html)
+- [OpenTelemetry data not showing up? A checklist](https://otel-studio.xplurdata.com/guides/troubleshoot-missing-opentelemetry-data.html)
+
+All guides: [otel-studio.xplurdata.com/guides](https://otel-studio.xplurdata.com/guides/index.html).
+
 ## Security
 
-Every published image is scanned weekly (and on demand) for critical and high-severity vulnerabilities — see the badge above, which links to the actual scan history, not just a claim.
+The image runs as a non-root user and contains only the compiled, minified application, with no source files. Credentials entered in the UI are stored encrypted and never shown again. To report a vulnerability, see [SECURITY.md](SECURITY.md).
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+Free to use, including commercially, under the MIT licence — see [LICENSE](LICENSE).
+
+Product names mentioned are trademarks of their respective owners. OTel Studio is not affiliated with or endorsed by them.
 
 ---
 
